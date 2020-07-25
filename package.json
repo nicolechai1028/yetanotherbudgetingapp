@@ -1,0 +1,22 @@
+{
+  "name": "yetanotherbudgetingapp",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolechai1028/yetanotherbudgetingapp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicolechai1028/yetanotherbudgetingapp/issues"
+  },
+  "homepage": "https://github.com/nicolechai1028/yetanotherbudgetingapp#readme"
+}
