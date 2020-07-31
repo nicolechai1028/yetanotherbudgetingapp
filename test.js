@@ -196,4 +196,28 @@ async function doTest4() {
   return emailInfo;
 }
 
-doTest4().catch(console.error);
+/*
+pos1 = 0;
+
+*/
+let selectionSort = (arr) => {
+  let len = arr.length;
+  for (let i = 0; i < len; i++) {
+    let min = i;
+    for (let j = i + 1; j < len; j++) {
+      if (arr[min] > arr[j]) {
+        min = j;
+      }
+    }
+    if (min !== i) {
+      let tmp = arr[i];
+      arr[i] = arr[min];
+      arr[min] = tmp;
+    }
+  }
+  return arr;
+};
+
+let arr = [3, 7, 4, 9, 12, 67, 21, 56, 32, 99];
+console.log(selectionSort(arr));
+//doTest4().catch(console.error);

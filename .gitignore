@@ -104,3 +104,6 @@ dist
 .tern-port
 
 package-lock.json
+result.txt
+test.js
+emailConfirm.html
