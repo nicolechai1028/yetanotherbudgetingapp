@@ -1,10 +1,19 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Dummy from './components/Dummy/Dummy.js'
+import { BrowserRouter } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Home from "./pages/Home/";
+import NavigationBar from "./components/NavigationBar";
+import Login from "./pages/Login.js"
+
 function App() {
   return (
-    <Dummy/>
+    <>
+    <BrowserRouter>
+    <NavigationBar />
+    <Home />
+    <Login/>
+  </BrowserRouter>
+</>
   );
 }
 
