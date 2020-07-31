@@ -4,10 +4,8 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "dependencies": {
-<<<<<<< HEAD
     "bootstrap": "^4.5.0",
-    "react-bootstrap": "^1.3.0"
-=======
+    "react-bootstrap": "^1.3.0",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
@@ -18,7 +16,6 @@
     "nodemailer": "^6.4.10",
     "randomstring": "^1.1.5",
     "uuid": "^8.2.0"
->>>>>>> 57f11d44763f31f3b803e1b42b1c05918b826391
   },
   "devDependencies": {},
   "scripts": {
