@@ -1,0 +1,11 @@
+.top-bar {
+	display: flex;
+}
+.amount-container {
+	display: flex;
+}
+
+.amount-container div {
+	margin-right: 10em;
+}
+

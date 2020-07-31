@@ -8,12 +8,9 @@ function NavigationBar() {
     <Navbar expand="lg" variant="light" bg="light">
       <Navbar.Brand className="mr-auto"> Y.A.B.A</Navbar.Brand>
       <Nav>
-        <Nav.Link>
-          <Link to="/"> Login </Link>
-        </Nav.Link>
-        <Nav.Link>
-          <Link to="/"> Sign up </Link>
-        </Nav.Link>
+        <Link to="/login">Login</Link>
+        <Nav.Link>Sign up</Nav.Link>
+        <Link to="/budget">Budget</Link>
       </Nav>
     </Navbar>
   );
