@@ -1,4 +1,22 @@
-const mongoose = require("mongoose");
+/****************************************************************************************
+ *                                    HISTORY                                           *
+ ****************************************************************************************
+ *                                                                                      *
+ * == chikeobi-03 ==                                                                    *
+ *   +    Added this History section                                                    *
+ *   +                                                                                  *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ ****************************************************************************************
+ */
+
+ const mongoose = require("mongoose");
 const db = require("../../models");
 const Constants = require("../../constants");
 import { v4 as uuidv4 } from "uuid";

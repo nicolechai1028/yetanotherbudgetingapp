@@ -3,9 +3,9 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +                                                                                  *
- *                                                                                      *
+ *   + Changed file name from Account.js to BudgetAccount.js. Also renamed Schema from  *
+ *     AccountSchema to BudgetAccountSchema. Module export name changed from Account to *
+ *     BudgetAccount. Collection name changed from Account to BudgetAccount             *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -15,29 +15,26 @@
  *                                                                                      *
  ****************************************************************************************
  */
-
- const mongoose = require("mongoose");
+const mongoose = require("mongoose");
+const Constants = require("../constants");
 const Schema = mongoose.Schema;
-// import { v4 as uuidv4 } from "uuid";
+
+//import { v4 as uuidv4 } from "uuid";
 const { v4 } = require("uuid");
 const uuidv4 = v4;
 
-const UserProfileSchema = new Schema({
+const BudgetAccountSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
-  email: { type: Schema.Types.String, required: true },
-  firstName: { type: Schema.Types.String, required: true },
-  lastName: { type: Schema.Types.String, required: true },
-  password: { type: Schema.Types.String, required: true }, // hashed password
-  sessionUUID: { type: Schema.Types.String }, // session ID generated when the user logs in. Removed when the user logs off
-  isVerified: { type: Schema.Types.Boolean, default: false },
-  emailVerificationId: { type: Schema.Types.String },
-  lastLoginTimestamp: { type: Schema.Types.Number }, // Date.now()
-  lastTransactionTimestamp: { type: Schema.Types.Number }, // Date.now(). Last time the server was accessed
+  name: { type: Schema.Types.String, required: true },
+  ownerRef: { type: Schema.Types.String, required: true }, // reference to the UserProfile._id
+  accountType: {
+    type: Schema.Types.String,
+    enum: Constants.ACCOUNT_TYPES,
+    required: true,
+  },
+  startingBalance: { type: Schema.Types.Number, default: 0.0 },
 });
 
-UserProfileSchema.virtual("fullName").get(function () {
-  return `${this.firstName} ${this.lastName})`;
-});
-const UserProfile = mongoose.model("UserProfile", UserProfileSchema);
+const BudgetAccount = mongoose.model("BudgetAccount", BudgetAccountSchema);
 
-module.exports = UserProfile;
+module.exports = BudgetAccount;

@@ -1,3 +1,23 @@
+/****************************************************************************************
+ *                                    HISTORY                                           *
+ ****************************************************************************************
+ *                                                                                      *
+ * == chikeobi-03 ==                                                                    *
+ *   +    Added this History section                                                    *
+ *   +                                                                                  *
+ *   +                                                                                  *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ ****************************************************************************************
+ */
+
 /**
  * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
  * @see https://codeforgeek.com/expressjs-router-tutorial/
@@ -85,6 +105,5 @@ router.route("/").post((req, res) => {
   })();
 });
 
-function getEmailBody(req, email, emailVerificationId) {}
 
 module.exports = router;
