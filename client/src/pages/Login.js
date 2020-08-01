@@ -1,12 +1,21 @@
 import React from "react";
+import './App.css';
 
+import Navigation from "../components/NavigationBar/index";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 function Login() {
   return (
+  <Container>
+      <Row>
+        <Col sm="12">
+          <Navigation header={header} />
+        </Col>
+      </Row>
+
     <Form className="login-form">
       <h1>
-        <span className="font-weight-bold">Yet Another Budgeting App</span>
+        <span className="font-weight-bold">Y.A.B.A</span>
       </h1>
       <h2 className="text-center">Welcome</h2>
       <FormGroup>
@@ -24,6 +33,7 @@ function Login() {
         <a href="/register">Forgot Password</a>
       </div>
     </Form>
+  </Container>
   );
 }
 
