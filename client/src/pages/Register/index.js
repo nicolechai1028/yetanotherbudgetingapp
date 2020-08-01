@@ -1,14 +1,13 @@
 import React from 'react';
-import './App.css';
+import './index.css';
 
-
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 function Register() {
   return (
     <Form className="login-form">
       <h1><span className="font-weight-bold">
-       Yet Another Budgeting App</span></h1>
+       Y.A.B.A</span></h1>
        <h2 className="text-center">Welcome</h2>
        <FormGroup>
          <Label>First Name</Label>
@@ -33,7 +32,6 @@ function Register() {
         <a href="/register">Forgot Password</a>
       </div>
     </Form>
-
   );
 }
 

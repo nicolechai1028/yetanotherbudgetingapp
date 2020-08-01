@@ -1,12 +1,13 @@
 import React from "react";
+import './index.css';
 
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input} from "reactstrap";
 
 function Login() {
   return (
     <Form className="login-form">
       <h1>
-        <span className="font-weight-bold">Yet Another Budgeting App</span>
+        <span className="font-weight-bold">Y.A.B.A</span>
       </h1>
       <h2 className="text-center">Welcome</h2>
       <FormGroup>
