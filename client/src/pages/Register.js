@@ -6,9 +6,9 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 function Register() {
   return (
-    <Form className="login-form">
+    <Form className="login-form" onSubmit={Register}>
       <h1><span className="font-weight-bold">
-       Yet Another Budgeting App</span></h1>
+       Y.A.B.A</span></h1>
        <h2 className="text-center">Welcome</h2>
        <FormGroup>
          <Label>First Name</Label>
@@ -28,7 +28,7 @@ function Register() {
        </FormGroup>
        <Button className="btn-lg btn-dark btn-block">Log In</Button>
       <div className="text-center">
-        <a href="/register">Sign-Up</a>
+        <a href="/register">Register</a>
         <span className="p-2"></span>
         <a href="/register">Forgot Password</a>
       </div>

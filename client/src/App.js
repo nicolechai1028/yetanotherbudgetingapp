@@ -11,7 +11,6 @@ function App() {
     <BrowserRouter>
     <NavigationBar />
     <Home />
-    <Login/>
   </BrowserRouter>
 </>
   );

@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 function Login() {
   return (
-    <Form className="login-form" onSubmit={login}>
+    <Form className="login-form" onSubmit={Login}>
       <h1><span className="font-weight-bold">
-       Yet Another Budgeting App</span></h1>
+       Y.A.B.A</span></h1>
        <h2 className="text-center">Welcome</h2>
        <FormGroup>
          <Label>Email</Label>
