@@ -1,5 +1,5 @@
 import React from "react";
-import Navigation from "../components/navbar/navbar";
+import Navigation from "../components/NavigationBar/index";
 import { Container, Row, Col } from "reactstrap";
 import InfoCards from "../components/InfoCards/infocards";
 import Chart from "../components/overviewinfo/ovinfo";
