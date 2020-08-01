@@ -1,18 +1,10 @@
 import React from 'react';
-import './App.css';
+import './index.css';
 
-import Navigation from "../components/NavigationBar/index";
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 function Register() {
   return (
-  <Container>
-      <Row>
-        <Col sm="12">
-          <Navigation header={header} />
-        </Col>
-      </Row>
-      
     <Form className="login-form">
       <h1><span className="font-weight-bold">
        Y.A.B.A</span></h1>
@@ -40,7 +32,6 @@ function Register() {
         <a href="/register">Forgot Password</a>
       </div>
     </Form>
-  </Container>
   );
 }
 
