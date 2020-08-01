@@ -1,31 +1,30 @@
-import React from 'react';
-import './App.css';
+import React from "react";
 
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 function Login() {
   return (
-    <Form className="login-form" onSubmit={login}>
-      <h1><span className="font-weight-bold">
-       Yet Another Budgeting App</span></h1>
-       <h2 className="text-center">Welcome</h2>
-       <FormGroup>
-         <Label>Email</Label>
-         <Input type="email" placeholder="Email"></Input>
-       </FormGroup>
-       <FormGroup>
-         <Label>Password</Label>
-         <Input type="password" placeholder="Password"></Input>
-       </FormGroup>
-       <Button className="btn-lg btn-dark btn-block">Log In</Button>
+    <Form className="login-form">
+      <h1>
+        <span className="font-weight-bold">Yet Another Budgeting App</span>
+      </h1>
+      <h2 className="text-center">Welcome</h2>
+      <FormGroup>
+        <Label>Email</Label>
+        <Input type="email" placeholder="Email"></Input>
+      </FormGroup>
+      <FormGroup>
+        <Label>Password</Label>
+        <Input type="password" placeholder="Password"></Input>
+      </FormGroup>
+      <Button className="btn-lg btn-dark btn-block">Log In</Button>
       <div className="text-center">
         <a href="/register">Register</a>
         <span className="p-2"></span>
         <a href="/register">Forgot Password</a>
       </div>
     </Form>
-
   );
 }
 
-export default Login; 
+export default Login;
