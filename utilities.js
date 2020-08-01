@@ -165,8 +165,8 @@ async function sendConfirmationEmail(req, email, emailVerificationId) {
   return emailInfo;
 }
 
-function emailValidationError(message, req) {
-  let targetUrl = `${getProtocolHostUrl(req)}/register`;
+function emailValidationPage({header,message,intro,text,btnLabel,targetUrl}) {
+  //let targetUrl = `${getProtocolHostUrl(req)}/register`;
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -196,11 +196,11 @@ function emailValidationError(message, req) {
   </head>
   <body>
     <div class="content-div">
-      <h1 style="color: red;">	ERROR </h2>
-      <h2>There has been an error validating your registration:</h2>
+      <h1 style="color: red;">	${header} </h2>
+      <h2>${intro}:</h2>
       <h3 style="color:red"> ${message} </h3>
-      <p> Check your Email again or repeat registration </p>
-       <a target="_blank" href="${targetUrl}"> REGISTER </a> 
+      <p> ${text}</p>
+       <a target="_blank" href="${targetUrl}"> ${btnLabel} </a> 
     </div>
     </script>
   </body>
@@ -214,5 +214,5 @@ module.exports = {
   createSHA256Hash,
   getProtocolHostUrl,
   sendConfirmationEmail,
-  emailValidationError,
+  emailValidationPage,
 };

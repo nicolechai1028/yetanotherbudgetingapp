@@ -55,7 +55,7 @@ try {
   connection.once("open", function () {
     console.log("*** MongoDB got connected ***");
     console.log(`Our Current Database Name : ${connection.db.databaseName}`);
-    connection.db.dropDatabase(console.log(`${connection.db.databaseName} database dropped.`));
+    if (dropDb) connection.db.dropDatabase(console.log(`${connection.db.databaseName} database dropped.`));
   });
 } catch (error) {
   console.log(error.message);

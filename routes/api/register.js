@@ -90,7 +90,8 @@ router.route("/").post((req, res) => {
         return;
       }
       console.log("User Profile Data:", dbResult);
-      let htmlBody = Utilities.sendConfirmationEmail(req, email, emailVerificationId);
+      let emailInfo = Utilities.sendConfirmationEmail(req, email, emailVerificationId);
+      console.log(emailInfo);
       res.json({
         status: "OK",
         message: "Registation Successful",
