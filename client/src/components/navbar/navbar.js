@@ -22,7 +22,7 @@ const Navigation = props => {
         expand="md"
         style={{
           margin: "5rem 5rem 5rem 5rem",
-          paddingLeft: "30px"
+          paddingLeft: "50px"
         }}
       >
         <NavbarBrand href="/">{props.header}</NavbarBrand>
@@ -39,7 +39,11 @@ const Navigation = props => {
                 Expense
               </Button>{" "}
             </NavItem>
-            <NavItem style={{ padding: ".5rem" }}>
+            <NavItem
+              style={{ padding: ".5rem", position: "absolute", right: "5%" }}
+            >
+              <Button color="info">Login</Button>{" "}
+              <Button color="info">Sign Up</Button>{" "}
               <Button color="danger">LogOut</Button>{" "}
             </NavItem>
           </Nav>
