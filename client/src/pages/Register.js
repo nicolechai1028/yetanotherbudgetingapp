@@ -3,7 +3,6 @@ import './App.css';
 
 
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { FacebookLoginButton } from 'react-social-login-buttons';
 
 function Register() {
   return (
@@ -28,14 +27,10 @@ function Register() {
          <Input type="password" placeholder="Password"></Input>
        </FormGroup>
        <Button className="btn-lg btn-dark btn-block">Log In</Button>
-       <div className="text-center pt-3">
-         Or continue with your social account
-      </div>
-      <FacebookLoginButton className="mt-3 mb-3"/>
       <div className="text-center">
-        <a href="/sign-up">Sign-Up</a>
+        <a href="/register">Sign-Up</a>
         <span className="p-2"></span>
-        <a href="/sign-up">Forgot Password</a>
+        <a href="/register">Forgot Password</a>
       </div>
     </Form>
 
