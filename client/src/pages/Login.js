@@ -19,9 +19,9 @@ function Login() {
        </FormGroup>
        <Button className="btn-lg btn-dark btn-block">Log In</Button>
       <div className="text-center">
-        <a href="/sign-up">Sign-Up</a>
+        <a href="/register">Register</a>
         <span className="p-2"></span>
-        <a href="/sign-up">Forgot Password</a>
+        <a href="/register">Forgot Password</a>
       </div>
     </Form>
 
