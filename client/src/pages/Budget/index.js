@@ -1,9 +1,11 @@
-import React from "react";
-import Button from "react-bootstrap/Button";
+import React, { useState } from "react";
 import Category from "../../components/Category/";
 import "./index.css";
-
+import AddCategoryModal from "../../components/AddCategory/";
+import { Button } from "reactstrap";
 function Budget() {
+  const [showModal, setShowModal] = useState(false);
+
   const budgetState = {
     categories: {
       saving: {
@@ -18,19 +20,23 @@ function Budget() {
       },
     },
   };
+  const toggle = () => {
+    setShowModal(!showModal);
+  };
+
   const addCategory = () => {
     //do something and make popup
+    setShowModal(true);
   };
   return (
-    <div className="m-5 ">
+    <div className="page-container ">
       <Button onClick={addCategory}>Add Category Group </Button>
-      <div className="d-flex ">
-        <div> Category Name </div>
-        <div className="ml-auto amount-container">
-          <div> Budgeted </div>
-          <div> Spent </div>
-          <div> Available </div>
-        </div>
+      {!showModal || <AddCategoryModal showModal={showModal} toggle={toggle} />}
+      <div className="top-container">
+        <div className="name-item font-weight-bold"> Category Name </div>
+        <div className="justify-self-center font-weight-bold"> Budgeted </div>
+        <div className="justify-self-center font-weight-bold"> Spent </div>
+        <div className="justify-self-center font-weight-bold"> Available </div>
       </div>
       <Category />
     </div>

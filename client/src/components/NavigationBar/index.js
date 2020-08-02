@@ -1,15 +1,14 @@
 import React from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import { Nav, Navbar, NavbarBrand, NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 
 function NavigationBar() {
   return (
     <Navbar expand="lg" variant="light" bg="light">
-      <Navbar.Brand className="mr-auto"> Y.A.B.A</Navbar.Brand>
+      <NavbarBrand className="mr-auto"> Y.A.B.A</NavbarBrand>
       <Nav>
         <Link to="/login">Login</Link>
-        <Nav.Link>Sign up</Nav.Link>
+        <NavLink>Sign up</NavLink>
         <Link to="/budget">Budget</Link>
       </Nav>
     </Navbar>
