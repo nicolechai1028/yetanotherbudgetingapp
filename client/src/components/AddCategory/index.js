@@ -9,7 +9,6 @@ import {
   ModalBody,
   Label,
 } from "reactstrap";
-import CurrencyInput from "../CurrentcyInput";
 
 function AddCategoryModal(props) {
   const [newCat, setNewCat] = useState("");
@@ -40,6 +39,10 @@ function AddCategoryModal(props) {
               value={newCat}
             />
           </FormGroup>
+          <Button type="submit">Add Category Group</Button>
+          <Button onClick={cleanUp} className="bg-danger">
+            Close
+          </Button>
         </Form>
       </ModalBody>
     </Modal>
