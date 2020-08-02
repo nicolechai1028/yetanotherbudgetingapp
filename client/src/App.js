@@ -5,7 +5,7 @@ import Home from "./pages/Home/";
 import NavigationBar from "./components/NavigationBar";
 import Login from "./pages/Login/";
 import Register from "./pages/Register/";
-import Budget from "./components/Budget/";
+import Budget from "./pages/Budget";
 import Overview from "./pages/Overview";
 
 function App() {

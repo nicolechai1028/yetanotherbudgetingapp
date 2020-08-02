@@ -7,7 +7,10 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
+  NavLink,
+  ButtonGroup,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const Navigation = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,45 +18,55 @@ const Navigation = (props) => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div>
-      <Navbar
-        className="border border-dark rounded"
-        color="light"
-        expand="md"
-        style={{
-          margin: "5rem 5rem 5rem 5rem",
-          paddingLeft: "50px",
-        }}
-      >
-        <NavbarBrand href="/">{props.header}</NavbarBrand>
-        <NavbarToggler onClick={toggle} />
-        <Collapse isOpen={isOpen} navbar>
-          <Nav navbar>
-            <NavItem style={{ padding: ".5rem" }}>
-              <Button outline color="success">
-                Budget
-              </Button>{" "}
-            </NavItem>
-            <NavItem style={{ padding: ".5rem" }}>
-              <Button outline color="success">
-                Expense
-              </Button>{" "}
-            </NavItem>
-            <NavItem
-              style={{ padding: ".5rem", position: "absolute", right: "3%" }}
-            >
-              <Button style={{ marginRight: "1rem" }} color="info">
-                Login
-              </Button>{" "}
-              <Button style={{ marginRight: "1rem" }} color="info">
-                Sign Up
-              </Button>{" "}
-              <Button color="danger">LogOut</Button>{" "}
-            </NavItem>
-          </Nav>
-        </Collapse>
-      </Navbar>
-    </div>
+    <Navbar
+      className="border border-dark rounded"
+      color="light"
+      expand="md"
+      style={{
+        paddingLeft: "50px",
+      }}
+    >
+      <NavbarBrand href="/">Y.A.B.A</NavbarBrand>
+      <NavbarToggler onClick={toggle} />
+      <Collapse isOpen={isOpen} navbar>
+        <Nav navbar>
+          <NavLink tag={Link} style={{ padding: ".5rem" }} to="/overview">
+            <Button outline color="success">
+              Overview
+            </Button>
+          </NavLink>
+          <NavLink tag={Link} style={{ padding: ".5rem" }} to="/budget">
+            <Button outline color="success">
+              Budget
+            </Button>
+          </NavLink>
+
+          <NavItem tag={Link} to="/expense" style={{ padding: ".5rem" }}>
+            <Button outline color="success">
+              Expense
+            </Button>
+          </NavItem>
+          <NavItem
+            tag={Link}
+            to="/login"
+            style={{ padding: ".5rem", position: "absolute", right: "3%" }}
+          >
+            <Button style={{ marginRight: "1rem" }} color="info">
+              Login
+            </Button>
+          </NavItem>
+          <NavItem tag={Link} to="/signup">
+            <Button style={{ marginRight: "1rem" }} color="info">
+              Sign Up
+            </Button>
+          </NavItem>
+          {/*TODO Need to do call API*/}
+          <NavItem tag={Link} to="/logout">
+            <Button color="danger">LogOut</Button>{" "}
+          </NavItem>
+        </Nav>
+      </Collapse>
+    </Navbar>
   );
 };
 
