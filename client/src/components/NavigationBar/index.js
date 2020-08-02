@@ -1,18 +1,60 @@
-import React from "react";
-import { Nav, Navbar, NavbarBrand, NavLink } from "reactstrap";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  Button,
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+} from "reactstrap";
 
-function NavigationBar() {
+const Navigation = (props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
+
   return (
-    <Navbar expand="lg" variant="light" bg="light">
-      <NavbarBrand className="mr-auto"> Y.A.B.A</NavbarBrand>
-      <Nav>
-        <Link to="/login">Login</Link>
-        <NavLink>Sign up</NavLink>
-        <Link to="/budget">Budget</Link>
-      </Nav>
-    </Navbar>
+    <div>
+      <Navbar
+        className="border border-dark rounded"
+        color="light"
+        expand="md"
+        style={{
+          margin: "5rem 5rem 5rem 5rem",
+          paddingLeft: "50px",
+        }}
+      >
+        <NavbarBrand href="/">{props.header}</NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          <Nav navbar>
+            <NavItem style={{ padding: ".5rem" }}>
+              <Button outline color="success">
+                Budget
+              </Button>{" "}
+            </NavItem>
+            <NavItem style={{ padding: ".5rem" }}>
+              <Button outline color="success">
+                Expense
+              </Button>{" "}
+            </NavItem>
+            <NavItem
+              style={{ padding: ".5rem", position: "absolute", right: "3%" }}
+            >
+              <Button style={{ marginRight: "1rem" }} color="info">
+                Login
+              </Button>{" "}
+              <Button style={{ marginRight: "1rem" }} color="info">
+                Sign Up
+              </Button>{" "}
+              <Button color="danger">LogOut</Button>{" "}
+            </NavItem>
+          </Nav>
+        </Collapse>
+      </Navbar>
+    </div>
   );
-}
+};
 
-export default NavigationBar;
+export default Navigation;
