@@ -1,12 +1,32 @@
+/****************************************************************************************
+ *                                    HISTORY                                           *
+ ****************************************************************************************
+ *                                                                                      *
+ * == chikeobi-03 ==                                                                    *
+ *   +    Added this History section                                                    *
+ *   +    Moved file to route/api/user                                                  *
+ *   +                                                                                  *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ ****************************************************************************************
+ */
+
 /**
  * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const db = require("../../models");
 const crypto = require("crypto");
-const Utilities = require("../../utilities");
 const router = require("express").Router();
+const db = require("../../../models");
+const Utilities = require("../../../utilities");
 
 /**
  * Matches routes with /api/register
@@ -70,7 +90,8 @@ router.route("/").post((req, res) => {
         return;
       }
       console.log("User Profile Data:", dbResult);
-      let htmlBody = Utilities.sendConfirmationEmail(req, email, emailVerificationId);
+      let emailInfo = Utilities.sendConfirmationEmail(req, email, emailVerificationId);
+      console.log(emailInfo);
       res.json({
         status: "OK",
         message: "Registation Successful",
@@ -85,6 +106,5 @@ router.route("/").post((req, res) => {
   })();
 });
 
-function getEmailBody(req, email, emailVerificationId) {}
 
 module.exports = router;

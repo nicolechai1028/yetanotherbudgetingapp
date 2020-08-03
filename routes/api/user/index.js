@@ -1,9 +1,11 @@
+
 /****************************************************************************************
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
+ *   +    Moved file to route/api/user                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -13,23 +15,19 @@
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
+ *                                                                                      *
  ****************************************************************************************
  */
+const router = require("express").Router();
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { v4  } = require("uuid");
-const uuidv4 = v4;
+const loginRoute = require("./login");
+const logoutRoute = require("./logout");
+const registerRoute = require("./register");
+const verifyRoute = require("./verify");
 
-/**
- * Defines Catelog that holds the default Categories and groups that will be assigned to each user upon account creation
- */
-const GenericCategoryGroupSchema = new Schema({
-    _id:{type:Schema.Types.String,default:uuidv4},
-    group:{type: Schema.Types.String},
-    categories: [Schema.Types.String]
-});
+router.use("/login", loginRoute);
+router.use("/logout", logoutRoute);
+router.use("/register", registerRoute);
+router.use("/verify", verifyRoute);
 
-const GenericCategoryGroup = mongoose.model("GenericCategoryGroup",GenericCategoryGroupSchema);
-
-module.exports = GenericCategoryGroup;
+module.exports = router;
