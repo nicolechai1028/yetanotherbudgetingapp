@@ -24,14 +24,23 @@ function Budget() {
     setShowModal(!showModal);
   };
 
-  const addCategory = () => {
+  const addCategoryGroup = (name) => {
     //do something and make popup
-    setShowModal(true);
+    setShowModal(false);
+    console.log(name);
   };
   return (
     <div className="page-container ">
-      <Button onClick={addCategory}>Add Category Group </Button>
-      {!showModal || <AddCategoryModal showModal={showModal} toggle={toggle} />}
+      <Button onClick={toggle}>Add Category Group </Button>
+      {!showModal || (
+        <AddCategoryModal
+          text="Add Category Group"
+          label="New Category Group"
+          showModal={showModal}
+          toggle={toggle}
+          handleSubmit={addCategoryGroup}
+        />
+      )}
       <div className="top-container">
         <div className="name-item font-weight-bold"> Category Name </div>
         <div className="justify-self-center font-weight-bold"> Budgeted </div>
