@@ -5,7 +5,6 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
 
 ### <span style="color:blue">Reference</span>
 
-
 ## <u><span style="color:orange">User</span></u>
 This is a section of resources related to user access to the application
 
@@ -92,5 +91,5 @@ A user can create an unlimited number of these accounts Money flows into and out
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
 | POST      | /api/budgetAccount/create     | [sessionUUID, name, accountType, [startingBalance]]   | [status,message,[name,accountUUID,accountType,startingBalance]]   | Optional return keys/values return on "OK" status                             |
 | POST      | /api/budgetAccount/modify     | [sessionUUID, accountUUID, name]                      | [status, message, [name]]                                         |                                                                               |
-| POST      | /api/budgetAccount/close      | [sessionUUID, accountUUID]                            | [status, message]                                                 | If successfully close, status is "OK"                                         |
+| POST      | /api/budgetAccount/close      | [sessionUUID, accountUUID]                            | [status, message]                                                 | If successfully close, status is "OK". The account is not deleted. Merely tagged as "closed"                                         |
 | POST      | /api/budgetAccount/list       | [sessionUUID]                                         | [status, message, [array[accountUUID, name, balance, isClosed]]   | Success status is "OK". Return includes optional array of account objects     |
