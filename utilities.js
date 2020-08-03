@@ -165,7 +165,7 @@ async function sendConfirmationEmail(req, email, emailVerificationId) {
   return emailInfo;
 }
 
-function emailValidationPage({header,message,intro,text,btnLabel,targetUrl}) {
+function emailValidationPage({ header, message, intro, text, btnLabel, targetUrl }) {
   //let targetUrl = `${getProtocolHostUrl(req)}/register`;
   return `
   <!DOCTYPE html>
@@ -207,39 +207,6 @@ function emailValidationPage({header,message,intro,text,btnLabel,targetUrl}) {
   </html>`;
 }
 
-async function InitializeGenericCategoryGroup(email) {
-  let dbResults = await UserProfileController.findByEmail(email);
-  if (dbResults == null || dbResults.length != 1) {
-    console.log(`\n\n*** ERROR *** Unale to find user profile for "${email}"`);
-    process.exit();
-  }
-  let dbProfile = dbResults[0];
-
-  // Check if the profile as bee initialized. If not
-  if (dbProfile.isProfileInitialized == false) {
-    console.log(`\n\nAccount "${dbProfile.email}" has not been initialized`);
-    let ownerRef = dbProfile._id;
-    for (let index = 0; index < genericBudgetCategory.length; index++) {
-      let generic = genericBudgetCategory[index];
-      let groupName = generic.groupName;
-
-      let categoryGroup = new db.UserCategoryGroup({ ownerRef: ownerRef, groupName: groupName });
-      for (let count = 0; count < generic.categories.length; count++) {
-        let categoryName = generic.categories[count];
-        categoryGroup.categories.push({ categoryName: categoryName });
-      }
-
-      // now save the document
-      try {
-        let catGrp = await categoryGroup.save();
-        console.log("Saved document\n", catGrp);
-      } catch (err) {
-        console.log("\n\n**ERROR** Unable to save document:\n", generic);
-      }
-    }
-  }
-}
-
 
 module.exports = {
   getFullUrl,
@@ -249,5 +216,4 @@ module.exports = {
   getProtocolHostUrl,
   sendConfirmationEmail,
   emailValidationPage,
-  InitializeGenericCategoryGroup,
 };
