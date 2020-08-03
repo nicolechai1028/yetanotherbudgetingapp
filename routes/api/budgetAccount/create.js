@@ -3,8 +3,9 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +    Created                                                                       *
  *   +                                                                                  *
+ *                                                                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -16,20 +17,24 @@
  ****************************************************************************************
  */
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { v4  } = require("uuid");
-const uuidv4 = v4;
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
+const router = require("express").Router();
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
 
 /**
- * Defines Catelog that holds the default Categories and groups that will be assigned to each user upon account creation
+ * Matches with /api/budgetAccount/create
  */
-const GenericCategoryGroupSchema = new Schema({
-    _id:{type:Schema.Types.String,default:uuidv4},
-    group:{type: Schema.Types.String},
-    categories: [Schema.Types.String]
+router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
+  console.log(req.body);
+
+  res.json({ status: "OK", message: `(${req.method}) ==> ${Utilities.getFullUrl(req)}` });
 });
 
-const GenericCategoryGroup = mongoose.model("GenericCategoryGroup",GenericCategoryGroupSchema);
-
-module.exports = GenericCategoryGroup;
+module.exports = router;

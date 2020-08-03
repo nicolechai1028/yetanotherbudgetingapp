@@ -1,9 +1,11 @@
+
 /****************************************************************************************
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +    Created                                                                       *
+ *   +                                                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -13,23 +15,15 @@
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
+ *                                                                                      *
  ****************************************************************************************
  */
+const router = require("express").Router();
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { v4  } = require("uuid");
-const uuidv4 = v4;
+const getBudgetRoute = require("./getBudget");
+const setBudgetRoute = require("./setBudget");
 
-/**
- * Defines Catelog that holds the default Categories and groups that will be assigned to each user upon account creation
- */
-const GenericCategoryGroupSchema = new Schema({
-    _id:{type:Schema.Types.String,default:uuidv4},
-    group:{type: Schema.Types.String},
-    categories: [Schema.Types.String]
-});
+router.use("/get", getBudgetRoute);
+router.use("/set", setBudgetRoute);
 
-const GenericCategoryGroup = mongoose.model("GenericCategoryGroup",GenericCategoryGroupSchema);
-
-module.exports = GenericCategoryGroup;
+module.exports = router;

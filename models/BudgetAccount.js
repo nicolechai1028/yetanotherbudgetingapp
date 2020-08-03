@@ -3,10 +3,11 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +                                                                                  *
- *                                                                                      *
- *                                                                                      *
+ *   + Changed file name from Account.js to BudgetAccount.js.                           *
+ *   + Renamed Schema from  AccountSchema to BudgetAccountSchema. Module export name    *
+ *     changed from Account to BudgetAccount. Collection name changed from Account to   *
+ *     BudgetAccount                                                                    *
+ *   + Added "isClosed" field.                                                          *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -15,21 +16,27 @@
  *                                                                                      *
  ****************************************************************************************
  */
-
 const mongoose = require("mongoose");
+const Constants = require("../constants");
 const Schema = mongoose.Schema;
-const { v4  } = require("uuid");
+
+//import { v4 as uuidv4 } from "uuid";
+const { v4 } = require("uuid");
 const uuidv4 = v4;
 
-/**
- * Defines Catelog that holds the default Categories and groups that will be assigned to each user upon account creation
- */
-const GenericCategoryGroupSchema = new Schema({
-    _id:{type:Schema.Types.String,default:uuidv4},
-    group:{type: Schema.Types.String},
-    categories: [Schema.Types.String]
+const BudgetAccountSchema = new Schema({
+  _id: { type: Schema.Types.String, default: uuidv4 },
+  name: { type: Schema.Types.String, required: true },
+  ownerRef: { type: Schema.Types.String, required: true }, // reference to the UserProfile._id
+  accountType: {
+    type: Schema.Types.String,
+    enum: Constants.ACCOUNT_TYPES,
+    required: true,
+  },
+  startingBalance: { type: Schema.Types.Number, default: 0.0 },
+  isClosed: { type: Schema.Types.Boolean, default: false },
 });
 
-const GenericCategoryGroup = mongoose.model("GenericCategoryGroup",GenericCategoryGroupSchema);
+const BudgetAccount = mongoose.model("BudgetAccount", BudgetAccountSchema);
 
-module.exports = GenericCategoryGroup;
+module.exports = BudgetAccount;
