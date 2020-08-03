@@ -4,7 +4,7 @@
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Moved file to route/api/user                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -23,11 +23,11 @@
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const db = require("../../models");
 const crypto = require("crypto");
-const Utilities = require("../../utilities");
 const router = require("express").Router();
-
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
+const UserProfileController = require("../../../controllers/userProfileController");
 /**
  * Matches with /api/login
  * Login route. Success will return the following object:
@@ -47,66 +47,84 @@ const router = require("express").Router();
  * */
 
 router.route("/").post((req, res) => {
-  console.log(Utilities.getFullUrl(req));
   console.log(req.body);
 
-  let email = req.body.email;
-  let password = req.body.password;
+  let email = req.body.email,
+    password = req.body.password,
+    response;
+
   if (email == null || (email = email.trim()).length == 0) {
-    let response = { status: "ERROR", message: "Invalid or missing email" };
-    res.json(response);
+    res.json({ status: "ERROR", message: "Invalid or missing email" });
     return;
   }
-  // check if the user exists in the database
-  db.UserProfile.find({ email: email })
-    .then((dbModel) => {
-      if (!dbModel) {
-        let response = { status: "ERROR", message: `No such user (${email})` };
-        res.json(response);
-        return;
-      }
-      if (!dbModel.isVerified) {
-        let response = {
-          status: "ERROR",
-          message: `Account has not been verified. Please check your email (${email})`,
-        };
-        res.json(response);
-        return;
-      }
-      // check password
-      let passwordHash = Utilities.createHmacSHA256Hash(password, email);
-      if (passwordHash != dbModel.password) {
-        let response = { status: "ERROR", message: `Incorrect password` };
-        res.json(response);
-        return;
-      }
-      let sessionUUID = Utilities.generateUUID();
-      let timestamp = Date.now();
-      let statusMsg = { status: "OK", message: `Welcome ${dbModel.fullName}!!`, sessionUUID: sessionUUID };
-      let {
-        _id,
-        email,
-        isVerified,
-        password,
-        emailVerificationId,
-        lastLoginTimestamp,
-        lastTransactionTimestamp,
-        ...response
-      } = { ...dbModel, ...statusMsg };
-      // modify dbModel object and update database
-      dbModel = {
-        ...dbModel,
-        lastLoginTimestamp: timestamp,
-        lastTransactionTimestamp: timestamp,
-        sessionUUID: statusMsg.sessionUUID,
-      };
-    })
-    .catch((err) => {
-      let response = { status: "ERROR", message: err.message };
-      res.json(response);
-      return;
-    });
-  res.json(response);
+
+  if (password == null || password.length == 0) {
+    res.json({ status: "ERROR", message: "Invalid or missing password" });
+    return;
+  }
+
+  let query = { email: email, password: password };
+
+  (async () => {
+    response = await checkLogin(query);
+
+    console.log("Login API Response:\n", response);
+    res.send(response);
+  })();
 });
+
+async function checkLogin(query) {
+  let response = {},
+    dbResult,
+    dbResults;
+
+  try {
+    dbResults = await db.UserProfile.find({ email: query.email });
+    console.log(dbResults);
+    if (dbResults == null || dbResults.length == 0) {
+      return { status: "ERROR", message: `No such user (${query.email})` };
+    }
+
+    dbResult = dbResults[0];
+    console.log("Original UserProfile\n", dbResult);
+
+    if (dbResult.isVerified == false) {
+      return {
+        status: "ERROR",
+        message: `Account has not been verified. Please check your email (${query.email})`,
+      };
+    }
+    // check password
+    let passwordHash = Utilities.createHmacSHA256Hash(query.password, query.email);
+
+    if (passwordHash != dbResult.password) {
+      return { status: "ERROR", message: "Incorrect password" };
+    }
+
+    let sessionUUID = Utilities.generateUUID();
+    let timestamp = Date.now();
+    response = {
+      status: "OK",
+      message: `Welcome ${dbResult.fullName}!!`,
+      sessionUUID: sessionUUID,
+      firstName: dbResult.firstName,
+      lastname: dbResult.lastName,
+    };
+    console.log("JSON Response:\n", response);
+    // modify dbResult object and update database
+    dbResult.lastLoginTimestamp = timestamp;
+    dbResult.lastTransactionTimestamp = timestamp;
+    dbResult.sessionUUID = sessionUUID;
+    dbResult.lastLogoutTimestamp = undefined;
+
+    await dbResult.save();
+    console.log("Saved User Profile:\n", dbResult);
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    return { status: "ERROR", message: err.message };
+  }
+}
 
 module.exports = router;

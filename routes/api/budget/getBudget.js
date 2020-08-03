@@ -3,8 +3,7 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Created                                                                       *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -18,21 +17,43 @@
  ****************************************************************************************
  */
 
-const path = require("path");
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
 const router = require("express").Router();
-const apiRoutesUser = require("./api/user");
-const apiRoutesBudget = require("./api/budget");
-const apiRoutesBudgetAccount = require("./api/budgetAccount");
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
 
-// @see https://scotch.io/tutorials/keeping-api-routing-clean-using-express-routers
-// API Routes
-router.use("/api/user", apiRoutesUser);
-router.use("/api/budget", apiRoutesBudget);
-router.use("/api/budgetAccount", apiRoutesBudgetAccount);
+/**
+ * Matches with /api/budget/get
+ * Gets the budget for a specific user. Parameters will determine for which year and month.
+ * Budgets can also be retrieved for a Category Group and/or a specific category
+ *
+ *
+ *
+ *  - status: "OK | ERROR"
+ *  - message : "Success | <Error text>"
+ *  - response {
+ *               date{
+ *                     year: <yyyy>
+ *                     month: <mm>
+ *                   },
+ *                data[
+ *
+ *                    ]
+ *             }
+ *
+ * */
 
-// If no API routes are hit, send the React app
-router.get("*", function(req, res) {
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
+router.route("/").post((req, res) => {
+  const body = req.body;
+  console.log(Utilities.getFullUrl(req));
+  console.log(body);
+
+  res.json({ status: "OK", message: `(${req.method}) ==> ${Utilities.getFullUrl(req)}` });
 });
 
 module.exports = router;

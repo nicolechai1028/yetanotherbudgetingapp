@@ -4,7 +4,7 @@
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Moved file to route/api/user                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -23,10 +23,10 @@
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const db = require("../../models");
 const crypto = require("crypto");
-const Utilities = require("../../utilities");
 const router = require("express").Router();
+const db = require("../../../models");
+const Utilities = require("../../../utilities");
 
 /**
  * Matches routes with /api/register

@@ -3,8 +3,7 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Created                                                                       *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -18,21 +17,24 @@
  ****************************************************************************************
  */
 
-const path = require("path");
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
 const router = require("express").Router();
-const apiRoutesUser = require("./api/user");
-const apiRoutesBudget = require("./api/budget");
-const apiRoutesBudgetAccount = require("./api/budgetAccount");
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
 
-// @see https://scotch.io/tutorials/keeping-api-routing-clean-using-express-routers
-// API Routes
-router.use("/api/user", apiRoutesUser);
-router.use("/api/budget", apiRoutesBudget);
-router.use("/api/budgetAccount", apiRoutesBudgetAccount);
+/**
+ * Matches with /api/budgetAccount/list
+ */
+router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
+  console.log(req.body);
 
-// If no API routes are hit, send the React app
-router.get("*", function(req, res) {
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
+  res.json({ status: "OK", message: `(${req.method}) ==> ${Utilities.getFullUrl(req)}` });
 });
 
 module.exports = router;

@@ -38,7 +38,7 @@ const UserCategoryGroupSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
   ownerRef: { type: Schema.Types.String, required: true }, // points to te ID of the owner in the UserProfile collection
   groupName: { type: Schema.Types.String, required: true },
-  category: [categorySchema],
+  categories: [categorySchema],
 });
 
 const UserCategoryGroup = mongoose.model("UserCategoryGroup", UserCategoryGroupSchema);

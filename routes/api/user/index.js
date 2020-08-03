@@ -1,10 +1,11 @@
+
 /****************************************************************************************
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Moved file to route/api/user                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -17,22 +18,16 @@
  *                                                                                      *
  ****************************************************************************************
  */
-
-const path = require("path");
 const router = require("express").Router();
-const apiRoutesUser = require("./api/user");
-const apiRoutesBudget = require("./api/budget");
-const apiRoutesBudgetAccount = require("./api/budgetAccount");
 
-// @see https://scotch.io/tutorials/keeping-api-routing-clean-using-express-routers
-// API Routes
-router.use("/api/user", apiRoutesUser);
-router.use("/api/budget", apiRoutesBudget);
-router.use("/api/budgetAccount", apiRoutesBudgetAccount);
+const loginRoute = require("./login");
+const logoutRoute = require("./logout");
+const registerRoute = require("./register");
+const verifyRoute = require("./verify");
 
-// If no API routes are hit, send the React app
-router.get("*", function(req, res) {
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
-});
+router.use("/login", loginRoute);
+router.use("/logout", logoutRoute);
+router.use("/register", registerRoute);
+router.use("/verify", verifyRoute);
 
 module.exports = router;

@@ -16,7 +16,7 @@
  ****************************************************************************************
  */
 
- const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 // import { v4 as uuidv4 } from "uuid";
 const { v4 } = require("uuid");
@@ -33,10 +33,12 @@ const UserProfileSchema = new Schema({
   emailVerificationId: { type: Schema.Types.String },
   lastLoginTimestamp: { type: Schema.Types.Number }, // Date.now()
   lastTransactionTimestamp: { type: Schema.Types.Number }, // Date.now(). Last time the server was accessed
+  lastLogoutTimestamp: { type: Schema.Types.Number },
+  isProfileInitialized: { type: Schema.Types.Boolean, default: false },
 });
 
 UserProfileSchema.virtual("fullName").get(function () {
-  return `${this.firstName} ${this.lastName})`;
+  return `${this.firstName} ${this.lastName}`;
 });
 const UserProfile = mongoose.model("UserProfile", UserProfileSchema);
 

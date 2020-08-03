@@ -1,11 +1,9 @@
-
 /****************************************************************************************
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Created                                                                       *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -18,16 +16,25 @@
  *                                                                                      *
  ****************************************************************************************
  */
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
 const router = require("express").Router();
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
 
-const loginRoute = require("./login");
-const logoutRoute = require("./logout");
-const registerRoute = require("./register");
-const verifyRoute = require("./verify");
+/**
+ * Matches with /api/budgetAccount/close
+ */
+router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
+  console.log(req.body);
 
-router.use("/login", loginRoute);
-router.use("/logout", logoutRoute);
-router.use("/register", registerRoute);
-router.use("/verify", verifyRoute);
+  res.json({status:"OK",message:`(${req.method}) ==> ${Utilities.getFullUrl(req)}`});
+});
 
 module.exports = router;

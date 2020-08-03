@@ -3,10 +3,11 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   + Changed file name from Account.js to BudgetAccount.js. Also renamed Schema from  *
- *     AccountSchema to BudgetAccountSchema. Module export name changed from Account to *
- *     BudgetAccount. Collection name changed from Account to BudgetAccount             *
- *                                                                                      *
+ *   + Changed file name from Account.js to BudgetAccount.js.                           *
+ *   + Renamed Schema from  AccountSchema to BudgetAccountSchema. Module export name    *
+ *     changed from Account to BudgetAccount. Collection name changed from Account to   *
+ *     BudgetAccount                                                                    *
+ *   + Added "isClosed" field.                                                          *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -33,6 +34,7 @@ const BudgetAccountSchema = new Schema({
     required: true,
   },
   startingBalance: { type: Schema.Types.Number, default: 0.0 },
+  isClosed: { type: Schema.Types.Boolean, default: false },
 });
 
 const BudgetAccount = mongoose.model("BudgetAccount", BudgetAccountSchema);

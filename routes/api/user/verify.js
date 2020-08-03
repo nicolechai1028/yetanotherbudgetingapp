@@ -4,7 +4,7 @@
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *   +    Moved file to route/api/user                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -22,14 +22,18 @@
  * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
-const db = require("../../models");
 const crypto = require("crypto");
-const Utilities = require("../../utilities");
 const router = require("express").Router();
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
+const UserCategoryGroupController = require("../../../controllers/userCategoryGroupController");
 
 /**
  * Matches routes with /api/verify/:verifyCode
- * Verification code in req.params.verifyCode
+ * Email Verification route route. Success or failure will result in sending of HTML page as
+ * response. GET method is processed and is designed to be launched from a browser
+ *
+ * Verification code in req.params.verifyCode. The verification code is the last element of the URL path
  */
 router.route("/:verifyCode").get((req, res) => {
   console.log(req.params);
@@ -46,7 +50,7 @@ router.route("/:verifyCode").get((req, res) => {
     };
     let html = Utilities.emailValidationPage(info);
     console.log(html);
-    res.end(html);
+    res.send(html);
     return;
   }
   let verifyCode = params.verifyCode;
@@ -65,7 +69,7 @@ router.route("/:verifyCode").get((req, res) => {
       };
       let html = Utilities.emailValidationPage(info);
       console.log(html);
-      res.end(html);
+      res.send(html);
       return;
     }
     let result = dbResult[0];
@@ -82,7 +86,7 @@ router.route("/:verifyCode").get((req, res) => {
       };
       let html = Utilities.emailValidationPage(info);
       console.log(html);
-      res.end(html);
+      res.send(html);
       return;
     } else {
       result.isVerified = true;
@@ -99,8 +103,8 @@ router.route("/:verifyCode").get((req, res) => {
       };
       let html = Utilities.emailValidationPage(info);
       console.log(html);
-      res.end(html);
-      initializeUserProfile({_id:result._id,email:result.email});
+      res.send(html);
+      UserCategoryGroupController.InitializeUserCategoryGroup(result.email);
     }
   })();
 });
