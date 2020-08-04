@@ -207,6 +207,21 @@ function emailValidationPage({ header, message, intro, text, btnLabel, targetUrl
   </html>`;
 }
 
+function multipleSpaceRemovedTrim(inputString) {
+  let retval = inputString;
+  if (inputString != null && typeof inputString == "string") {
+    retval = inputString.trim().replace(/ +/g, " ");
+  }
+  return retval;
+}
+
+function multipleSpaceRemovedTrimLC(inputString) {
+  let retval = inputString;
+  if (inputString != null && typeof inputString == "string") {
+    retval = inputString.trim().replace(/ +/g, " ").toLowerCase();
+  }
+  return retval;
+}
 
 module.exports = {
   getFullUrl,
@@ -216,4 +231,6 @@ module.exports = {
   getProtocolHostUrl,
   sendConfirmationEmail,
   emailValidationPage,
+  multipleSpaceRemovedTrim,
+  multipleSpaceRemovedTrimLC,
 };

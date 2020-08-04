@@ -3,28 +3,42 @@ const db = require("../models");
 // Define methods for the UserProfile controller
 
 module.exports = {
-  findAll: async function () {
-    this.findBy({});
+  findAll: function () {
+    return this.findBy({});
   },
-  findBySessionUUID: function (sessionUUID) {
-    return this.findBy({ sessionUUID: sessionUUID });
+  findBySessionUUID: async function (sessionUUID) {
+    let retval = null;
+    let dbResults = this.findBy({ sessionUUID: sessionUUID });
+    if (dbResults.length != 0) retval = dbResults[0];
+    return retval;
   },
   findByEmailVerificationId: function (emailVerificationId) {
-    return this.findBy({ emailVerificationId: emailVerificationId });
+    let retval = null;
+    let dbResults = this.findBy({ emailVerificationId: emailVerificationId });
+    if (dbResults.length != 0) retval = dbResults[0];
+    return retval;
   },
   findByEmail: function (email) {
-    return this.findBy({ email: email });
+    let retval = null;
+    let dbResults = this.findBy({ email: email });
+    if (dbResults.length != 0) retval = dbResults[0];
+    return retval;
   },
   findById: function (id) {
-    return this.findBy({ _id: id });
+    let retval = null;
+    let dbResults = this.findBy({ _id: id });
+    if (dbResults.length != 0) retval = dbResults[0];
+    return retval;
   },
   findBy: async function (query) {
-    if (query == null) query = {};
-
+    let retval = [];
     try {
-      let dbResults = await db.UserProfile.find(query);
-      return dbResults;
+      if (query == null) query = {};
+      retval = await db.UserProfile.find(query);
+      console.log(retval);
+      return retval;
     } catch (err) {
+      console.log(err);
       return [];
     }
   },

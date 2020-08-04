@@ -19,7 +19,7 @@
  */
 
 const DEV_MONGODB_URI = "mongodb://localhost/yetanotherbudgetingapp";
-const ACCOUNT_TYPES = ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"];
+const BUDGET_ACCOUNT_TYPES = ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"];
 
 // https://girltalkwithfo.com/budget-categories/
 const GENERIC_BUDGET_CATEGORIES = [
@@ -117,4 +117,4 @@ const GENERIC_BUDGET_CATEGORIES = [
   //   },
 ];
 
-module.exports = { DEV_MONGODB_URI, ACCOUNT_TYPES, GENERIC_BUDGET_CATEGORIES };
+module.exports = { DEV_MONGODB_URI, BUDGET_ACCOUNT_TYPES, GENERIC_BUDGET_CATEGORIES };

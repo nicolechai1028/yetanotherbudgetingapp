@@ -5,20 +5,20 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
 
 ### <span style="color:blue">Reference</span>
 
-
 ## <u><span style="color:orange">User</span></u>
 This is a section of resources related to user access to the application
 
 See this [link](https://www.tablesgenerator.com/markdown_tables#) for how to generate markdown table
 | <center>**Method**</center>   | <center>**Path**</center>     | <center>**Keys**</center>     | <center>**Return**</center>                           | <center>**Comment**</center>  |
 |-----------------------------  |---------------------------    |---------------------------    |------------------------------------------------------ |------------------------------ |
-| POST                          | /api/user/login               | [email, password]             | [status, message,[sessionUUID, firstName, lastname]]  |                               |
-| POST                          | /api/user/logout              | [sessionUUID]                 | [status, message]                                     |                               |
-| POST                          | /api/user/register            | [firstName, lastName, email, password] | [status, message]                            | Verification email is sent    |          
-| GET                           | /api/user/verify/:verifyCode  | [  ]                            | ``<HTML response>``                                                | Verification email link       |
+| POST                          | /api/user/login               | {email, password}             | {status, message,[sessionUUID, firstName, lastname]}  |                               |
+| POST                          | /api/user/logout              | {sessionUUID}                 | {status, message}                                     |                               |
+| POST                          | /api/user/register            | {firstName, lastName, email, password} | {status, message}                            | Verification email is sent    |
+| GET                           | /api/user/verify/:verifyCode  | { }                              | ``<HTML response>``                                                | Verification email link       |
 |                               |                               |                               |                                                       |                               |
 
 * ### Login
+  
 > Matches with /api/user/login
 > Login route. Success will return the following object:
 >
@@ -76,7 +76,6 @@ See this [link](https://www.tablesgenerator.com/markdown_tables#) for how to gen
 >
 > Verification code in req.params.verifyCode. The verification code is the last element of the URL path
 
-
 ## <u><span style="color:orange">Budget Account</span></u>
 
 This is a section of resources related to the management of Budget Accounts. Budget Accounts are simply accounts from which transactions are made. Examples of Budget Account are
@@ -90,7 +89,7 @@ A user can create an unlimited number of these accounts Money flows into and out
 
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
-| POST      | /api/budgetAccount/create     | [sessionUUID, name, accountType, [startingBalance]]   | [status,message,[name,accountUUID,accountType,startingBalance]]   | Optional return keys/values return on "OK" status                             |
-| POST      | /api/budgetAccount/modify     | [sessionUUID, accountUUID, name]                      | [status, message, [name]]                                         |                                                                               |
-| POST      | /api/budgetAccount/close      | [sessionUUID, accountUUID]                            | [status, message]                                                 | If successfully close, status is "OK"                                         |
-| POST      | /api/budgetAccount/list       | [sessionUUID]                                         | [status, message, [array[accountUUID, name, balance, isClosed]]   | Success status is "OK". Return includes optional array of account objects     |
+| POST      | /api/budgetAccount/create     | {sessionUUID, name, accountType, [startingBalance]}   | [status,message,[name,accountUUID,accountType,startingBalance]]   | Optional return keys/values return on "OK" status                             |
+| POST      | /api/budgetAccount/modify     | {sessionUUID, accountUUID, name}                      | {status, message, [name]}                                         |                                                                               |
+| POST      | /api/budgetAccount/close      | {sessionUUID, accountUUID}                            | {status, message}                                                 | If successfully close, status is "OK". The account is not deleted. Merely tagged as "closed"                                         |
+| POST      | /api/budgetAccount/list       | {sessionUUID,[accountUUID]}                                         | {status, message, [accounts(array{accountUUID, name, type, balance, isClosed})]}   | Success status is "OK". Return includes optional array of account objects     |
