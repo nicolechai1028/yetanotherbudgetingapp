@@ -1,6 +1,27 @@
+/****************************************************************************************
+ *                                    HISTORY                                           *
+ ****************************************************************************************
+ *                                                                                      *
+ * == chikeobi-03 ==                                                                    *
+ *   +    Added this History section                                                    *
+ *   +    Replaced SMTP configurations with values derived from .env file               *
+ *   +                                                                                  *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ ****************************************************************************************
+ */
+
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const SMTPConnection = require("nodemailer/lib/smtp-connection");
+const Constants = require("./constants");
 
 /**
  * Returns the full URL used to hit the route
@@ -76,16 +97,17 @@ function createSHA256Hash(dataToHash) {
 
 async function sendConfirmationEmail(req, email, emailVerificationId) {
   let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: process.env.SMTP_HOST, // "smtp.gmail.com",
+    port: process.env.SMTP_PORT, // 465,
+    secure: process.env.SMTP_IS_SECURE, // true,
     auth: {
-      user: "bootcampyaba@gmail.com",
-      pass: "YabaBootcamp2020",
+      user: process.env.SMTP_USER, // "bootcampyaba@gmail.com",
+      pass: process.env.SMTP_PASS, // "YabaBootcamp2020",
     },
   });
 
-  let targetUrl = `${getProtocolHostUrl(req)}/api/verify/${emailVerificationId}`;
+  let targetUrl = `${getProtocolHostUrl(req)}/api/user/verify/${emailVerificationId}`;
+  console.log(`Verification email URL: ${targetUrl}`);
   let html = `
   <div
   style="
@@ -143,6 +165,64 @@ async function sendConfirmationEmail(req, email, emailVerificationId) {
   return emailInfo;
 }
 
+function emailValidationPage({ header, message, intro, text, btnLabel, targetUrl }) {
+  //let targetUrl = `${getProtocolHostUrl(req)}/register`;
+  return `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Confirma your email</title>
+    <style> 
+      a {
+        border: 1px white solid;
+        border-radius: 10px;
+        padding: 1em;
+        margin-top: 1em;
+        background-color: #19CEB3;
+      }
+      .content-div {
+        margin: 1em 5em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color:  #008DD5;
+        padding: 2em 0;
+      } 
+      .content-div a {
+        text-decoration: none
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content-div">
+      <h1 style="color: red;">	${header} </h2>
+      <h2>${intro}:</h2>
+      <h3 style="color:red"> ${message} </h3>
+      <p> ${text}</p>
+       <a target="_blank" href="${targetUrl}"> ${btnLabel} </a> 
+    </div>
+    </script>
+  </body>
+  </html>`;
+}
+
+function multipleSpaceRemovedTrim(inputString) {
+  let retval = inputString;
+  if (inputString != null && typeof inputString == "string") {
+    retval = inputString.trim().replace(/ +/g, " ");
+  }
+  return retval;
+}
+
+function multipleSpaceRemovedTrimLC(inputString) {
+  let retval = inputString;
+  if (inputString != null && typeof inputString == "string") {
+    retval = inputString.trim().replace(/ +/g, " ").toLowerCase();
+  }
+  return retval;
+}
+
 module.exports = {
   getFullUrl,
   generateUUID,
@@ -150,4 +230,7 @@ module.exports = {
   createSHA256Hash,
   getProtocolHostUrl,
   sendConfirmationEmail,
+  emailValidationPage,
+  multipleSpaceRemovedTrim,
+  multipleSpaceRemovedTrimLC,
 };

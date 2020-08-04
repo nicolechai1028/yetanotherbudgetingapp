@@ -3,8 +3,9 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +    Created                                                                       *
  *   +                                                                                  *
+ *                                                                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -16,20 +17,21 @@
  ****************************************************************************************
  */
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { v4  } = require("uuid");
-const uuidv4 = v4;
-
 /**
- * Defines Catelog that holds the default Categories and groups that will be assigned to each user upon account creation
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
-const GenericCategoryGroupSchema = new Schema({
-    _id:{type:Schema.Types.String,default:uuidv4},
-    group:{type: Schema.Types.String},
-    categories: [Schema.Types.String]
-});
 
-const GenericCategoryGroup = mongoose.model("GenericCategoryGroup",GenericCategoryGroupSchema);
+const router = require("express").Router();
 
-module.exports = GenericCategoryGroup;
+const closeRoute = require("./close");
+const createRoute = require("./create");
+const listRoute = require("./list");
+const modifyRoute = require("./modify");
+
+router.use("/close", closeRoute);
+router.use("/create", createRoute);
+router.use("/list", listRoute);
+router.use("/modify", modifyRoute);
+
+module.exports = router;
