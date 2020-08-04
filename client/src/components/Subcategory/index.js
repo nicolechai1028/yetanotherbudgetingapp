@@ -15,10 +15,9 @@ function Subcategory(props) {
   const transfer = (amount, transferToAcct) => {
     categoriesContext.transfer(amount, props.name, transferToAcct);
   };
-
   return (
-    <div className="top-container ">
-      <div className="ml-3 name-item"> {props.name} </div>
+    <div className="top-container border-bottom border-primary ml-5">
+      <div className=" name-item"> {props.name} </div>
       <div className="input-subcat m-auto">
         <CurrencyInput
           value={budgeted}
@@ -28,7 +27,9 @@ function Subcategory(props) {
       </div>
       <div className="justify-self-center"> $ {props.spent} </div>
       <div className="justify-self-center">
+        {/*popover used to transfer from one subcat to another  */}
         <Transferpopover
+          name={props.name}
           categories={["Hey", "there"]}
           available={props.available}
           transfer={transfer}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Popover,
   PopoverHeader,
@@ -14,31 +14,42 @@ function Transferpopover(props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [amt, setAmt] = useState(0);
   const [account, setAccount] = useState("");
-  const toggle = () => setPopoverOpen(!popoverOpen);
+  const toggle = () => {
+    setPopoverOpen(!popoverOpen);
+  };
+
   let value = 0;
   const categoriesOptions = props.categories.map((categoryname) => {
     return <option key={value++}> {categoryname} </option>;
   });
   //call transfer function from parents and clean up states
   const cleanup = () => {
+    setPopoverOpen(false);
     setAmt(0);
     setAccount("");
   };
+
   const handleSubmit = (event) => {
-    event.preventDefault();
     props.transfer(amt, account);
     cleanup();
   };
-
   return (
     <div>
-      <Button id="Popover1" type="button">
-        $ {props.available}
+      <Button
+        id={props.name}
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+        }}
+      >
+        {/* Add code to change display color to red if negative */}${" "}
+        <span className="">{props.available} </span>
       </Button>
       <Popover
         placement="bottom"
         isOpen={popoverOpen}
-        target="Popover1"
+        target={props.name}
         toggle={toggle}
       >
         <PopoverHeader>Transfer</PopoverHeader>
@@ -53,6 +64,9 @@ function Transferpopover(props) {
               value={account}
               onChange={(event) => setAccount(event.target.value)}
             >
+              <option disabled defaultValue>
+                Choose Account to Transfer to
+              </option>
               {categoriesOptions}
             </Input>
             <ButtonGroup>

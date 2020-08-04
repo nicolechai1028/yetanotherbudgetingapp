@@ -15,6 +15,10 @@ const Navigation = (props) => {
       <NavbarBrand tag={Link} to={"/"}>
         Y.A.B.A
       </NavbarBrand>
+      {/* better to change to check if user is logged in after integration with login screen*/}
+      {/*if it is one of these path shows the not loggedIn buttons only. Once logged in show 
+					overview/budget/expense
+			*/}
       {pathname === "/" || pathname === "/login" || pathname === "/signup" ? (
         <div className="ml-auto ">
           {Object.keys(notLoggedIn).map((key) => {
@@ -35,12 +39,12 @@ const Navigation = (props) => {
 };
 
 function button(
-  { pages = {}, path = "/", color = "", display = "Button", classes = "" },
+  { pages = {}, path = "/", color = "", display = "Button", classes = "", id },
   currentPath
 ) {
   if (currentPath in pages) {
     return (
-      <NavItem tag={Link} to={path}>
+      <NavItem key={id} tag={Link} to={path}>
         <Button color={color} className={classes}>
           {display}
         </Button>
@@ -53,7 +57,7 @@ function button(
 
 const notLoggedIn = {
   home: {
-    key: 1,
+    id: 1,
     pages: { "/signup": true, "/login": true },
     path: "/",
     color: "info",
@@ -61,7 +65,7 @@ const notLoggedIn = {
     classes: "mr-5",
   },
   login: {
-    key: 2,
+    id: 2,
     pages: { "/signup": true, "/": true },
     path: "/login",
     color: "info",
@@ -69,7 +73,7 @@ const notLoggedIn = {
     classes: "mr-5",
   },
   signup: {
-    key: 3,
+    id: 3,
     pages: { "/": true, "/login": true },
     path: "/signup",
     color: "info",
@@ -80,7 +84,7 @@ const notLoggedIn = {
 
 const loggedIn = {
   overview: {
-    key: 1,
+    id: 1,
     pages: { "/expense": true, "/budget": true },
     path: "/overview",
     color: "success",
@@ -88,7 +92,7 @@ const loggedIn = {
     classes: "ml-5",
   },
   expense: {
-    key: 2,
+    id: 2,
     pages: { "/overview": true, "/budget": true },
     path: "/expense",
     color: "success",
@@ -96,7 +100,7 @@ const loggedIn = {
     classes: "ml-5",
   },
   budget: {
-    key: 3,
+    id: 3,
     pages: { "/overview": true, "/expense": true },
     path: "/budget",
     color: "success",
@@ -104,7 +108,7 @@ const loggedIn = {
     classes: "ml-5",
   },
   logout: {
-    key: 4,
+    id: 4,
     pages: { "/overview": true, "/expense": true, "/budget": true },
     path: "/logout",
     color: "danger",

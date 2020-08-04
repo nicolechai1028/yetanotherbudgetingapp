@@ -94,7 +94,7 @@ function Category(props) {
       <AddCategoryModal showModal={subCatModal} />
       <div className="top-container category-container">
         <div className="d-flex ml-3 align-items-center">
-          {/*Toggle modal to uncollapse/collapse subcategories div */}
+          {/*Toggle modal to un/collapse subcategories div */}
           <div
             onClick={toExpand}
             style={{
