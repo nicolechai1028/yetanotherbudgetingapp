@@ -1,14 +1,11 @@
-
 /****************************************************************************************
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
+ * == chikeobi-05 ==                                                                    *
  *   +    Created                                                                       *
  *   +                                                                                  *
- * == chikeobi-03 ==                                                                    *
- *   +  Changed route paths to match new names. Added "listBudget" and                  *
- *        "modifyBudgetItem" routes                                                     *
+ *                                                                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -19,16 +16,27 @@
  *                                                                                      *
  ****************************************************************************************
  */
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
 const router = require("express").Router();
+const Utilities = require("../../../utilities");
+const db = require("../../../models");
 
-const getBudgetItemRoute = require("./getBudgetItem");
-const listBudgetRoute = require("./listBudget");
-const modifyBudgetItemRoute = require("./modifyBudgetItem");
-const setBudgetItemRoute = require("./setBudgetItem");
+/**
+ * Matches with /api/budget/listBudget
+ *
+ */
+router.route("/").post((req, res) => {
+  const body = req.body;
+  console.log(Utilities.getFullUrl(req));
+  console.log(body);
 
-router.use("/getBudgetItem", getBudgetItemRoute);
-router.use("/listBudget", listBudgetRoute);
-router.use("/modifyBudgetItem", modifyBudgetItemRoute);
-router.use("/setBudgetItem", setBudgetItemRoute);
+  res.json({ status: "OK", message: `(${req.method}) ==> ${Utilities.getFullUrl(req)}` });
+});
 
 module.exports = router;
