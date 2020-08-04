@@ -6,7 +6,7 @@ import AddCategoryModal from "../AddCategory";
 import Arrow from "../../icons/Arrow";
 import Add from "../../icons/Add";
 
-function Category() {
+function Category(props) {
   const [totalBudgeted, setTotalBudgeted] = useState(0);
   const [spentTotal, setSpentTotal] = useState(0);
   const [availableTotal, setAvailableTotal] = useState(0);
@@ -22,7 +22,7 @@ function Category() {
   };
   const [showModal, setShowModal] = useState(false);
   const updateBudgeted = (subcategoryName, value) => {
-    //change budgeted amount of the subcategory, recalculate available in the higher category
+    //change budgeted amount of the subcategory, recalculate value in teh category group
 
     console.log("Category updating ", subcategoryName + " " + value);
   };
@@ -53,6 +53,7 @@ function Category() {
     setSpentTotal(temptSpent);
     setTotalBudgeted(temptBudgeted);
 	}, [categories.subcategories, subcategories]); */
+
   const subcategories = categories.subcategories.map(
     ({ name, budgeted, spent, id }) => {
       const available = budgeted - spent;
@@ -68,6 +69,8 @@ function Category() {
       );
     }
   );
+
+  //hanlde un/collapse of subcategories div and rotating arrow
   const toExpand = () => {
     setOpen(!open);
     if (arrowTranslation === 0) {
@@ -79,15 +82,19 @@ function Category() {
   const toggle = () => {
     setShowModal(!showModal);
   };
+  /*handle add category */
   const addSubCategory = (name) => {
+    //hide modal
     setShowModal(false);
     console.log(name);
+    //Call another function or api to add category name
   };
   return (
     <div>
       <AddCategoryModal showModal={subCatModal} />
       <div className="top-container category-container">
         <div className="d-flex ml-3 align-items-center">
+          {/*Toggle modal to uncollapse/collapse subcategories div */}
           <div
             onClick={toExpand}
             style={{
@@ -95,10 +102,13 @@ function Category() {
               transform: `rotate(${arrowTranslation}deg)`,
             }}
           >
+            {/** Arrow SVG icon **/}
             <Arrow />
           </div>
           <div className="mx-2">{categories.name}</div>
+          {/*Toggle modal to add subcategories*/}
           <div onClick={toggle} style={{ width: "20px" }}>
+            {/** Add SVG icon **/}
             <Add />
           </div>
           <AddCategoryModal
@@ -109,6 +119,7 @@ function Category() {
             toggle={toggle}
           />
         </div>
+        {/*Display total amounts in the category group*/}
         <div className="justify-self-center"> {totalBudgeted} </div>
         <div className="justify-self-center"> {spentTotal} </div>
         <div className="justify-self-center"> {availableTotal} </div>
