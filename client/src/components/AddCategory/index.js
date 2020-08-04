@@ -11,32 +11,30 @@ import {
 } from "reactstrap";
 
 function AddCategoryModal(props) {
-  const [newCat, setNewCat] = useState("");
+  const [newName, setNewName] = useState("");
   const handleSubmit = (event) => {
     event.preventDefault();
-    //API call to add new Category
-    console.log("Cat ", newCat);
-
+    props.handleSubmit(newName);
     props.toggle();
   };
   const cleanUp = () => {
-    setNewCat("");
+    setNewName("");
     props.toggle();
   };
   return (
     <Modal isOpen={props.showModal}>
-      <ModalHeader>Add New Category Group</ModalHeader>
+      <ModalHeader>Add {props.label}</ModalHeader>
       <ModalBody>
         <Form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label>Category Name</Label>
+            <Label>{props.label}</Label>
             <Input
               type="text"
-              placeholder="New Category Name"
+              placeholder={props.text}
               onChange={(event) => {
-                setNewCat(event.target.value);
+                setNewName(event.target.value);
               }}
-              value={newCat}
+              value={newName}
             />
           </FormGroup>
           <Button type="submit">Add Category Group</Button>
