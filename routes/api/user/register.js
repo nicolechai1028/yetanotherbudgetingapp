@@ -90,7 +90,7 @@ router.route("/").post((req, res) => {
         return;
       }
       console.log("User Profile Data:", dbResult);
-      let emailInfo = Utilities.sendConfirmationEmail(req, email, emailVerificationId);
+      let emailInfo = await Utilities.sendConfirmationEmail(req, email, emailVerificationId);
       console.log(emailInfo);
       res.json({
         status: "OK",

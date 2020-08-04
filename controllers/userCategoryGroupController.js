@@ -31,41 +31,53 @@ module.exports = {
   },
 
   InitializeUserCategoryGroup: async function (email) {
-    let dbResults = await UserProfileController.findByEmail(email);
-    if (dbResults == null || dbResults.length != 1) {
-      console.log(`\n\n*** ERROR *** Unale to find user profile for "${email}"`);
-      return null;
-    }
-    let dbProfile = dbResults[0];
-    let retval = [];
-    // Check if the profile as bee initialized. If not
-    if (dbProfile.isProfileInitialized == false) {
-      console.log(`\n\nAccount "${dbProfile.email}" has not been initialized`);
-      let ownerRef = dbProfile._id;
-      for (let index = 0; index < Constants.GENERIC_BUDGET_CATEGORIES.length; index++) {
-        let generic = Constants.GENERIC_BUDGET_CATEGORIES[index];
-        let groupName = generic.groupName;
+    try {
+      let dbResults = await db.UserProfile.find({ email: email });
+      //let dbResults = await UserProfileController.findByEmail(email);
+      if (dbResults == null || dbResults.length != 1) {
+        throw `*** ERROR *** Unale to find user profile for "${email}"`;
+      }
+      let dbProfile = dbResults[0];
+      let retval = [];
+      // Check if the profile as bee initialized. If not
+      if (dbProfile.isProfileInitialized == false) {
+        console.log(`\n\nAccount "${dbProfile.email}" has not been initialized`);
+        let ownerRef = dbProfile._id;
+        for (let index = 0; index < Constants.GENERIC_BUDGET_CATEGORIES.length; index++) {
+          let generic = Constants.GENERIC_BUDGET_CATEGORIES[index];
+          // let groupName = generic.groupName;
+          // let perspective = generic.perspective || Constants.DEFAULT_PERSPECTIVE;
+          // let infoData = { ownerRef: ownerRef, groupName: groupName };
 
-        let categoryGroup = new db.UserCategoryGroup({ ownerRef: ownerRef, groupName: groupName });
-        for (let count = 0; count < generic.categories.length; count++) {
-          let categoryName = generic.categories[count];
-          categoryGroup.categories.push({ categoryName: categoryName });
-        }
+          let categoryGroup = new db.UserCategoryGroup({
+            ownerRef: ownerRef,
+            groupName: generic.groupName,
+            perspective: generic.perspective || Constants.DEFAULT_PERSPECTIVE,
+          });
+          for (let count = 0; count < generic.categories.length; count++) {
+            let categoryName = generic.categories[count];
+            categoryGroup.categories.push({ categoryName: categoryName });
+          }
 
-        // now save the document
-        try {
-          let catGrp = await categoryGroup.save();
-          console.log("Saved document\n", catGrp);
-          retval.push(catGrp);
-        } catch (err) {
-          console.log("\n\n**ERROR** Unable to save document:\n", generic);
+          // now save the document
+          try {
+            let catGrp = await categoryGroup.save();
+            console.log("Saved document\n", catGrp);
+            retval.push(catGrp);
+          } catch (err) {
+            console.log("\n\n**ERROR** Unable to save document:\n", generic);
+          }
         }
       }
+      if (retval.length != 0) {
+        dbProfile.isProfileInitialized = true;
+        let savedProfile = await dbProfile.save();
+        console.log("\n\nSaved Profile:\n",savedProfile,"\n");
+      }
+      console.log(`\n\nSaved User Category for ${email}\n`,retval);
+      return retval;
+    } catch (error) {
+      console.log(error.message);
     }
-    if (retval.length != 0) {
-      dbProfile.isProfileInitialized = true;
-      await dbProfile.save();
-    }
-    return retval;
   },
 };
