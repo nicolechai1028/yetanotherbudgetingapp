@@ -93,3 +93,40 @@ A user can create an unlimited number of these accounts Money flows into and out
 | POST      | /api/budgetAccount/modify     | {sessionUUID, accountUUID, name}                      | {status, message, [name]}                                         |                                                                               |
 | POST      | /api/budgetAccount/close      | {sessionUUID, accountUUID}                            | {status, message}                                                 | If successfully close, status is "OK". The account is not deleted. Merely tagged as "closed"                                         |
 | POST      | /api/budgetAccount/list       | {sessionUUID,[accountUUID]}                                         | {status, message, [accounts(array{accountUUID, name, type, balance, isClosed})]}   | Success status is "OK". Return includes optional array of account objects     |
+
+* ### Close
+> Matches with /api/budgetAccount/close
+> Expects:
+>  - sessionUUID
+>  - accountUUID. Identifies the account to be "closed"
+> Returns:
+>  - status: [OK | ERROR]
+>  - message: ["Invalid sessionUUID" | "No such Budget Account" | "Account <name> successfully closed"]
+
+* ### Create
+> Matches with /api/budgetAccount/create
+> Expects:
+>  - sessionUUID
+>  - name
+>  - accountType // one of ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"]
+>  - startingBalance // default = 0.0
+
+* ### List
+> Matches with /api/budgetAccount/list
+> Expects:
+>  - sessionUUID
+>  - accountUUID (optional)
+>
+> The "option" param (req.params.option) is optional. Values are ["all", "closed", "active"]
+> Default is "all".
+>
+> Returns list of accounts (name, type, starting balance, accountUUID,)
+
+* ### Modify
+> Matches with /api/budgetAccount/modify
+> Used to edit the name of a Budget Account.
+> Requires:
+>  - sessionUUID
+>  - accountUUID
+>  - name
+> Name will be checked to make sure it does not conflict with another account name (case insensitive, trimmed, multi-spaces removed)

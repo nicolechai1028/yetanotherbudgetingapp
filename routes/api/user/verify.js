@@ -104,7 +104,8 @@ router.route("/:verifyCode").get((req, res) => {
       let html = Utilities.emailValidationPage(info);
       console.log(html);
       res.send(html);
-      UserCategoryGroupController.InitializeUserCategoryGroup(result.email);
+      let categoryGroups = await UserCategoryGroupController.InitializeUserCategoryGroup(result.email);
+      console.log("\nCategory Groups:\n",JSON.stringify(categoryGroups,null,2));
     }
   })();
 });

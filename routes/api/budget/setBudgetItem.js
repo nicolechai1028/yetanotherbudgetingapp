@@ -4,7 +4,10 @@
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Created                                                                       *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-05 ==                                                                    *
+ *   +    Changed name of file from "setBudget" to "setBudgetItem". Will be used to     *
+ *          set a single budget item                                                    *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -28,26 +31,9 @@ const Utilities = require("../../../utilities");
 const db = require("../../../models");
 
 /**
- * Matches with /api/budget/get
- * Gets the budget for a specific user. Parameters will determine for which year and month.
- * Budgets can also be retrieved for a Category Group and/or a specific category
+ * Matches with /api/budget/setBudgetItem
  *
- *
- *
- *  - status: "OK | ERROR"
- *  - message : "Success | <Error text>"
- *  - response {
- *               date{
- *                     year: <yyyy>
- *                     month: <mm>
- *                   },
- *                data[
- *
- *                    ]
- *             }
- *
- * */
-
+ */
 router.route("/").post((req, res) => {
   const body = req.body;
   console.log(Utilities.getFullUrl(req));
