@@ -79,7 +79,7 @@ async function checkLogin(query) {
     dbResults;
 
   try {
-    dbResults = await db.UserProfile.find({ email: query.email });
+    dbResults = await db.UserProfile.find({ email: query.email }).populate("currencyRef");
     console.log(dbResults);
     if (dbResults == null || dbResults.length == 0) {
       return { status: "ERROR", message: `No such user (${query.email})` };
@@ -101,6 +101,12 @@ async function checkLogin(query) {
       return { status: "ERROR", message: "Incorrect password" };
     }
 
+    let currency = {},
+      ref;
+    if (dbResult.currencyRef != null) {
+      ref = dbResult.currencyRef;
+      currency = { code: ref._id, name: ref.name, uniDec: ref.uniDec };
+    }
     let sessionUUID = Utilities.generateUUID();
     let timestamp = Date.now();
     response = {
@@ -109,6 +115,7 @@ async function checkLogin(query) {
       sessionUUID: sessionUUID,
       firstName: dbResult.firstName,
       lastname: dbResult.lastName,
+      currency: currency,
     };
     console.log("JSON Response:\n", response);
     // modify dbResult object and update database

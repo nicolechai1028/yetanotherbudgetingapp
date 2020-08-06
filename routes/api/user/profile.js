@@ -2,12 +2,8 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +    Moved file to route/api/user                                                  *
- *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Removed use of UserProfileController.                                         *
+ *   +    Added this History section                                                    *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -21,51 +17,67 @@
  ****************************************************************************************
  */
 
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
 const crypto = require("crypto");
 const router = require("express").Router();
-const Utilities = require("../../../utilities");
 const db = require("../../../models");
-const UserProfileController = require("../../../controllers/userProfileController");
+const Utilities = require("../../../utilities");
 
 /**
- * Matches routes with /api/logout
- * Logout route. Success will return the following object:
+ * Matches routes with /api/user/profile
+ * Register route. Success will return the following object:
  *
  *  - status: OK
- *  - message : <User {email} successfully logged out>
- *  - sessionUUID : <Unique session UUID for this login session. Used for every communication with server>
+ *  - message : User profile for {email}
+ *  - profile : { email, firstName, lastName,
+ *                currency : { code, name, uniDec }
+ *              }
  *
- * Error will return
+ * Error will return:
  *  - status : ERROR
- *  - message : <depends on condition>
+ *  - message : <Error message>
  * Expects:
- *  - SessionUUID : <Unique session UUID for this login session>
+ *  - sessionUUID: <sessionUUID>
  */
 router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
   console.log(req.body);
 
+  let response;
   let sessionUUID = req.body.sessionUUID;
-
   if (sessionUUID == null) {
-    res.json({ status: "ERROR", message: "Invalid or missing sessionUUID" });
+    response = { status: "ERROR", message: "Invalid sessionUUID" };
+    res.json(response);
+    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
     return;
   }
-
   (async () => {
-    let dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID });
+    let dbResult,
+      currency = {},
+      ref;
+    let dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID }).populate("currencyRef");
     if (dbResults == null || dbResults.length != 1) {
-      res.json({ status: "ERROR", message: "Associated account not found" });
-      return;
+      response = { status: "ERROR", message: "Invalid sessionUUID" };
+    } else {
+      dbResult = dbResults[0];
+      if (dbResult.currencyRef != null) {
+        ref = dbResult.currencyRef;
+        currency = { code: ref._id, name: ref.name, uniDec: ref.uniDec };
+      }
+      response = {
+        status: "OK",
+        message: `User profile for ${dbResult.email}`,
+        firstName: dbResult.firstName,
+        lastName: dbResult.lastName,
+        currency: currency,
+      };
     }
-    let dbResult = dbResults[0];
-    dbResult.lastLogoutTimestamp = Date.now();
-
-    if (process.env.NODE_ENV === "production") dbResult.sessionUUID = undefined;
-
-    dbResult.save((err) => {
-      if (err) res.json({ status: "ERROR", message: err.message });
-      else res.json({ status: "OK", message: `Successfully logged out ${dbResult.fullName}` });
-    });
+    console.log("User Profile API Response:\n", response);
+    res.json(response);
   })();
 });
 

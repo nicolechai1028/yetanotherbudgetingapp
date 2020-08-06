@@ -2,12 +2,9 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Added "Currency" collection                                                   *
- *                                                                                      *
+ *   +    Added this History section                                                    *
+ *        Defined Schema                                                                *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -19,13 +16,20 @@
  ****************************************************************************************
  */
 
-// Exporting an object containing all of our models
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+// const Types = mongoose.Schema.Types;
 
-module.exports = {
-  BudgetAccount: require("./BudgetAccount"),
-  GenericCategoryGroup: require("./GenericCategoryGroup"),
-  Transaction: require("./Transaction"),
-  UserCategoryGroup: require("./UserCategoryGroup"),
-  UserProfile: require("./UserProfile"),
-  Currency: require("./Currency"),
-};
+// import { v4 as uuidv4 } from "uuid";
+// const { v4 } = require("uuid");
+// const uuidv4 = v4;
+
+const CurrencySchema = new Schema({
+  _id: { type: Schema.Types.String, required: true },
+  name: { type: Schema.Types.String, required: true },
+  uniDec: { type: Schema.Types.String, required: true },
+});
+
+const Currency = mongoose.model("Currency", CurrencySchema);
+
+module.exports = Currency;

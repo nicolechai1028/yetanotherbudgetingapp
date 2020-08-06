@@ -4,6 +4,10 @@
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
+ *                                                                                      *
+ * == chikeobi-06 ==                                                                    *
+ *   + Added reference ("ref") option to "ownerRef", "accountRef" and                   *
+ *      "categoryGroupRef" fields                                                       *
  *   +                                                                                  *
  *   +                                                                                  *
  *                                                                                      *
@@ -21,14 +25,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 //import { v4 as uuidv4 } from "uuid";
-const { v4  } = require("uuid");
+const { v4 } = require("uuid");
 const uuidv4 = v4;
 
 const TransactionSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
-  ownerRef: { type: Schema.Types.String, required: true }, // reference to the UserProfile._id
-  accountRef: { type: Schema.Types.String, required: true }, // reference to the Account._id
-  categoryGroupRef: { type: Schema.Types.String, required: true }, // reference to the UserBudgetCategoryGroup._id
+  ownerRef: { type: Schema.Types.String, required: true, ref: "UserProfile" }, // reference to the UserProfile._id
+  accountRef: { type: Schema.Types.String, required: true, ref: "BudgetAccount" }, // reference to the Account._id
+  categoryGroupRef: { type: Schema.Types.String, required: true, ref: "UserCategoryGroup" }, // reference to the UserBudgetCategoryGroup._id
   categoryRef: { type: Schema.Types.String, required: true }, // reference to the UserBudgetCategoryGroup.Category._id
   payee: { type: Schema.Types.String, required: true },
   memo: { type: Schema.Types.String },

@@ -41,14 +41,14 @@ const budgetAccountController = require("../../../controllers/budgetAccountContr
 router.route("/").post((req, res) => {
   console.log(req.body);
   let response = null;
-  let sessionUUID = req.body.sessionUUID;
-  let accountUUID = req.body.accountUUID;
+  // let sessionUUID = req.body.sessionUUID;
+  // let accountUUID = req.body.accountUUID;
 
-  if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0) {
+  let { sessionUUID, accountUUID } = req.body;
+  if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
-  } else if (accountUUID == null || (accountUUID = accountUUID.trim()).length == 0) {
+  else if (accountUUID == null || (accountUUID = accountUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid accountUUID" };
-  }
 
   if (response != null) {
     console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
@@ -65,9 +65,9 @@ router.route("/").post((req, res) => {
       // let userProfile = await userProfileController.findBySessionUUID(sessionUUID);
       if (userProfile != null && userProfile.isVerified == true) {
         // check for validity of accountUUID
-        if ((dbResults = await db.BudgetAccount.find({ _id: accountUUID })) == null || dbResults.length == 0) {
+        if ((dbResults = await db.BudgetAccount.find({ _id: accountUUID })) == null || dbResults.length == 0)
           response = { status: "ERROR", message: "No such Budget Account" };
-        } else {
+        else {
           budgetAccount = dbResults[0];
           budgetAccount.isClosed = true;
           await budgetAccount.save();

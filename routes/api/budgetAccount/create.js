@@ -40,11 +40,11 @@ const Constants = require("../../../constants");
 router.route("/").post((req, res) => {
   console.log(req.body);
   let response = null;
-  let sessionUUID = req.body.sessionUUID;
-  let name = req.body.name;
-  let accountType = req.body.accountType;
-  let startingBalance = req.body.startingBalance;
-
+  // let sessionUUID = req.body.sessionUUID;
+  // let name = req.body.name;
+  // let accountType = req.body.accountType;
+  // let startingBalance = req.body.startingBalance;
+  let { sessionUUID, name, accountType, startingBalance } = { ...req.body };
   if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0) {
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
   } else if (name == null || (name = name.trim()).length == 0) {
@@ -75,6 +75,7 @@ router.route("/").post((req, res) => {
         // check if an account with that name already exists for this user
         let ownerRef = userProfile._id;
         accountName4Compare = Utilities.multipleSpaceRemovedTrimLC(name);
+        name = Utilities.multipleSpaceRemovedTrim(name);
         dbResults = await db.BudgetAccount.find({ ownerRef: ownerRef, accountName4Compare: accountName4Compare });
         if (dbResults != null && dbResults.length != 0) dbResult = dbResults[0];
         // let dbResult = await budgetAccountController.findByOwnerAndName(ownerRef, name);
@@ -100,7 +101,7 @@ router.route("/").post((req, res) => {
             response = {
               status: "OK",
               message: `Account "${name}" created`,
-              name: name,
+              name: dbResult.name,
               accountUUID: dbResult._id,
               accountType: accountType,
               startingBalance: startingBalance,
