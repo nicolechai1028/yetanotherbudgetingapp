@@ -3,7 +3,11 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +  Added this History section                                                      *
+ *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   +  Added "verificationTimestamp" and "registerationTimestamp" to UserProfile       *
+ *        response.                                                                     *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -74,6 +78,8 @@ router.route("/").post((req, res) => {
         firstName: dbResult.firstName,
         lastName: dbResult.lastName,
         currency: currency,
+        registerationTimestamp: dbResult.registerationTimestamp,
+        verificationTimestamp: dbResult.verificationTimestamp,
       };
     }
     console.log("User Profile API Response:\n", response);
