@@ -3,10 +3,15 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +    Changed format of how constants are exported. Now they can't be edited at all *
- *   +    Added "perspective" to Category.                                              *
+ *   +  Added this History section                                                      *
+ *   +  Changed format of how constants are exported. Now they can't be edited at all   *
+ *   +  Added "perspective" to Category.                                                *
  *                                                                                      *
+ * == chikeobi-06 ==                                                                    *
+ *   +  Added Currency definitions                                                      *
+ *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   +  Added Special Budget Categories and Groups                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -17,12 +22,31 @@
  *                                                                                      *
  ****************************************************************************************
  */
+
 module.exports = Object.freeze({
   DEV_MONGODB_URI: "mongodb://localhost/yetanotherbudgetingapp",
   BUDGET_ACCOUNT_TYPES: ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"],
   BUDGET_ACCOUNT_PERSPECTIVES: ["Outflow", "Inflow"],
   DEFAULT_PERSPECTIVE: "Outflow",
   // https://girltalkwithfo.com/budget-categories/
+  BUDGET_ACCOUNT_ACCESS_DEFAULT = "User",
+  BUDGET_ACCOUNT_ACCESS_SPECIAL = "System",
+  BUDGET_ACCOUNT_ACCESS_LEVELS: [
+    "System", // this means the Budget Category cannot be edited by the user
+    "User",
+  ],
+  SPECIAL_BUDGET_CATEGORIES: [
+    {
+      groupName: "Inflow Adjustment",
+      categories: ["To be budgeted"],
+      perspective: "Inflow",
+    },
+    {
+      groupName: "Outflow Adjustment",
+      categories: ["To be budgeted"],
+      perspective: "Outflow",
+    },
+  ],
   GENERIC_BUDGET_CATEGORIES: [
     {
       groupName: "Inflow",

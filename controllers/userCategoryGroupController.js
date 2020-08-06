@@ -33,7 +33,6 @@ module.exports = {
   InitializeUserCategoryGroup: async function (email) {
     try {
       let dbResults = await db.UserProfile.find({ email: email });
-      //let dbResults = await UserProfileController.findByEmail(email);
       if (dbResults == null || dbResults.length != 1) {
         throw `*** ERROR *** Unale to find user profile for "${email}"`;
       }
@@ -43,11 +42,9 @@ module.exports = {
       if (dbProfile.isProfileInitialized == false) {
         console.log(`\n\nAccount "${dbProfile.email}" has not been initialized`);
         let ownerRef = dbProfile._id;
+        // loop through generic budget categories and load for user
         for (let index = 0; index < Constants.GENERIC_BUDGET_CATEGORIES.length; index++) {
           let generic = Constants.GENERIC_BUDGET_CATEGORIES[index];
-          // let groupName = generic.groupName;
-          // let perspective = generic.perspective || Constants.DEFAULT_PERSPECTIVE;
-          // let infoData = { ownerRef: ownerRef, groupName: groupName };
 
           let categoryGroup = new db.UserCategoryGroup({
             ownerRef: ownerRef,
@@ -58,7 +55,6 @@ module.exports = {
             let categoryName = generic.categories[count];
             categoryGroup.categories.push({ categoryName: categoryName });
           }
-
           // now save the document
           try {
             let catGrp = await categoryGroup.save();
@@ -67,6 +63,29 @@ module.exports = {
           } catch (err) {
             console.log("\n\n**ERROR** Unable to save document:\n", generic);
           }
+        }
+        // loop through special categories and add
+        for (let index = 0; index < Constants.SPECIAL_BUDGET_CATEGORIES.length;index++){
+          let specialCategory = Constants.SPECIAL_BUDGET_CATEGORIES[index];
+          let categoryGroup = new db.UserCategoryGroup({
+            ownerRef: ownerRef,
+            groupName: specialCategory.groupName,
+            perspective: specialCategory.perspective || Constants.DEFAULT_PERSPECTIVE,
+            access: Constants.BUDGET_ACCOUNT_ACCESS_SPECIAL,
+          });
+          for (let count = 0; count < specialCategory.categories.length; count++) {
+            let categoryName = specialCategory.categories[count];
+            categoryGroup.categories.push({ categoryName: categoryName });
+          }
+          // now save the document
+          try {
+            let catGrp = await categoryGroup.save();
+            console.log("Saved document\n", catGrp);
+            retval.push(catGrp);
+          } catch (err) {
+            console.log("\n\n**ERROR** Unable to save document:\n", specialCategory);
+          }
+
         }
       }
       if (retval.length != 0) {

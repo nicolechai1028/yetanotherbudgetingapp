@@ -8,6 +8,9 @@
  * == chikeobi-06 ==                                                                    *
  *   + Added reference ("ref") option to "ownerRef", "accountRef" and                   *
  *      "categoryGroupRef" fields                                                       *
+ *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   + Removed "transactionType" field                                                  *
  *   +                                                                                  *
  *   +                                                                                  *
  *                                                                                      *
@@ -37,7 +40,7 @@ const TransactionSchema = new Schema({
   payee: { type: Schema.Types.String, required: true },
   memo: { type: Schema.Types.String },
   amount: { type: Schema.Types.Number, default: 0.0 },
-  transactionType: { type: Schema.Types.String, default: "OUTFLOW", enum: ["OUTFLOW", "INFLOW"] },
+  // transactionType: { type: Schema.Types.String, default: "OUTFLOW", enum: ["OUTFLOW", "INFLOW"] },
   date: {
     year: Schema.Types.Number,
     month: Schema.Types.Number,

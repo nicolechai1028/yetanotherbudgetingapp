@@ -46,6 +46,12 @@ const UserCategoryGroupSchema = new Schema({
     enum: Constants.BUDGET_ACCOUNT_PERSPECTIVES,
     default: Constants.DEFAULT_PERSPECTIVE,
   },
+  access: {
+    type: Schema.Types.String,
+    enum: Constants.BUDGET_ACCOUNT_ACCESS_LEVELS,
+    required: true,
+    default: Constants.BUDGET_ACCOUNT_ACCESS_DEFAULT,
+  },
 });
 
 const UserCategoryGroup = mongoose.model("UserCategoryGroup", UserCategoryGroupSchema);

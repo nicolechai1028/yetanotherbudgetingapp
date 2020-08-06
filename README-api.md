@@ -129,10 +129,10 @@ A user can create an unlimited number of these accounts Money flows into and out
 
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
-| POST      | /api/budgetAccount/create     | {sessionUUID, name, accountType, [startingBalance]}   | [status,message,[name,accountUUID,accountType,startingBalance]]   | Optional return keys/values return on "OK" status                             |
-| POST      | /api/budgetAccount/modify     | {sessionUUID, accountUUID, name}                      | {status, message, [name]}                                         |                                                                               |
-| POST      | /api/budgetAccount/close      | {sessionUUID, accountUUID}                            | {status, message}                                                 | If successfully close, status is "OK". The account is not deleted. Merely tagged as "closed"                                         |
-| POST      | /api/budgetAccount/list       | {sessionUUID,[accountUUID]}                                         | {status, message, [accounts(array{accountUUID, name, type, balance, isClosed})]}   | Success status is "OK". Return includes optional array of account objects     |
+| POST      | /api/budgetAccount/create     | {sessionUUID, name, accountType, [startingBalance]}       | [status,message,[name,accountUUID,accountType,startingBalance]]   | Optional return keys/values return on "OK" status                             |
+| POST      | /api/budgetAccount/modify     | {sessionUUID, accountUUID, [[name], [balance], [notes]]}  | {status, message, [name, balance, notes]}                         |                                                                               |
+| POST      | /api/budgetAccount/close      | {sessionUUID, accountUUID}                                | {status, message}                                                 | If successfully close, status is "OK". The account is not deleted. Merely tagged as "closed"                                         |
+| POST      | /api/budgetAccount/list       | {sessionUUID,[accountUUID]}                               | {status, message, [accounts(array{accountUUID, name, type, balance, isClosed})]}   | Success status is "OK". Return includes optional array of account objects     |
 
 * ### Close
 > Matches with /api/budgetAccount/close

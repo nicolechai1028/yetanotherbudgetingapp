@@ -3,7 +3,11 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Created                                                                       *
+ *   +  Created                                                                         *
+ *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   +  Added "notes" and "balance" as parameters to be modified                        *
+ *   +                                                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -35,6 +39,8 @@ const budgetAccountController = require("../../../controllers/budgetAccountContr
  *  - sessionUUID
  *  - accountUUID
  *  - name
+ *  - balance
+ *  - notes
  * Name will be checked to make sure it does not conflict with another account name (case insensitive, trimmed, multi-spaces removed)
  */
 router.route("/").post((req, res) => {
@@ -43,13 +49,20 @@ router.route("/").post((req, res) => {
   let sessionUUID = req.body.sessionUUID;
   let accountUUID = req.body.accountUUID;
   let newAccountName = req.body.name;
+  let newBalance = req.body.balance;
+  let newNotes = req.body.notes;
 
   if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
   else if (accountUUID == null || (accountUUID = accountUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid accountUUID" };
-  else if (newAccountName == null || (newAccountName = Utilities.multipleSpaceRemovedTrim(newAccountName)).length == 0)
-    response = { status: "ERROR", message: "Missing or invalid Name" };
+  // else if (newAccountName == null || (newAccountName = Utilities.multipleSpaceRemovedTrim(newAccountName)).length == 0)
+  //   response = { status: "ERROR", message: "Missing or invalid Name" };
+  if (newAccountName != null) newAccountName = Utilities.multipleSpaceRemovedTrim(newAccountName);
+  if (newNotes != null) newNotes = Utilities.multipleSpaceRemovedTrim(newNotes);
+
+  if (newBalance != null && (newBalance = parseFloat(newBalance)) == NaN)
+    response = { status: "ERROR", message: "Illegal number input for balance" };
 
   if (response != null) {
     res.json(response);
@@ -86,28 +99,6 @@ router.route("/").post((req, res) => {
             response = { status: "OK", message: message, name: newAccountName };
           }
         }
-
-        // if (dbResults != null && dbResults.length != 0) dbResult = dbResults[0];
-        // //let dbResult = await budgetAccountController.findByOwnerAndName(userProfile._id, newAccountName);
-        // if (dbResult != null) {
-        //   // an account with that name already exists
-        //   response = { status: "ERROR", message: "An account with name exists" };
-        // } else {
-        //   // dbResult = await budgetAccountController.findById(accountUUID);
-        //   dbResult = null;
-        //   dbResults = await db.BudgetAccount.find({ _id: accountUUID });
-        //   if (dbResults != null && dbResults.length != 0) dbResult = dbResults[0];
-        //   if (dbResult == null) {
-        //     response = { status: "ERROR", message: "Account not found" };
-        //   } else {
-        //     let oldName = dbResult.name;
-        //     dbResult.name = newAccountName;
-        //     dbResult.accountName4Compare = Utilities.multipleSpaceRemovedTrimLC(newAccountName);
-        //     await dbResult.save();
-        //     let message = `Account name changed from "${oldName}" to "${newAccountName}"`;
-        //     response = { status: "OK", message: message, name: newAccountName };
-        //   }
-        // }
       } else {
         response = { status: "ERROR", message: "Invalid sessionUUID" };
       }
