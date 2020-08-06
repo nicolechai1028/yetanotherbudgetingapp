@@ -13,9 +13,11 @@ See this [link](https://www.tablesgenerator.com/markdown_tables#) for how to gen
 |-----------------------------  |---------------------------    |---------------------------    |------------------------------------------------------ |------------------------------ |
 | POST                          | /api/user/login               | {email, password}             | {status, message,[sessionUUID, firstName, lastname]}  |                               |
 | POST                          | /api/user/logout              | {sessionUUID}                 | {status, message}                                     |                               |
-| POST                          | /api/user/register            | {firstName, lastName, email, password} | {status, message}                            | Verification email is sent    |
+| POST                          | /api/user/register            | {firstName, lastName, email, password,[currencyCode]} | {status, message}                            | Verification email is sent    |
 | GET                           | /api/user/verify/:verifyCode  | { }                              | ``<HTML response>``                                                | Verification email link       |
-|                               |                               |                               |                                                       |                               |
+| POST                          | /api/user/profile             | {sessionUUID}                 | {status, message, [firstName,lastName,currency]]      |  Returns Profile for current user
+| POST                          | /api/user/currency/:code?     |  {sessionUUID}                | {status, message, [currency]]                         |  Success returns array of Currency objects|
+|                               |                               |                               |                                                       |                                |
 
 * ### Login
   
@@ -61,12 +63,14 @@ See this [link](https://www.tablesgenerator.com/markdown_tables#) for how to gen
 >
 > Error will return:
 >  - status : ERROR
->  - message : <Error message>
+>  - message : ``<Error message>``
+> 
 > Expects:
->  - firstName: <user first name>
->  - lastName: <user last name>
->  - email : <user login email ID>
->  - password: <user password>
+>  - firstName: ``<user first name>``
+>  - lastName: ``<user last name>``
+>  - email : ``<user login email ID>``
+>  - password: ``<user password>``
+>  - currencyCode: ``<three character currency code>`` // Optional. if not present or not among valid choice, "USD" is used
 
 * ### Email Verification
 
@@ -75,6 +79,42 @@ See this [link](https://www.tablesgenerator.com/markdown_tables#) for how to gen
 > response. GET method is processed and is designed to be launched from a browser
 >
 > Verification code in req.params.verifyCode. The verification code is the last element of the URL path
+
+* ### User Profile
+
+> Matches routes with /api/user/profile
+> Register route. Success will return the following object:
+>
+>  - status: OK
+>  - message : User profile for {email}
+>  - profile : { email, firstName, lastName,
+>                currency : { code, name, uniDec }
+>              }
+>
+> Error will return:
+>  - status : ERROR
+>  - message : ``<Error message>``
+> 
+> Expects:
+>  - sessionUUID: ``<sessionUUID>``
+
+* ### Currency
+
+> Matches routes with /api/user/currency/:code?
+> Currency route. If the "code" param is not on the path, all currencies will be returned.
+> More than one currency code separated with commas can be listed on the URL 
+> 
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : World Currencies
+>  - currency : [{code,name,uniDec}]
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+> Expects:
+>  - sessionUUID 
 
 ## <u><span style="color:orange">Budget Account</span></u>
 

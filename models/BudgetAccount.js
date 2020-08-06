@@ -9,6 +9,8 @@
  *     BudgetAccount                                                                    *
  *   + Added "isClosed" field.                                                          *
  *                                                                                      *
+ * == chikeobi-06 ==                                                                    *
+ *   + Added reference ("ref") option to "ownerRef" field                               *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -29,7 +31,7 @@ const BudgetAccountSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
   name: { type: Schema.Types.String, required: true },
   accountName4Compare: { type: Schema.Types.String, required: true },
-  ownerRef: { type: Schema.Types.String, required: true }, // reference to the UserProfile._id
+  ownerRef: { type: Schema.Types.String, required: true, ref: "UserProfile" }, // reference to the UserProfile._id
   accountType: {
     type: Schema.Types.String,
     enum: Constants.BUDGET_ACCOUNT_TYPES,
@@ -38,10 +40,6 @@ const BudgetAccountSchema = new Schema({
   balance: { type: Schema.Types.Number, default: 0.0 },
   isClosed: { type: Schema.Types.Boolean, default: false },
 });
-
-// BudgetAccountSchema.virtual("accountName4Compare").get(function () {
-//   return Utilities.multipleSpaceRemovedTrimLC(this.name);
-// });
 
 const BudgetAccount = mongoose.model("BudgetAccount", BudgetAccountSchema);
 

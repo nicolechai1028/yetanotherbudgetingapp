@@ -3,8 +3,10 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Created                                                                       *
- *   +                                                                                  *
+ *   +  Created                                                                         *
+ *                                                                                      *
+ * == chikeobi-06 ==                                                                    *
+ *   +  Tested /close, /create /list and /modify routes                                 *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -29,9 +31,9 @@ const createRoute = require("./create");
 const listRoute = require("./list");
 const modifyRoute = require("./modify");
 
-router.use("/close", closeRoute);
-router.use("/create", createRoute);
-router.use("/list", listRoute);
-router.use("/modify", modifyRoute);
+router.use("/close", closeRoute);       // tested
+router.use("/create", createRoute);     // tested
+router.use("/list", listRoute);         // tested
+router.use("/modify", modifyRoute);     // tested
 
 module.exports = router;

@@ -4,7 +4,9 @@
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-06 ==                                                                    *
+ *   +    Added "currencyRef" field                                                     *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -18,6 +20,8 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Types = mongoose.Schema.Types;
+
 // import { v4 as uuidv4 } from "uuid";
 const { v4 } = require("uuid");
 const uuidv4 = v4;
@@ -35,11 +39,13 @@ const UserProfileSchema = new Schema({
   lastTransactionTimestamp: { type: Schema.Types.Number }, // Date.now(). Last time the server was accessed
   lastLogoutTimestamp: { type: Schema.Types.Number },
   isProfileInitialized: { type: Schema.Types.Boolean, default: false },
+  currencyRef: { type: Types.String, required: true, default: "USD", ref: "Currency" },
 });
 
 UserProfileSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
+
 const UserProfile = mongoose.model("UserProfile", UserProfileSchema);
 
 module.exports = UserProfile;
