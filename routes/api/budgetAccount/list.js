@@ -61,17 +61,18 @@ router.route("/:option?").post((req, res) => {
   let sessionUUID = req.body.sessionUUID;
   let accountUUID = req.body.accountUUID;
 
-  if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0) {
-    response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
-    res.json(response);
-    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
-    return;
-  }
+  //  if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0) {
+  //    response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
+  //    res.json(response);
+  //    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
+  //    return;
+  //  }
 
   (async () => {
     try {
       let dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID });
-      if (dbResults != null && dbResults.length != 0) userProfile = dbResults[0];
+      if (dbResults != null && dbResults.length != 0)
+        userProfile = dbResults[0];
       // let userProfile = await userProfileController.findBySessionUUID(sessionUUID);
       if (userProfile != null && userProfile.isVerified == true) {
         let query = { ownerRef: userProfile._id };
@@ -90,7 +91,11 @@ router.route("/:option?").post((req, res) => {
               isClosed: acct.isClosed,
             });
           }
-          response = { status: "OK", message: `${dbResults.length} Budget Accounts found`, accounts: accounts };
+          response = {
+            status: "OK",
+            message: `${dbResults.length} Budget Accounts found`,
+            accounts: accounts,
+          };
         }
       } else {
         response = { status: "ERROR", message: "Invalid sessionUUID" };
