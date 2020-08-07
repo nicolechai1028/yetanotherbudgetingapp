@@ -5,7 +5,7 @@ import { useAppContext } from "../utils/globalStates/stateProvider";
 import Overview from "../components/overviewinfo/ovinfo";
 import Budget from "../pages/Budget/";
 function IsAuthenciated() {
-  const [state, dispatch] = useAppContext();
+  const [state] = useAppContext();
 
   return (
     <React.Fragment>
@@ -16,7 +16,7 @@ function IsAuthenciated() {
             path="/overview"
             component={() => <Overview header={"YABA"} />}
           />
-          <Route exact path="/budget" component={Budget} />{" "}
+          <Route exact path="/budget" component={Budget} />
         </React.Fragment>
       ) : (
         <Redirect to="/login" />
