@@ -5,6 +5,7 @@ const AppContext = createContext({});
 const { Provider } = AppContext;
 
 const reducer = (state, action) => {
+  console.log(action);
   switch (action.type) {
     case TRANSFER_BALANCE:
       return { ...state };
