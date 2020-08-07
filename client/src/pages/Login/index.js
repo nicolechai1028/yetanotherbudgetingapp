@@ -21,13 +21,14 @@ function Login() {
 
   const validateInput = () => {
     const emailRegex = new RegExp(/^(.+)@(.+)\.(.+)$/i);
-    return emailRegex.test(input.email) && input.password.length > 6;
+    return emailRegex.test(input.email)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateInput()) {
-      login(input);
+      login(input)
+      .then(user => console.log(user))
       // session id and user id - useContext
     } else {
       alert("invalid input!");
