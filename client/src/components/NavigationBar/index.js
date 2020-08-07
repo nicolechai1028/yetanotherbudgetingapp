@@ -2,10 +2,10 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { Button, Navbar, NavbarBrand, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
-
+import { useAppContext } from "../../utils/globalStates/stateProvider";
 const Navigation = (props) => {
   const { pathname } = useLocation();
-
+  const [state] = useAppContext();
   return (
     <Navbar
       className="border-bottom border-dark d-flex "
@@ -15,11 +15,8 @@ const Navigation = (props) => {
       <NavbarBrand tag={Link} to={"/"}>
         Y.A.B.A
       </NavbarBrand>
-      {/* better to change to check if user is logged in after integration with login screen*/}
-      {/*if it is one of these path shows the not loggedIn buttons only. Once logged in show 
-					overview/budget/expense
-			*/}
-      {pathname === "/" || pathname === "/login" || pathname === "/signup" ? (
+      {/*Check if there is user info in state*/}
+      {!("user" in state) ? (
         <div className="ml-auto ">
           {Object.keys(notLoggedIn).map((key) => {
             const btn = notLoggedIn[key];
