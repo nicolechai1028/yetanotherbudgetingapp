@@ -29,8 +29,8 @@ module.exports = Object.freeze({
   BUDGET_ACCOUNT_PERSPECTIVES: ["Outflow", "Inflow"],
   DEFAULT_PERSPECTIVE: "Outflow",
   // https://girltalkwithfo.com/budget-categories/
-  BUDGET_ACCOUNT_ACCESS_DEFAULT = "User",
-  BUDGET_ACCOUNT_ACCESS_SPECIAL = "System",
+  BUDGET_ACCOUNT_ACCESS_DEFAULT: "User",
+  BUDGET_ACCOUNT_ACCESS_SPECIAL: "System",
   BUDGET_ACCOUNT_ACCESS_LEVELS: [
     "System", // this means the Budget Category cannot be edited by the user
     "User",

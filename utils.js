@@ -24,7 +24,7 @@ function startAndInitializeDatabase() {
       console.log(`Our Current Database Name : ${connection.db.databaseName}`);
       if (dropDb == true) connection.db.dropDatabase(console.log(`${connection.db.databaseName} database dropped.`));
       connection.db.dropCollection("currencies", function (err, res) {
-        if (err) console.log("ERR:", err.message);
+        if (err) console.log("ERR (drop collection):", err.message);
         else console.log('Collection "currencies" dropped.');
 
         // ************ Load Currencies ***********

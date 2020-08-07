@@ -271,6 +271,29 @@ function startAndInitializeDatabase() {
   }
 }
 
+/**
+ * Formats the optional UTC input into a number derived from YYYYMMDD of the UTC time input.
+ * If the utcTime input is "null" or not a number, then the current UTC time is used
+ * @param {Number} utcTime
+ */
+function formatTransactionDateFromUTC(utcTime) {
+  if (utcTime == null || Number.isNaN(utcTime)) utcTime = Date.now();
+  let today = new Date(utcTime);
+  let value = "" + today.getFullYear();
+  let val = today.getMonth() + 1;
+  if (val < 10) value += "0";
+  value += val;
+  if ((val = today.getDate()) < 10) value += "0";
+  value += val;
+
+  console.log("\n\nTransaction Date: ", value, " ParseInt: ", Number.parseInt(value));
+  return Number.parseInt(value);
+}
+
+function roundToOneHundredthFin(x) {
+  return (Math.round(100 * x) / 100).toFixed(2);
+}
+
 module.exports = {
   getFullUrl,
   generateUUID,
@@ -282,4 +305,6 @@ module.exports = {
   multipleSpaceRemovedTrim,
   multipleSpaceRemovedTrimLC,
   startAndInitializeDatabase,
+  formatTransactionDateFromUTC,
+  roundToOneHundredthFin,
 };

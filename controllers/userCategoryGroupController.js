@@ -1,6 +1,7 @@
 const db = require("../models");
 const UserProfileController = require("./userProfileController");
 const Constants = require("../constants");
+const Utilities = require("../utilities");
 
 // Define methods for the UserCategoryGroup controller
 
@@ -48,12 +49,13 @@ module.exports = {
 
           let categoryGroup = new db.UserCategoryGroup({
             ownerRef: ownerRef,
-            groupName: generic.groupName,
+            categoryName: generic.groupName,
             perspective: generic.perspective || Constants.DEFAULT_PERSPECTIVE,
+            categoryName4Compare: Utilities.multipleSpaceRemovedTrimLC(generic.groupName),
           });
           for (let count = 0; count < generic.categories.length; count++) {
-            let categoryName = generic.categories[count];
-            categoryGroup.categories.push({ categoryName: categoryName });
+            let subCategoryName = generic.categories[count];
+            categoryGroup.subCategory.push({ subCategoryName: subCategoryName });
           }
           // now save the document
           try {
@@ -61,7 +63,7 @@ module.exports = {
             console.log("Saved document\n", catGrp);
             retval.push(catGrp);
           } catch (err) {
-            console.log("\n\n**ERROR** Unable to save document:\n", generic);
+            console.log("\n\n",err,"\n\n","\n\n**ERROR** Unable to save document:\n", generic);
           }
         }
         // loop through special categories and add
@@ -69,13 +71,13 @@ module.exports = {
           let specialCategory = Constants.SPECIAL_BUDGET_CATEGORIES[index];
           let categoryGroup = new db.UserCategoryGroup({
             ownerRef: ownerRef,
-            groupName: specialCategory.groupName,
+            categoryName: specialCategory.groupName,
             perspective: specialCategory.perspective || Constants.DEFAULT_PERSPECTIVE,
             access: Constants.BUDGET_ACCOUNT_ACCESS_SPECIAL,
           });
           for (let count = 0; count < specialCategory.categories.length; count++) {
-            let categoryName = specialCategory.categories[count];
-            categoryGroup.categories.push({ categoryName: categoryName });
+            let subCategoryName = specialCategory.categories[count];
+            categoryGroup.subCategory.push({ subCategoryName: subCategoryName });
           }
           // now save the document
           try {
