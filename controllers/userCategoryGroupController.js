@@ -1,6 +1,7 @@
 const db = require("../models");
 const UserProfileController = require("./userProfileController");
 const Constants = require("../constants");
+const Utilities = require("../utilities");
 
 // Define methods for the UserCategoryGroup controller
 
@@ -33,7 +34,6 @@ module.exports = {
   InitializeUserCategoryGroup: async function (email) {
     try {
       let dbResults = await db.UserProfile.find({ email: email });
-      //let dbResults = await UserProfileController.findByEmail(email);
       if (dbResults == null || dbResults.length != 1) {
         throw `*** ERROR *** Unale to find user profile for "${email}"`;
       }
@@ -43,30 +43,51 @@ module.exports = {
       if (dbProfile.isProfileInitialized == false) {
         console.log(`\n\nAccount "${dbProfile.email}" has not been initialized`);
         let ownerRef = dbProfile._id;
+        // loop through generic budget categories and load for user
         for (let index = 0; index < Constants.GENERIC_BUDGET_CATEGORIES.length; index++) {
           let generic = Constants.GENERIC_BUDGET_CATEGORIES[index];
-          // let groupName = generic.groupName;
-          // let perspective = generic.perspective || Constants.DEFAULT_PERSPECTIVE;
-          // let infoData = { ownerRef: ownerRef, groupName: groupName };
 
           let categoryGroup = new db.UserCategoryGroup({
             ownerRef: ownerRef,
-            groupName: generic.groupName,
+            categoryName: generic.groupName,
             perspective: generic.perspective || Constants.DEFAULT_PERSPECTIVE,
+            categoryName4Compare: Utilities.multipleSpaceRemovedTrimLC(generic.groupName),
           });
           for (let count = 0; count < generic.categories.length; count++) {
-            let categoryName = generic.categories[count];
-            categoryGroup.categories.push({ categoryName: categoryName });
+            let subCategoryName = generic.categories[count];
+            categoryGroup.subCategory.push({ subCategoryName: subCategoryName });
           }
-
           // now save the document
           try {
             let catGrp = await categoryGroup.save();
             console.log("Saved document\n", catGrp);
             retval.push(catGrp);
           } catch (err) {
-            console.log("\n\n**ERROR** Unable to save document:\n", generic);
+            console.log("\n\n",err,"\n\n","\n\n**ERROR** Unable to save document:\n", generic);
           }
+        }
+        // loop through special categories and add
+        for (let index = 0; index < Constants.SPECIAL_BUDGET_CATEGORIES.length;index++){
+          let specialCategory = Constants.SPECIAL_BUDGET_CATEGORIES[index];
+          let categoryGroup = new db.UserCategoryGroup({
+            ownerRef: ownerRef,
+            categoryName: specialCategory.groupName,
+            perspective: specialCategory.perspective || Constants.DEFAULT_PERSPECTIVE,
+            access: Constants.BUDGET_ACCOUNT_ACCESS_SPECIAL,
+          });
+          for (let count = 0; count < specialCategory.categories.length; count++) {
+            let subCategoryName = specialCategory.categories[count];
+            categoryGroup.subCategory.push({ subCategoryName: subCategoryName });
+          }
+          // now save the document
+          try {
+            let catGrp = await categoryGroup.save();
+            console.log("Saved document\n", catGrp);
+            retval.push(catGrp);
+          } catch (err) {
+            console.log("\n\n**ERROR** Unable to save document:\n", specialCategory);
+          }
+
         }
       }
       if (retval.length != 0) {

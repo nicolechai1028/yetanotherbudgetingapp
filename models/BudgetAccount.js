@@ -12,6 +12,9 @@
  * == chikeobi-06 ==                                                                    *
  *   + Added reference ("ref") option to "ownerRef" field                               *
  *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   + Added "notes" field                                                              *
+ *                                                                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -39,6 +42,7 @@ const BudgetAccountSchema = new Schema({
   },
   balance: { type: Schema.Types.Number, default: 0.0 },
   isClosed: { type: Schema.Types.Boolean, default: false },
+  notes: { type: Schema.Types.String },
 });
 
 const BudgetAccount = mongoose.model("BudgetAccount", BudgetAccountSchema);

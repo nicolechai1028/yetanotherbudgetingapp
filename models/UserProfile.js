@@ -3,11 +3,15 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +  Added this History section                                                      *
  *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Added "currencyRef" field                                                     *
+ *   +  Added "currencyRef" field                                                       *
  *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   +  Added "registerationTimestamp" and "verificationTimestamp" fields               *
+ *   +                                                                                  *
+ *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -40,6 +44,10 @@ const UserProfileSchema = new Schema({
   lastLogoutTimestamp: { type: Schema.Types.Number },
   isProfileInitialized: { type: Schema.Types.Boolean, default: false },
   currencyRef: { type: Types.String, required: true, default: "USD", ref: "Currency" },
+  registerationTimestamp: { type: Schema.Types.Number, required: true, default: Date.now }, // time when the user registered in UTC
+  verificationTimestamp: { type: Schema.Types.Number, default: 0 }, // time when the user verified the account in UTC.
+  // **** DEBUG ****
+  level: Schema.Types.Number,
 });
 
 UserProfileSchema.virtual("fullName").get(function () {

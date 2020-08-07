@@ -3,12 +3,13 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +    Moved file to route/api/user                                                  *
+ *   +  Added this History section                                                      *
+ *   +  Moved file to route/api/user                                                    *
+ *                                                                                      *
+ * == chikeobi-07 ==                                                                    *
+ *   +  Updated "verificationTimestamp" field when verify is successful                 *
  *   +                                                                                  *
- *                                                                                      *
- *                                                                                      *
- *                                                                                      *
+ *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -37,6 +38,7 @@ const UserCategoryGroupController = require("../../../controllers/userCategoryGr
  */
 router.route("/:verifyCode").get((req, res) => {
   console.log(req.params);
+  let dbProfile;
   const params = req.params;
   if (params.verifyCode == null) {
     let targetUrl = `${Utilities.getProtocolHostUrl(req)}/register`;
@@ -72,9 +74,9 @@ router.route("/:verifyCode").get((req, res) => {
       res.send(html);
       return;
     }
-    let result = dbResult[0];
-    if (result.isVerified == true) {
-      let email = result.email;
+    dbProfile = dbResult[0];
+    if (dbProfile.isVerified == true) {
+      let email = dbProfile.email;
       let targetUrl = `${Utilities.getProtocolHostUrl(req)}/login`;
       let info = {
         intro: "There has been an issue validating your registration",
@@ -89,9 +91,10 @@ router.route("/:verifyCode").get((req, res) => {
       res.send(html);
       return;
     } else {
-      result.isVerified = true;
-      await result.save();
-      let email = result.email;
+      dbProfile.isVerified = true;
+      dbProfile.verificationTimestamp = Date.now();
+      await dbProfile.save();
+      let email = dbProfile.email;
       let targetUrl = `${Utilities.getProtocolHostUrl(req)}/login`;
       let info = {
         intro: "Account has been verified",
@@ -104,7 +107,7 @@ router.route("/:verifyCode").get((req, res) => {
       let html = Utilities.emailValidationPage(info);
       console.log(html);
       res.send(html);
-      let categoryGroups = await UserCategoryGroupController.InitializeUserCategoryGroup(result.email);
+      let categoryGroups = await UserCategoryGroupController.InitializeUserCategoryGroup(dbProfile.email);
       console.log("\nCategory Groups:\n",JSON.stringify(categoryGroups,null,2));
     }
   })();
