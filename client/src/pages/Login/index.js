@@ -14,13 +14,14 @@ import {
 import { login } from "../../utils/API";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
 import { ADD_USER_INFO } from "../../utils/globalStates/actions";
-
+import { useHistory } from "react-router-dom";
 function Login() {
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
   const [_, dispatch] = useAppContext();
+  let history = useHistory();
 
   const validateInput = () => {
     const emailRegex = new RegExp(/^(.+)@(.+)\.(.+)$/i);
@@ -33,6 +34,7 @@ function Login() {
       login(input).then(({ data }) => {
         console.log(data);
         dispatch({ type: ADD_USER_INFO, payload: data });
+        history.push("/overview");
       });
       // session id and user id - useContext
     } else {
