@@ -7,7 +7,7 @@ import Budget from "../pages/Budget/";
 import Login from "../pages/Login/";
 import NavigationBar from "../components/NavigationBar/";
 
-function IsAuthenciated(props) {
+function MainRoutes(props) {
   const [state] = useAppContext();
   return (
     <Switch>
@@ -25,4 +25,4 @@ function IsAuthenciated(props) {
   );
 }
 
-export default IsAuthenciated;
+export default MainRoutes;
