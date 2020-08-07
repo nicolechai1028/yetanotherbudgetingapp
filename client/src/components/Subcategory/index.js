@@ -2,11 +2,13 @@ import React, { useState, useContext } from "react";
 import CurrencyInput from "../CurrentcyInput";
 import Transferpopover from "../../components/TrasnferPopover";
 import Categorycontext from "../../utils/CategoriesContext";
+import ChangeNamePopover from "../ChangeNamePopover/";
 import "./index.css";
 
 function Subcategory(props) {
   const [budgeted, setBudgeted] = useState(props.budgeted);
   //use conrtext for transfer amount between accounts
+
   const categoriesContext = useContext(Categorycontext);
   const handleChange = () => {
     props.updateBudgeted(props.name, budgeted);
@@ -17,7 +19,9 @@ function Subcategory(props) {
   };
   return (
     <div className="top-container border-bottom border-primary ml-5">
-      <div className=" name-item"> {props.name} </div>
+      <div className=" name-item">
+        <ChangeNamePopover currentName={props.name} />
+      </div>
       <div className="input-subcat m-auto">
         <CurrencyInput
           value={budgeted}

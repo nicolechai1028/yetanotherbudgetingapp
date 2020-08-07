@@ -1,8 +1,9 @@
 import React from "react";
 
-const CategoryContext = React.createContext({
+const CategoriesContext = React.createContext({
   categoriesName: [],
+  categories: {},
   transfer: () => {},
 });
 
-export default CategoryContext;
+export default CategoriesContext;

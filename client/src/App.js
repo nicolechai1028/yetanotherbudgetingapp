@@ -10,7 +10,7 @@ import Overview from "./pages/Overview";
 
 function App() {
   return (
-    <>
+    <div className="main-container">
       <Router>
         <NavigationBar />
         <Switch>
@@ -25,7 +25,7 @@ function App() {
           <Route exact path="/budget" component={Budget} />
         </Switch>
       </Router>
-    </>
+    </div>
   );
 }
 

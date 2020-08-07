@@ -3,72 +3,60 @@ import {
   Popover,
   PopoverHeader,
   PopoverBody,
-  Button,
   Form,
-  Input,
   ButtonGroup,
+  Button,
+  Input,
 } from "reactstrap";
-import CurrencyInput from "../CurrentcyInput";
+import "./index.css";
 
-function Transferpopover(props) {
+function ChangeNamePopover(props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [amt, setAmt] = useState(0);
-  const [account, setAccount] = useState("");
+  const [newName, setNewName] = useState(props.currentName);
   const toggle = () => {
     setPopoverOpen(!popoverOpen);
   };
-  let value = 0;
-  const categoriesOptions = props.categories.map((categoryname) => {
-    return <option key={value++}> {categoryname} </option>;
-  });
   //call transfer function from parents and clean up states
   const cleanup = () => {
     setPopoverOpen(false);
-    setAmt(0);
-    setAccount("");
+    setNewName("");
   };
 
   const handleSubmit = (event) => {
-    props.transfer(amt, account);
+    if (newName !== props.currentName) {
+      //Dosomething
+    }
     cleanup();
   };
 
   return (
     <div>
-      <Button
-        id={props.name}
+      <button
+        className="clear-button d"
+        id={props.currentName}
         type="button"
         onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
         }}
       >
-        {/* Add code to change display color to red if negative */}${" "}
-        <span className="">{props.available} </span>
-      </Button>
+        <span className="">{props.currentName} </span>
+      </button>
       <Popover
         placement="bottom"
         isOpen={popoverOpen}
-        target={props.name}
+        target={props.currentName}
         toggle={toggle}
       >
         <PopoverHeader>Transfer</PopoverHeader>
         <PopoverBody>
           <Form onSubmit={handleSubmit}>
-            <CurrencyInput
-              value={amt}
-              onChange={(event) => setAmt(event.target.value)}
-            />
             <Input
-              type="select"
-              value={account}
-              onChange={(event) => setAccount(event.target.value)}
-            >
-              <option disabled defaultValue>
-                Choose Account to Transfer to
-              </option>
-              {categoriesOptions}
-            </Input>
+              type="text"
+              placeholder={props.currentName}
+              value={newName}
+              onChange={(event) => setNewName(event.target.value)}
+            />
             <ButtonGroup>
               <Button
                 className="bg-danger"
@@ -89,4 +77,5 @@ function Transferpopover(props) {
     </div>
   );
 }
-export default Transferpopover;
+
+export default ChangeNamePopover;
