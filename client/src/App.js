@@ -10,7 +10,8 @@ import Home from "./pages/Home/";
 import NavigationBar from "./components/NavigationBar";
 import Login from "./pages/Login/";
 import Register from "./pages/Register/";
-import { UserProvider } from "./utils/globalStates/stateProvider";
+import Overview from "./pages/Overview"
+import { UserProvider} from "./utils/globalStates/stateProvider";
 import IsAuthenticated from "./components/IsAuthenticated";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <UserProvider>
           <NavigationBar />
           <Switch>
+            <Route exact path="/overview" component={Overview}/>
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />

@@ -12,15 +12,16 @@ import {
   CardSubtitle,
 } from "reactstrap";
 import { login } from "../../utils/API";
+import {Redirect} from "react-router-dom"
 import { useAppContext } from "../../utils/globalStates/stateProvider";
-import { ADD_USER_INFO } from "../../utils/globalStates/actions";
+import { ADD_USER_INFO, SET_LOADING } from "../../utils/globalStates/actions";
 
 function Login() {
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
-  const [_, dispatch] = useAppContext();
+  const [state, dispatch] = useAppContext();
 
   const validateInput = () => {
     const emailRegex = new RegExp(/^(.+)@(.+)\.(.+)$/i);
@@ -30,6 +31,7 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateInput()) {
+      dispatch({type:SET_LOADING, payload: true})
       login(input).then(({ data }) => {
         console.log(data);
         dispatch({ type: ADD_USER_INFO, payload: data });
@@ -44,6 +46,8 @@ function Login() {
     setInput({ ...input, [name]: value });
 
   return (
+    <>
+    {state.user ? <Redirect to="/overview"/> : ""}
     <Card
       color=""
       body={true}
@@ -55,7 +59,7 @@ function Login() {
             <h1>Y.A.B.A</h1>
           </CardTitle>
           <CardSubtitle className="text-center">
-            {_.message || "Welcome!"}
+            {state.message || "Welcome!"}
           </CardSubtitle>
 
           <FormGroup>
@@ -85,6 +89,7 @@ function Login() {
         </Form>
       </CardBody>
     </Card>
+    </>
   );
 }
 

@@ -114,7 +114,7 @@ async function checkLogin(query) {
       message: `Welcome ${dbResult.fullName}!!`,
       sessionUUID: sessionUUID,
       firstName: dbResult.firstName,
-      lastname: dbResult.lastName,
+      lastName: dbResult.lastName,
       currency: currency,
     };
     console.log("JSON Response:\n", response);
