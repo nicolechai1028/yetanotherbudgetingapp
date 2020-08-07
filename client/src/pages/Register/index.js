@@ -23,7 +23,7 @@ function Register() {
 
   const validateInput = () => {
     const emailRegex = new RegExp(/^(.+)@(.+)\.(.+)$/i);
-    return emailRegex.test(input.email) && input.password.length > 6;
+    return emailRegex.test(input.email) && input.password.length > 3;
   };
 
   const handleSubmit = (e) => {
@@ -37,6 +37,7 @@ function Register() {
 
   const handleInputChange = ({ target: { name, value } }) =>
     setInput({ ...input, [name]: value });
+
   return (
     <Card
       color=""
@@ -53,6 +54,7 @@ function Register() {
           <FormGroup>
             <Label>First Name</Label>
             <Input
+            onChange={handleInputChange}
               name="firstName"
               type="text"
               placeholder="First Name"
@@ -60,15 +62,20 @@ function Register() {
           </FormGroup>
           <FormGroup>
             <Label>Last Name</Label>
-            <Input name="lastName" type="text" placeholder="Last Name"></Input>
+            <Input
+            onChange={handleInputChange}
+            name="lastName" type="text" placeholder="Last Name"></Input>
           </FormGroup>
           <FormGroup>
             <Label>Email</Label>
-            <Input name="email" type="email" placeholder="Email"></Input>
+            <Input
+            onChange={handleInputChange}
+            name="email" type="email" placeholder="Email"></Input>
           </FormGroup>
           <FormGroup>
             <Label>Password</Label>
             <Input
+            onChange={handleInputChange}
               name="password"
               type="password"
               placeholder="Password"

@@ -7,12 +7,14 @@ import Login from "./pages/Login/";
 import Register from "./pages/Register/";
 import Budget from "./pages/Budget";
 import Overview from "./pages/Overview";
+import { UserProvider } from './utils/globalStates/stateProvider'
 
 function App() {
   return (
     <div className="main-container">
       <Router>
-        <NavigationBar />
+        <UserProvider>
+          <NavigationBar />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
@@ -24,6 +26,7 @@ function App() {
           />
           <Route exact path="/budget" component={Budget} />
         </Switch>
+        </UserProvider>
       </Router>
     </div>
   );

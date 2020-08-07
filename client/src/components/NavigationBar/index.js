@@ -75,7 +75,7 @@ const notLoggedIn = {
   signup: {
     id: 3,
     pages: { "/": true, "/login": true },
-    path: "/signup",
+    path: "/register",
     color: "info",
     display: "Sign Up",
     classes: "mr-5",
