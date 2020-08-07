@@ -36,10 +36,11 @@ const categorySchema = new Schema({
 
 const UserCategoryGroupSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
-  ownerRef: { type: Schema.Types.String, required: true }, // points to te ID of the owner in the UserProfile collection
+  ownerRef: { type: Schema.Types.String, required: true, ref: "UserProfile" }, // points to te ID of the owner in the UserProfile collection
   groupName: { type: Schema.Types.String, required: true },
   categories: [categorySchema],
-  perspective: { // defines if transaction is INFLOW or OUTFLOW type
+  perspective: {
+    // defines if transaction is INFLOW or OUTFLOW type
     type: Schema.Types.String,
     required: true,
     enum: Constants.BUDGET_ACCOUNT_PERSPECTIVES,

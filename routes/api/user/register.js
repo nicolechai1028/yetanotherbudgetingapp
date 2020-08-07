@@ -5,8 +5,10 @@
  * == chikeobi-03 ==                                                                    *
  *   +    Added this History section                                                    *
  *   +    Moved file to route/api/user                                                  *
- *   +                                                                                  *
  *                                                                                      *
+ * == chikeobi-06 ==                                                                    *
+ *   +    Corrected comment that referred to the path as "/api/register" instead of     *
+ *          "/api/user/register"                                                        *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -29,7 +31,7 @@ const db = require("../../../models");
 const Utilities = require("../../../utilities");
 
 /**
- * Matches routes with /api/register
+ * Matches routes with /api/user/register
  * Register route. Success will return the following object:
  *
  *  - status: OK
@@ -43,12 +45,13 @@ const Utilities = require("../../../utilities");
  *  - lastName: <user last name>
  *  - email : <user login email ID>
  *  - password: <user password>
+ *  - currencyCode: <three character currency code> // if not present or not among valid choice, "USD" is used
  */
 router.route("/").post((req, res) => {
   console.log(Utilities.getFullUrl(req));
   console.log(req.body);
 
-  let { firstName, lastName, email, password } = req.body;
+  let { firstName, lastName, email, password,currencyCode } = req.body;
   if (firstName == null || (firstName = firstName.trim()).length == 0) {
     res.json({ status: "ERROR", message: "First Name field is required" });
     return;
@@ -65,6 +68,7 @@ router.route("/").post((req, res) => {
     res.json({ status: "ERROR", message: "Email field is required" });
     return;
   }
+  if (currencyCode == null) currencyCode = "USD";
   // check if email is in the database. If so,
   (async () => {
     try {
@@ -83,6 +87,7 @@ router.route("/").post((req, res) => {
         password: hashedPassword, // hashed password
         isVerified: false,
         emailVerificationId: emailVerificationId,
+        currencyRef: currencyCode,
       };
       dbResult = await db.UserProfile.create(dbModel);
       if (dbResult == null || !dbResult._id) {

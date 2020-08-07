@@ -28,6 +28,7 @@ function Login() {
     e.preventDefault();
     if (validateInput()) {
       login(input);
+      // session id and user id - useContext
     } else {
       alert("invalid input!");
     }
@@ -38,17 +39,16 @@ function Login() {
 
   return (
     <Card
-      color="success"
+      color=""
       body={true}
-      inverse={true}
-      style={{ width: "80%", margin: "auto" }}
+      style={{ width: "80%", margin: "auto", align: "center" }}
     >
       <CardBody>
         <Form className="login-form" onSubmit={handleSubmit}>
-          <CardTitle>
+          <CardTitle className="text-center">
             <h1>Y.A.B.A</h1>
           </CardTitle>
-          <CardSubtitle>Welcome</CardSubtitle>
+          <CardSubtitle className="text-center">Welcome</CardSubtitle>
 
           <FormGroup>
             <Label>Email</Label>
@@ -61,8 +61,7 @@ function Login() {
           </FormGroup>
           <FormGroup>
             <Label>Password</Label>
-            <Input
-              name="password"
+            <Input name="password"
               type="password"
               placeholder="Password"
               onChange={handleInputChange}
