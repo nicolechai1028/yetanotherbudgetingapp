@@ -9,10 +9,6 @@ import NavigationBar from "../components/NavigationBar/";
 
 function IsAuthenciated(props) {
   const [state] = useAppContext();
-  console.log("props ", props);
-  console.log("state", state);
-  const a = state.user ? "here" : "nope";
-  console.log("a ", a);
   return (
     <Switch>
       <Route path="*" component={NavigationBar} />
