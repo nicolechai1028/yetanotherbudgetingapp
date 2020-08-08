@@ -37,7 +37,14 @@
     transform: rotate(360deg);
   }
 }
-
+.clear-button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
 
 .login-form {
   width:100%;

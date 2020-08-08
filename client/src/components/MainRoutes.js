@@ -7,21 +7,24 @@ import Budget from "../pages/Budget/";
 import Login from "../pages/Login/";
 import Expense from "../pages/Expense/";
 import NavigationBar from "../components/NavigationBar/";
+import Expenses from "../pages/Expense/";
+import Register from "../pages/Register/";
+import Home from "../pages/Home/";
 
-function IsAuthenciated(props) {
+function MainRoutes(props) {
   //useEffect hook load user data from session storaeg;
   //send dispatch to add user_info
-  const [state] = useAppContext();
-  console.log("props ", props);
-  console.log("state", state);
-  const a = state.user ? "here" : "nope";
-  console.log("a ", a);
+  const [state, dispatch] = useAppContext();
   return (
     <Switch>
       <Route path="*" component={NavigationBar} />
+      <Route exact path="/" component={Home} />
       <Route exact path="/login" component={Login} />
+      <Route exact path="/register" component={Register} />
+
       {state.user && !state.loading ? (
         <div>
+          <Route exact path="/expense" component={Expenses} />
           <Route exact path="/overview" component={Overview} />
           <Route exact path="/budget" component={Budget} />
           <Route exact path="/expense" component={Expense} />
@@ -33,4 +36,4 @@ function IsAuthenciated(props) {
   );
 }
 
-export default IsAuthenciated;
+export default MainRoutes;

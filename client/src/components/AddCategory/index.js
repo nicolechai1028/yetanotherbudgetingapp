@@ -35,9 +35,12 @@ function AddCategoryModal(props) {
                 setNewName(event.target.value);
               }}
               value={newName}
+              className="my-3"
             />
           </FormGroup>
-          <Button type="submit">Add Category Group</Button>
+          <Button className="mr-3" type="submit">
+            Add Category Group
+          </Button>
           <Button onClick={cleanUp} className="bg-danger">
             Close
           </Button>

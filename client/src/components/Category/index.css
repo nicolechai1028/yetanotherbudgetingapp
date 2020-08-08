@@ -2,7 +2,9 @@
 	border: solid 1px black;
 	border-radius: 10px;
 }
-
+.pointer{
+	cursor: pointer;
+}
 
 
 .variable-container div {
