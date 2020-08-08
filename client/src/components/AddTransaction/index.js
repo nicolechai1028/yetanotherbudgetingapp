@@ -9,7 +9,11 @@ import {
   InputGroupAddon,
   Card,
   CardTitle,
-  CardText
+  CardText,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 
 export const AddTransaction = () => {
@@ -17,6 +21,10 @@ export const AddTransaction = () => {
   const [amount, setAmount] = useState(0);
 
   const { addTransaction } = useContext(GlobalContext);
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggle = () => setDropdownOpen(prevState => !prevState);
 
   const onSubmit = e => {
     e.preventDefault();
@@ -53,10 +61,26 @@ export const AddTransaction = () => {
             placeholder="Enter amount..."
           />
         </InputGroup>
-
-        <Button color="success" style={{ margin: "5px" }}>
-          Add Transaction
-        </Button>
+        <Row className="text-center">
+          <Button color="success" style={{ margin: "5px" }}>
+            Add Transaction
+          </Button>
+          <Dropdown
+            style={{ margin: "5px" }}
+            isOpen={dropdownOpen}
+            toggle={toggle}
+          >
+            <DropdownToggle caret>Dropdown</DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem>Header</DropdownItem>
+              <DropdownItem>Some Action</DropdownItem>
+              <DropdownItem>Action</DropdownItem>
+              <DropdownItem>Foo Action</DropdownItem>
+              <DropdownItem>Bar Action</DropdownItem>
+              <DropdownItem>Quo Action</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </Row>
       </form>
     </Card>
   );

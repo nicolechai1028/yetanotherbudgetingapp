@@ -7,12 +7,6 @@ import Chart from "../components/overviewinfo/ovinfo";
 function Overview({ header }) {
   return (
     <Container className="themed-container" fluid={true}>
-      <Row>
-        <Col sm="12">
-          <Navigation header={header} />
-        </Col>
-      </Row>
-
       <Row style={{ marginLeft: "2rem", marginRight: "2rem" }}>
         <Col xs="6" sm="4">
           <InfoCards />

@@ -19,9 +19,7 @@ export const Transaction = ({ transaction }) => {
         size="sm"
         onClick={() => deleteTransaction(transaction.id)}
         className="delete-btn"
-      >
-        x
-      </Button>
+      ></Button>
     </li>
   );
 };
