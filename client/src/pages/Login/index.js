@@ -14,7 +14,7 @@ import {
 import { login } from "../../utils/API";
 import {Redirect} from "react-router-dom"
 import { useAppContext } from "../../utils/globalStates/stateProvider";
-import { ADD_USER_INFO } from "../../utils/globalStates/actions";
+import { ADD_USER_INFO, SET_LOADING } from "../../utils/globalStates/actions";
 
 function Login() {
   const [input, setInput] = useState({
