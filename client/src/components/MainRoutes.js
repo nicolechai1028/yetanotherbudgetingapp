@@ -10,11 +10,17 @@ import NavigationBar from "../components/NavigationBar/";
 import Expenses from "../pages/Expense/";
 import Register from "../pages/Register/";
 import Home from "../pages/Home/";
+import { ADD_USER_INFO } from "../utils/globalStates/actions";
 
 function MainRoutes(props) {
-  //useEffect hook load user data from session storaeg;
-  //send dispatch to add user_info
   const [state, dispatch] = useAppContext();
+  useEffect(() => {
+    //Check if there is a user in sessionStorage
+    const user = sessionStorage.getItem("user");
+    if (user) {
+      dispatch({ type: ADD_USER_INFO, user: JSON.parse(user), loading: false });
+    }
+  }, [dispatch]);
   return (
     <Switch>
       <Route path="*" component={NavigationBar} />
