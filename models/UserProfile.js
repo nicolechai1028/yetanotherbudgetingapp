@@ -46,8 +46,6 @@ const UserProfileSchema = new Schema({
   currencyRef: { type: Types.String, required: true, default: "USD", ref: "Currency" },
   registerationTimestamp: { type: Schema.Types.Number, required: true, default: Date.now }, // time when the user registered in UTC
   verificationTimestamp: { type: Schema.Types.Number, default: 0 }, // time when the user verified the account in UTC.
-  // **** DEBUG ****
-  level: Schema.Types.Number,
 });
 
 UserProfileSchema.virtual("fullName").get(function () {

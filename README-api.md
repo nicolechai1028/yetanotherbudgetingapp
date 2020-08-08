@@ -223,10 +223,42 @@ A user can create an unlimited number of these accounts Money flows into and out
 > Name will be checked to make sure it does not conflict with another account name (case insensitive, trimmed, multi-spaces removed)
 
 ### <u><span style="color:orange">Category</span></u>
+Upon account verification, each user is given about eleven categories to work with. These categories may be edited or deleted (as long as there are no transactions or budgets that use them). Additionally there are two <b>System</b> categories that the user cannot edit or delete.
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
+| POST      | /api/category/create          | {sessionUUID, categoryName, perspective,subCategory[array[subCategoryName]]}| {status, message,[categoryName,categoryUUID, perspective,subCategory[{subCategoryName,subCategoryUUID}]]  |                                                                               |
+| POST      | /api/category/list            | {sessionUUID, [categoryName, categoryUUID]            | {status, message, [category[category[ ] ]}                                   |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
-|           |                               |                                                       |                                                                   |                                                                               |
+
+### Category Create
+> Matches routes with /api/category/create
+> Create category route
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : "Category with ${count} sub categories created"
+>  - categoryName:
+>  - categoryUUID
+>  - perspective
+>  - subCategory
+>    ``[
+>      {
+>        subCategoryName,
+>        subCategoryUUID
+>      }
+>    ]``
+> 
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+>
+> Expects:
+>  - sessionUUID
+>  - categoryName // must be unique in the user's realm
+>  - perspective
+>  - subCategory[ ] // array of names. Must be unique for this category
+>
 
 ### <u><span style="color:orange">Budget</span></u>
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
@@ -529,5 +561,109 @@ The <b><i>option</i></b> query parameter is optional. It can be one of "<i>close
 {
   "status": "OK",
   "message": "Account closed"
+}
+```
+
+### Category Create Example
+
+- Request
+
+Path: ``/api/category/create``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryName": "Immediate Obligations",
+  "perspective": "OutFlow",
+  "subCategory": ["Rent/Mortgage","Electric","Water","Internet"]
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Category with 4 Sub Categories created",
+  "categoryName": "Immediate Obligations",
+  "perspective": "Outflow",
+  "categoryUUID": "9e76583b-32b3-4341-bc95-2e34e647f178",
+  "subCategory": [
+    {
+      "subCategoryName": "Rent/Mortgage",
+      "subCategoryUUID": "b8b71b00-9361-41c8-888c-d329d260e1b5"
+    },
+    {
+      "subCategoryName": "Electric",
+      "subCategoryUUID": "615842a0-c268-40d5-8c0e-81cb49599e96"
+    },
+    {
+      "subCategoryName": "Water",
+      "subCategoryUUID": "88f9730a-4388-4ddf-8ec7-de1d0d069ae2"
+    },
+    {
+      "subCategoryName": "Internet",
+      "subCategoryUUID": "484213e1-12b6-432c-8b7d-0f787006f6f8"
+    }
+  ]
+}
+```
+
+### Category List Example
+
+- Request
+
+Path: ``/api/category/list``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryName": "Saving" 
+}
+```
+
+- Response:
+
+```json
+{
+  "status": "OK",
+  "message": "Found 1 Categories",
+  "category": [
+    {
+      "categoryName": "Saving",
+      "categoryUUID": "a9ab6d5f-d011-420e-b304-1674d85bc166",
+      "perspective": "Outflow",
+      "subCategory": [
+        {
+            "subCategoryUUID": "e4ec56d0-d4f9-4cc1-a15a-d76559dd2211",
+            "subCategoryName": "Emergency Fund"
+        },
+        {
+            "subCategoryUUID": "6355fcfd-564f-4174-ad64-10580ebe47a8",
+            "subCategoryName": "Retirement"
+        },
+        {
+            "subCategoryUUID": "2d1793c7-1b9c-4e02-aa2e-a939025861c8",
+            "subCategoryName": "Travel/Vacation"
+        },
+        {
+            "subCategoryUUID": "30c1d390-22b3-46a1-b3a1-b55bc34d4b0d",
+            "subCategoryName": "Car Replacement"
+        },
+        {
+            "subCategoryUUID": "db5d14af-4f4c-4c66-823d-88412e856318",
+            "subCategoryName": "College Fund"
+        },
+        {
+            "subCategoryUUID": "0c984966-910e-49f3-8081-fd5f3b69fe20",
+            "subCategoryName": "Long Term Goals"
+        },
+        {
+            "subCategoryUUID": "df5cff32-59bd-4218-b86b-0e0019ffd48b",
+            "subCategoryName": "Short Term Goals"
+        }
+      ]
+    }
+  ]
 }
 ```

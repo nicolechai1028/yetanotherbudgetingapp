@@ -52,14 +52,11 @@ router.route("/").post((req, res) => {
   let newBalance = req.body.balance;
   let newNotes = req.body.notes;
   let accountNewName4Compare;
-  let level = 2;
 
   if (sessionUUID == null || (sessionUUID = sessionUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
   else if (accountUUID == null || (accountUUID = accountUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid accountUUID" };
-  // else if (newAccountName == null || (newAccountName = Utilities.multipleSpaceRemovedTrim(newAccountName)).length == 0)
-  //   response = { status: "ERROR", message: "Missing or invalid Name" };
   if (newAccountName != null) newAccountName = Utilities.multipleSpaceRemovedTrim(newAccountName);
   if (newNotes != null) newNotes = Utilities.multipleSpaceRemovedTrim(newNotes);
 
@@ -72,15 +69,6 @@ router.route("/").post((req, res) => {
     return;
   }
 
-  // ********************* DEBUG ******* Remove!!! **********
-  if (level == 1) {
-    let resp = { status: "DEBUG", message: `Level ${level} Reached` };
-    console.log(resp);
-    res.json(resp);
-    return;
-  }
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
   (async () => {
     try {
       let dbAccount, userProfile, dbResult;
@@ -88,11 +76,6 @@ router.route("/").post((req, res) => {
       if (dbResults != null && dbResults.length != 0) userProfile = dbResults[0];
       // let userProfile = await userProfileController.findBySessionUUID(sessionUUID);
       if (userProfile != null && userProfile.isVerified == true) {
-        // ********************* DEBUG ******* Remove!!! **********
-        level = userProfile.level;
-        console.log(`LEVEL = ${userProfile.level}`);
-        console.log(userProfile);
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         let ownerRef = userProfile._id;
         // load the budget account
@@ -104,15 +87,6 @@ router.route("/").post((req, res) => {
           return;
         }
 
-        // ********************* DEBUG ******* Remove!!! **********
-        if (level == 2) {
-          let resp = { status: "DEBUG", message: `Level ${level} Reached` };
-          console.log(resp);
-          res.json(resp);
-          return;
-        }
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
         // check if user wants to change the name of the account
         if (newAccountName != null) {
           accountNewName4Compare = Utilities.multipleSpaceRemovedTrimLC(newAccountName);
@@ -120,23 +94,19 @@ router.route("/").post((req, res) => {
           let query = { ownerRef: ownerRef, accountName4Compare: accountNewName4Compare };
           dbResults = await db.BudgetAccount.find(query);
 
-          // ********************* DEBUG ******* Remove!!! **********
-          console.log("\n",query);
-          console.log(dbResult);
-
-          if (level == 3) {
-            let resp = { status: "DEBUG", message: `Level ${level} Reached` };
-            console.log(resp);
-            res.json(resp);
-            return;
-          }
-          // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
           if (dbResults != null && dbResults.length != 0) {
-            response = { status: "ERROR", message: "An account with name exists" };
-            console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
-            res.json(response);
-            return;
+            // found a user account with the same name. It should be this one. Otherwise
+            // user is trying to change the name to one already in use
+            dbResult = dbResults[0];
+            if (dbAccount._id != dbResult._id) {
+              response = { status: "ERROR", message: "An account with name exists" };
+              console.log(`\n\n******* Account with the same Name as new Name (${newAccountName}) **********`);
+              console.log(dbResult);
+              console.log("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n");
+              console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
+              res.json(response);
+              return;
+            }
           }
         }
 
@@ -171,15 +141,6 @@ router.route("/").post((req, res) => {
           dbAccount.balance = newBalance;
         }
 
-        // ********************* DEBUG ******* Remove!!! **********
-        if (level == 4) {
-          let resp = { status: "DEBUG", message: `Level ${level} Reached\nUpdate Log:\n${updateLog}` };
-          console.log(resp);
-          res.json(resp);
-          return;
-        }
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
         // if we have to update, lets update
         if (updateRequired == false) {
           response = { status: "OK", message: "Nothing Changed. No update done" };
@@ -198,15 +159,6 @@ router.route("/").post((req, res) => {
             notes: dbAccount.notes,
           };
 
-          // ********************* DEBUG ******* Remove!!! **********
-          if (level == 5) {
-            let resp = { status: "DEBUG", message: `Level ${level} Reached` };
-            console.log(resp);
-            res.json(resp);
-            return;
-          }
-          // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
           // now create a transaction
           if (perspective != null) {
             // get the Category for Adjustment
@@ -223,11 +175,6 @@ router.route("/").post((req, res) => {
                 perspective: perspective,
                 amount: manualAdjustment,
               };
-              // create new transaction
-
-              // ********************* DEBUG ******* Remove!!! **********
-              console.log("\nTransaction Model:\n", xactionModel);
-              // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
               let dbXaction = await db.Transaction.create(xactionModel);
               console.log("\nSaved Transaction:\n", dbXaction);
@@ -252,27 +199,6 @@ router.route("/").post((req, res) => {
           res.json(response);
           return;
         }
-        // let accountName4Compare = Utilities.multipleSpaceRemovedTrimLC(newAccountName);
-        // // check if there is a budget account already with the new name
-        // dbResults = await db.BudgetAccount.find({ ownerRef: ownerRef, accountName4Compare: accountName4Compare });
-        // if (dbResults != null && dbResults.length != 0) {
-        //   response = { status: "ERROR", message: "An account with name exists" };
-        // } else {
-        //   // get the budget account
-        //   dbResults = await db.BudgetAccount.find({ ownerRef: ownerRef, _id: accountUUID });
-        //   if (dbResults == null || dbResults.length == 0) {
-        //     response = { status: "ERROR", message: "Invalid Budget Account ID: account not found" };
-        //   } else {
-        //     // found the correct budgetAccount document
-        //     budgetAccount = dbResults[0];
-        //     let oldName = budgetAccount.name;
-        //     budgetAccount.name = newAccountName;
-        //     budgetAccount.accountName4Compare = Utilities.multipleSpaceRemovedTrimLC(newAccountName);
-        //     await budgetAccount.save();
-        //     let message = `Account name changed from "${oldName}" to "${newAccountName}"`;
-        //     response = { status: "OK", message: message, name: newAccountName };
-        //   }
-        // }
       } else {
         response = { status: "ERROR", message: "Invalid sessionUUID" };
       }

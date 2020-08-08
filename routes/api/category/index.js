@@ -25,9 +25,9 @@ const listRoute = require("./list");
 const modifyRoute = require("./modify");
 // const Route = require("./");
 
-router.use("/create", createRoute);
-router.use("/list", listRoute);
-router.use("/modify", modifyRoute);
+router.use("/create", createRoute); // tested
+router.use("/list", listRoute);     // tested
+router.use("/modify", modifyRoute); // 
 // router.use("/", Route);
 
 module.exports = router;
