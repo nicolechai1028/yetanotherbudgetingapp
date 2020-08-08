@@ -12,6 +12,7 @@ import "./index.css";
 function Budget() {
   const [showModal, setShowModal] = useState(false);
   const transfer = (amt, fromCatGrp, fromCat, toCatGrp, toCat) => {};
+  console.log("here budget");
   const [categoryGroups, setCategoryGroup] = useState({
     categoriesName: ["Stocks", "Saving"],
     categoryGroups: [

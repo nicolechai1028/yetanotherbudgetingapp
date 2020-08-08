@@ -14,14 +14,14 @@ import {
 import { login } from "../../utils/API";
 import {Redirect} from "react-router-dom"
 import { useAppContext } from "../../utils/globalStates/stateProvider";
-import { ADD_USER_INFO, SET_LOADING } from "../../utils/globalStates/actions";
+import { ADD_USER_INFO } from "../../utils/globalStates/actions";
 
 function Login() {
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
-  const [state, dispatch] = useAppContext();
+  const [ state, dispatch] = useAppContext();
 
   const validateInput = () => {
     const emailRegex = new RegExp(/^(.+)@(.+)\.(.+)$/i);
@@ -36,7 +36,7 @@ function Login() {
         console.log(data);
         dispatch({ type: ADD_USER_INFO, payload: data });
       });
-      // session id and user id - useContext
+   
     } else {
       alert("invalid input!");
     }
