@@ -1,5 +1,5 @@
 import React, { useReducer, useContext, createContext } from "react";
-import { TRANSFER_BALANCE, ADD_USER_INFO } from "./actions";
+import { TRANSFER_BALANCE, ADD_USER_INFO, RE_AUTHENTICATE } from "./actions";
 
 const AppContext = createContext({});
 const { Provider } = AppContext;
@@ -10,7 +10,8 @@ const reducer = (state, action) => {
     case TRANSFER_BALANCE:
       return { ...state };
     case ADD_USER_INFO: {
-      return { ...state, user: { ...action.payload } };
+      //set user in session storage
+      return { ...state, user: { ...action.payload }, loading: false };
     }
     default:
       throw new Error("Error in reducer.");
@@ -18,7 +19,9 @@ const reducer = (state, action) => {
 };
 
 const UserProvider = ({ value = {}, ...props }) => {
-  const [state, dispatch] = useReducer(reducer, {});
+  const [state, dispatch] = useReducer(reducer, {
+    loading: false
+  });
 
   return <Provider value={[state, dispatch]} {...props} />;
 };
