@@ -1,6 +1,11 @@
 import React, { useReducer, useContext, createContext } from "react";
 
-import { TRANSFER_BALANCE, ADD_USER_INFO, CHECK_USER_INFO, SET_LOADING } from "./actions";
+import {
+  TRANSFER_BALANCE,
+  ADD_USER_INFO,
+  CHECK_USER_INFO,
+  SET_LOADING,
+} from "./actions";
 
 const AppContext = createContext({});
 const { Provider } = AppContext;
@@ -10,17 +15,14 @@ const reducer = (state, action) => {
   switch (action.type) {
     case TRANSFER_BALANCE:
       return { ...state };
-    case ADD_USER_INFO: {
-
-      localStorage.setItem("token", action.payload.sessionUUID);
-      return { ...state, user: { ...action.payload }, loading:false };
-    }
+    case ADD_USER_INFO:
+      sessionStorage.setItem("user", JSON.stringify(action.payload));
+      return { ...state, user: { ...action.payload }, loading: false };
     case SET_LOADING: {
-      return {...state, loading: action.payload}
+      return { ...state, loading: action.payload };
     }
-    case CHECK_USER_INFO: {
-
-    }
+    case CHECK_USER_INFO:
+      return;
     default:
       throw new Error("Error in reducer.");
   }
@@ -29,7 +31,7 @@ const reducer = (state, action) => {
 const UserProvider = ({ value = {}, ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
     user: null,
-    loading: false
+    loading: false,
   });
 
   return <Provider value={[state, dispatch]} {...props} />;
