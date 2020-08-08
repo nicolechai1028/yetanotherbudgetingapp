@@ -6,9 +6,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f9f9f9;
-  background-image: linear-gradient(315deg, #f9f9f9 0%, #02a388 74%);
+  background-image: linear-gradient(315deg, var(--var3) 0%, var(--var4) 90%);
+  --var1: #57cc99;
+  --var2: #80ed99;
+  --var3: #0c879c;
+  --var4: #c7f9cc;
+  --var5: #f7c1bb;
 }
 
 code {

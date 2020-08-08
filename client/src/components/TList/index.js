@@ -1,10 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Transaction } from "../../components/Transaction";
-import { Table, Card } from "reactstrap";
+import { Table, Card, Container } from "reactstrap";
 import { GlobalContext } from "../../context/GlobalState";
-import axios from "axios";
-
-const URL = "https://jsonplaceholder.typicode.com/users";
+import { transactions } from "../../utils/API";
 
 export const TransactionList = () => {
   const [employees, setEmployees] = useState([]);
@@ -14,25 +12,19 @@ export const TransactionList = () => {
   }, []);
 
   const getData = async () => {
-    const response = await axios.get(URL);
+    const response = await transactions();
     setEmployees(response.data);
   };
 
-  const removeData = id => {
-    axios.delete(`${URL}/${id}`).then(res => {
-      const del = employees.filter(employee => id !== employee.id);
-      setEmployees(del);
-    });
-  };
+  // const removeData = id => {
+  //   axios.delete(`${URL}/${id}`).then(res => {
+  //     const del = employees.filter(employee => id !== employee.id);
+  //     setEmployees(del);
+  //   });
+  // };
 
   const renderHeader = () => {
-    let headerElement = [
-      "date",
-      "payee",
-      "category",
-      "transaction",
-      "operation"
-    ];
+    let headerElement = ["date", "payee", "category", "transaction flow"];
 
     return headerElement.map((key, index) => {
       return <th key={index}>{key.toUpperCase()}</th>;
@@ -49,11 +41,6 @@ export const TransactionList = () => {
             <td>{name}</td>
             <td>{email}</td>
             <td>{phone}</td>
-            <td className="operation">
-              <button className="button" onClick={() => removeData(id)}>
-                Delete
-              </button>
-            </td>
           </tr>
         );
       })
@@ -61,14 +48,16 @@ export const TransactionList = () => {
   };
 
   return (
-    <Card style={{ marginTop: "1rem" }}>
-      <Table bordered>
-        <thead>
-          <tr>{renderHeader()}</tr>
-        </thead>
-        <tbody>{renderBody()}</tbody>
-      </Table>
-    </Card>
+    <Container-fluid>
+      <Card style={{ marginTop: "1rem" }}>
+        <Table bordered>
+          <thead>
+            <tr>{renderHeader()}</tr>
+          </thead>
+          <tbody>{renderBody()}</tbody>
+        </Table>
+      </Card>
+    </Container-fluid>
   );
 };
 

@@ -2,14 +2,12 @@ import React, { useState, useContext } from "react";
 import { GlobalContext } from "../../context/GlobalState";
 import {
   Row,
-  Col,
   Button,
   Input,
   InputGroup,
   InputGroupAddon,
   Card,
   CardTitle,
-  CardText,
   Dropdown,
   DropdownToggle,
   DropdownMenu,
@@ -40,46 +38,50 @@ export const AddTransaction = () => {
 
   return (
     <Card body style={{ height: "25vh" }}>
-      <CardTitle>
+      <CardTitle className="text-center">
         <h3>Add New Transactions</h3>
       </CardTitle>
       <form onSubmit={onSubmit}>
-        <InputGroup style={{ margin: "5px" }}>
-          <Input
-            type="text"
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder="Enter transaction name..."
-          />
-        </InputGroup>
-        <InputGroup style={{ margin: "5px" }}>
-          <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-          <Input
-            type="number"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            placeholder="Enter amount..."
-          />
-        </InputGroup>
-        <Row className="text-center">
-          <Button color="success" style={{ margin: "5px" }}>
+        <Row>
+          <InputGroup style={{ margin: "5px 15px 5px 15px" }}>
+            <Input
+              type="text"
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder="Enter Payee Name"
+            />
+            <Dropdown
+              style={{ marginLeft: "5px" }}
+              isOpen={dropdownOpen}
+              toggle={toggle}
+            >
+              <DropdownToggle caret>Dropdown</DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem>Header</DropdownItem>
+                <DropdownItem>Some Action</DropdownItem>
+                <DropdownItem>Action</DropdownItem>
+                <DropdownItem>Foo Action</DropdownItem>
+                <DropdownItem>Bar Action</DropdownItem>
+                <DropdownItem>Quo Action</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </InputGroup>
+        </Row>
+        <Row>
+          <InputGroup style={{ margin: "5px 15px 5px 15px" }}>
+            <InputGroupAddon addonType="prepend">$</InputGroupAddon>
+            <Input
+              type="number"
+              value={amount}
+              onChange={e => setAmount(e.target.value)}
+              placeholder="Enter amount..."
+            />
+          </InputGroup>
+        </Row>
+        <Row className="d-flex justify-content-center">
+          <Button color="success" style={{ margin: "3px" }}>
             Add Transaction
           </Button>
-          <Dropdown
-            style={{ margin: "5px" }}
-            isOpen={dropdownOpen}
-            toggle={toggle}
-          >
-            <DropdownToggle caret>Dropdown</DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem>Header</DropdownItem>
-              <DropdownItem>Some Action</DropdownItem>
-              <DropdownItem>Action</DropdownItem>
-              <DropdownItem>Foo Action</DropdownItem>
-              <DropdownItem>Bar Action</DropdownItem>
-              <DropdownItem>Quo Action</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
         </Row>
       </form>
     </Card>
