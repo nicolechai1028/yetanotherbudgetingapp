@@ -60,7 +60,7 @@ function ChangeNamePopover(props) {
             />
             <ButtonGroup>
               <Button
-                className="bg-danger"
+                className="bg-danger mr-3"
                 onClick={() => {
                   cleanup();
                   toggle();

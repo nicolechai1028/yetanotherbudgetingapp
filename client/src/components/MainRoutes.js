@@ -14,7 +14,7 @@ import Home from "../pages/Home/";
 function MainRoutes(props) {
   //useEffect hook load user data from session storaeg;
   //send dispatch to add user_info
-  const [state] = useAppContext();
+  const [state, dispatch] = useAppContext();
   return (
     <Switch>
       <Route path="*" component={NavigationBar} />
