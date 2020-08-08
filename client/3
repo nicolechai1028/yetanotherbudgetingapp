@@ -35,7 +35,7 @@ function AddCategoryModal(props) {
                 setNewName(event.target.value);
               }}
               value={newName}
-              className="my-3"
+              className="my-4"
             />
           </FormGroup>
           <Button className="mr-3" type="submit">

@@ -18,7 +18,7 @@ function Subcategory(props) {
     categoriesContext.transfer(amount, props.name, transferToAcct);
   };
   return (
-    <div className="top-container border-bottom border-primary ml-5">
+    <div className="top-container border-bottom border-primary ml-3">
       <div className=" name-item">
         <ChangeNamePopover currentName={props.name} />
       </div>

@@ -9,18 +9,22 @@ import {
   ButtonGroup,
 } from "reactstrap";
 import CurrencyInput from "../CurrentcyInput";
+import "./index.css";
 
 function Transferpopover(props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [amt, setAmt] = useState(0);
   const [account, setAccount] = useState("");
+
   const toggle = () => {
     setPopoverOpen(!popoverOpen);
   };
+
   let value = 0;
   const categoriesOptions = props.categories.map((categoryname) => {
     return <option key={value++}> {categoryname} </option>;
   });
+
   //call transfer function from parents and clean up states
   const cleanup = () => {
     setPopoverOpen(false);
@@ -42,9 +46,10 @@ function Transferpopover(props) {
           event.stopPropagation();
           event.preventDefault();
         }}
+        className="clear-button"
       >
-        {/* Add code to change display color to red if negative */}${" "}
-        <span className="">{props.available} </span>
+        {/* Add code to change display color to red if negative */}
+        <span className="text-size">${props.available} </span>
       </Button>
       <Popover
         placement="bottom"
@@ -60,6 +65,7 @@ function Transferpopover(props) {
               onChange={(event) => setAmt(event.target.value)}
             />
             <Input
+              className="my-3"
               type="select"
               value={account}
               onChange={(event) => setAccount(event.target.value)}
@@ -71,7 +77,7 @@ function Transferpopover(props) {
             </Input>
             <ButtonGroup>
               <Button
-                className="bg-danger"
+                className="bg-danger mr-3"
                 onClick={() => {
                   cleanup();
                   toggle();

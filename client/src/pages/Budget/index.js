@@ -63,9 +63,11 @@ function Budget() {
   };
   return (
     <div className="page-container ">
-      <div className="sub-container ">
-        <div className="align-items-center">
-          <Button onClick={toggle}>Add Category Group </Button>
+      <div className="sub-container">
+        <div className="align-items-center mx-5">
+          <Button onClick={toggle} className="bg-success ">
+            Add Category Group
+          </Button>
           <AddCategoryModal
             text="Add Category Group"
             label="New Category Group"
@@ -74,21 +76,22 @@ function Budget() {
             handleSubmit={addCategoryGroup}
           />
         </div>
-        <div className="tobe-budgeted-container d-flex justify-content-center py-2">
-          <p className="text-bold text-white mr-5">To be budgeted </p>
+        <div className="tobe-budgeted-container py-2">
+          <p className="text-p mr-5 d ">To be budgeted: </p>
           <Transferpopover
             name={"toBeBudgeted"}
             categories={categoryGroups.categoriesName}
             available={toBeBudgeted}
             transfer={noBudgetedToCategory}
+            className=""
           />
         </div>
       </div>
       <div className="top-container">
-        <div className="name-item font-weight-bold"> Category Name </div>
-        <div className="justify-self-center font-weight-bold"> Budgeted </div>
-        <div className="justify-self-center font-weight-bold"> Spent </div>
-        <div className="justify-self-center font-weight-bold"> Available </div>
+        <div className="name-item "> Category Name </div>
+        <div className="column-name"> Budgeted </div>
+        <div className="column-name"> Spent </div>
+        <div className="column-name"> Available </div>
       </div>
       <CategoriesContext.Provider value={{ ...categoryGroups, transfer }}>
         {categoriesDisplay}

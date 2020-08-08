@@ -48,7 +48,7 @@ function ChangeNamePopover(props) {
         target={props.currentName}
         toggle={toggle}
       >
-        <PopoverHeader>Transfer</PopoverHeader>
+        <PopoverHeader>Rename</PopoverHeader>
         <PopoverBody>
           <Form onSubmit={handleSubmit}>
             <Input
@@ -56,6 +56,7 @@ function ChangeNamePopover(props) {
               placeholder={props.currentName}
               value={newName}
               onChange={(event) => setNewName(event.target.value)}
+              className="my-3"
             />
             <ButtonGroup>
               <Button
