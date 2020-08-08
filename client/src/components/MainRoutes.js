@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Switch, Route, Redirect } from "react-router-dom";
 
 import { useAppContext } from "../utils/globalStates/stateProvider";
@@ -12,6 +12,8 @@ import Register from "../pages/Register/";
 import Home from "../pages/Home/";
 
 function MainRoutes(props) {
+  //useEffect hook load user data from session storaeg;
+  //send dispatch to add user_info
   const [state] = useAppContext();
   return (
     <Switch>
@@ -20,7 +22,7 @@ function MainRoutes(props) {
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
 
-      {state.user ? (
+      {state.user && !state.loading ? (
         <div>
           <Route exact path="/expense" component={Expenses} />
           <Route exact path="/overview" component={Overview} />

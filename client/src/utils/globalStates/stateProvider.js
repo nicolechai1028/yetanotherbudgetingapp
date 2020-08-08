@@ -1,4 +1,5 @@
 import React, { useReducer, useContext, createContext } from "react";
+
 import { TRANSFER_BALANCE, ADD_USER_INFO, CHECK_USER_INFO, SET_LOADING } from "./actions";
 
 const AppContext = createContext({});
@@ -10,6 +11,7 @@ const reducer = (state, action) => {
     case TRANSFER_BALANCE:
       return { ...state };
     case ADD_USER_INFO: {
+
       localStorage.setItem("token", action.payload.sessionUUID);
       return { ...state, user: { ...action.payload }, loading:false };
     }
