@@ -19,18 +19,15 @@ function MainRoutes(props) {
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
 
-      <Route exact path="/expense" component={Expenses} />
-      <Route exact path="/overview" component={Overview} />
-      <Route exact path="/budget" component={Budget} />
-      {/*state.user ? ( 
-				<div> 
+      {state.user ? (
+        <div>
           <Route exact path="/expense" component={Expenses} />
           <Route exact path="/overview" component={Overview} />
           <Route exact path="/budget" component={Budget} />
-        /*</div>
+        </div>
       ) : (
         <Redirect to="/login" />
-			)} */}
+      )}
     </Switch>
   );
 }
