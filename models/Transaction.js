@@ -57,16 +57,6 @@ const TransactionSchema = new Schema({
   },
 });
 
-function formatTransactionDateFromUTC() {
-  let today = new Date();
-  let value = "" + today.getFullYear();
-  let val = today.getMonth() + 1;
-  if (val < 10) value += "0";
-  value += val;
-  if ((val = today.getDate) < 10) value += "0";
-  value += val;
-  return Number.parseInt(value);
-}
 // setup virtual field "dateStamp" @see https://futurestud.io/tutorials/understanding-virtuals-in-mongoose
 TransactionSchema.virtual("dateStamp").get(function () {
   if (this.date.year == null || this.date.month == null || this.date.day == null) return 0;
