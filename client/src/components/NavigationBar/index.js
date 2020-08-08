@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Button, Navbar, NavbarBrand, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
-const Navigation = (props) => {
+const Navigation = props => {
   const { pathname } = useLocation();
   const [state] = useAppContext();
   return (
@@ -11,6 +11,7 @@ const Navigation = (props) => {
       className="border-bottom border-dark d-flex "
       color="light"
       expand="md"
+      style={{ margin: "1rem" }}
     >
       <NavbarBrand tag={Link} to={"/"}>
         Y.A.B.A
@@ -18,14 +19,14 @@ const Navigation = (props) => {
       {/*Check if there is user info in state*/}
       {!("user" in state) ? (
         <div className="ml-auto ">
-          {Object.keys(notLoggedIn).map((key) => {
+          {Object.keys(notLoggedIn).map(key => {
             const btn = notLoggedIn[key];
             return button(btn, pathname);
           })}
         </div>
       ) : (
         <div className="m-auto">
-          {Object.keys(loggedIn).map((key) => {
+          {Object.keys(loggedIn).map(key => {
             const btn = loggedIn[key];
             return button(btn, pathname);
           })}
@@ -59,7 +60,7 @@ const notLoggedIn = {
     path: "/",
     color: "info",
     display: "Home",
-    classes: "mr-5",
+    classes: "mr-5"
   },
   login: {
     id: 2,
@@ -67,7 +68,7 @@ const notLoggedIn = {
     path: "/login",
     color: "info",
     display: "Log In",
-    classes: "mr-5",
+    classes: "mr-5"
   },
   signup: {
     id: 3,
@@ -75,8 +76,8 @@ const notLoggedIn = {
     path: "/register",
     color: "info",
     display: "Sign Up",
-    classes: "mr-5",
-  },
+    classes: "mr-5"
+  }
 };
 
 const loggedIn = {
@@ -86,7 +87,7 @@ const loggedIn = {
     path: "/overview",
     color: "success",
     display: "Overview",
-    classes: "ml-5",
+    classes: "ml-5"
   },
   expense: {
     id: 2,
@@ -94,7 +95,7 @@ const loggedIn = {
     path: "/expense",
     color: "success",
     display: "Expenses",
-    classes: "ml-5",
+    classes: "ml-5"
   },
   budget: {
     id: 3,
@@ -102,7 +103,7 @@ const loggedIn = {
     path: "/budget",
     color: "success",
     display: "Budget",
-    classes: "ml-5",
+    classes: "ml-5"
   },
   logout: {
     id: 4,
@@ -110,7 +111,7 @@ const loggedIn = {
     path: "/logout",
     color: "danger",
     display: "Log Out",
-    classes: "ml-5",
-  },
+    classes: "ml-5"
+  }
 };
 export default Navigation;
