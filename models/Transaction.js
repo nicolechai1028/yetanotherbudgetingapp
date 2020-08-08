@@ -43,12 +43,6 @@ const TransactionSchema = new Schema({
   subCategoryRef: { type: Schema.Types.String, required: true, ref: "UserCategoryGroup.categories" }, // reference to the UserBudgetCategoryGroup.Category._id
   memo: { type: Schema.Types.String },
   amount: { type: Schema.Types.Number, default: 0.0 },
-  // transactionType: { type: Schema.Types.String, default: "OUTFLOW", enum: ["OUTFLOW", "INFLOW"] },
-  // date: {
-  //   year: Schema.Types.Number,
-  //   month: Schema.Types.Number,
-  //   day: Schema.Types.Number,
-  // },
   date: {
     type: Schema.Types.Number,
     required: true,
