@@ -1,2 +1,4 @@
 export const TRANSFER_BALANCE = "TRANSFER_BALANCE";
 export const ADD_USER_INFO = "ADD_USER_INFO";
+export const CHECK_USER_INFO = "CHECK_USER_INFO";
+export const SET_LOADING = "SET_LOADING";
