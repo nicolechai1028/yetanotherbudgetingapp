@@ -26,7 +26,13 @@ export const TransactionList = () => {
   };
 
   const renderHeader = () => {
-    let headerElement = ["date", "payee", "category", "phone", "operation"];
+    let headerElement = [
+      "date",
+      "payee",
+      "category",
+      "transaction",
+      "operation"
+    ];
 
     return headerElement.map((key, index) => {
       return <th key={index}>{key.toUpperCase()}</th>;

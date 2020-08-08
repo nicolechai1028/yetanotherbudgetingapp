@@ -2,12 +2,9 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
+ * == chikeobi-07 ==                                                                    *
+ *   +  Added this History section                                                      *
  *   +                                                                                  *
- *   +                                                                                  *
- *                                                                                      *
- *                                                                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -18,23 +15,36 @@
  ****************************************************************************************
  */
 
-const path = require("path");
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
 const router = require("express").Router();
-const apiRoutesUser = require("./api/user");
-const apiRoutesBudget = require("./api/budget");
-const apiRoutesBudgetAccount = require("./api/budgetAccount");
-const apiRoutesCategory = require("./api/category");
+const db = require("../../../models");
+const Utilities = require("../../../utilities");
+const Constants = require("../../../constants");
 
-// @see https://scotch.io/tutorials/keeping-api-routing-clean-using-express-routers
-// API Routes
-router.use("/api/user", apiRoutesUser);
-router.use("/api/budget", apiRoutesBudget);
-router.use("/api/budgetAccount", apiRoutesBudgetAccount);
-router.use("/api/category", apiRoutesCategory);
+/**
+ * Matches routes with /api/category/modify
+ * Category modify route. 
+ *
+ * Success will return the following object:
+ *
+ *  - status: OK
+ *  - message : World Currencies
+ *
+ * Error will return:
+ *  - status : ERROR
+ *  - message : <Error message>
 
-// If no API routes are hit, send the React app
-router.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
+ * Expects:
+ *  - sessionUUID
+ */
+router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
+  console.log(req.body);
 });
 
 module.exports = router;

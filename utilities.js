@@ -222,10 +222,18 @@ function multipleSpaceRemovedTrim(inputString) {
   return retval;
 }
 
-function multipleSpaceRemovedTrimLC(inputString) {
-  let retval = inputString;
-  if (inputString != null && typeof inputString == "string") {
-    retval = inputString.trim().replace(/ +/g, " ").toLowerCase();
+function multipleSpaceRemovedTrimLC(inputObj) {
+  let retval = inputObj;
+  if (inputObj) {
+    if (typeof inputObj == "string") {
+      retval = inputObj.trim().replace(/ +/g, " ").toLowerCase();
+    } else if (Array.isArray(inputObj)) {
+      retval = [];
+      inputObj.map((ele) => {
+        if (typeof ele == "string") retval.push(ele.trim().replace(/ +/g, " ").toLowerCase());
+        else retval.push(ele);
+      });
+    }
   }
   return retval;
 }
@@ -271,6 +279,48 @@ function startAndInitializeDatabase() {
   }
 }
 
+/**
+ * Formats the optional UTC input into a number derived from YYYYMMDD of the UTC time input.
+ * If the utcTime input is "null" or not a number, then the current UTC time is used
+ * @param {Number} utcTime
+ */
+function formatTransactionDateFromUTC(utcTime) {
+  if (utcTime == null || Number.isNaN(utcTime)) utcTime = Date.now();
+  let today = new Date(utcTime);
+  let value = "" + today.getFullYear();
+  let val = today.getMonth() + 1;
+  if (val < 10) value += "0";
+  value += val;
+  if ((val = today.getDate()) < 10) value += "0";
+  value += val;
+
+  console.log("\n\nTransaction Date: ", value, " ParseInt: ", Number.parseInt(value));
+  return Number.parseInt(value);
+}
+
+function roundToOneHundredthFin(x) {
+  return (Math.round(100 * x) / 100).toFixed(2);
+}
+
+function findDuplicateInArrayTrimLC(inputArray) {
+  let object = {};
+  let result = [];
+
+  inputArray.forEach(function (item) {
+    item = multipleSpaceRemovedTrimLC(item);
+    if (!object[item]) object[item] = 0;
+    object[item] += 1;
+  });
+
+  for (let prop in object) {
+    if (object[prop] >= 2) {
+      result.push(prop);
+    }
+  }
+  if (result.length == 0) return;
+  return result;
+}
+
 module.exports = {
   getFullUrl,
   generateUUID,
@@ -282,4 +332,7 @@ module.exports = {
   multipleSpaceRemovedTrim,
   multipleSpaceRemovedTrimLC,
   startAndInitializeDatabase,
+  formatTransactionDateFromUTC,
+  roundToOneHundredthFin,
+  findDuplicateInArrayTrimLC,
 };
