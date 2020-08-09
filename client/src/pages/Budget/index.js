@@ -4,15 +4,16 @@ import { Button } from "reactstrap";
 import AddCategoryModal from "../../components/AddCategory/";
 import Category from "../../components/Category/";
 import Transferpopover from "../../components/TrasnferPopover/";
-import { BudgetAPI } from "../../utils/API";
 import CategoriesContext from "../../utils/CategoriesContext";
+import { createCategoryAPI } from "../../utils/CategoryAPI";
+import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 import "./index.css";
 
 function Budget() {
   const [showModal, setShowModal] = useState(false);
+  const [state, dispatch] = useAppContext();
   const transfer = (amt, fromCatGrp, fromCat, toCatGrp, toCat) => {};
-  console.log("here budget");
   const [categoryGroups, setCategoryGroup] = useState({
     categoriesName: ["Stocks", "Saving"],
     categoryGroups: [
@@ -50,11 +51,19 @@ function Budget() {
   const toggle = () => {
     setShowModal(!showModal);
   };
+
   const addCategoryGroup = (name) => {
     //do something and make popup
     setShowModal(false);
-
     console.log(name);
+    createCategoryAPI(
+      state.user.sessionUUID,
+      name,
+      "perspective",
+      "subCategory Array"
+    ).then((res) => {
+      console.log(res);
+    });
   };
   //used to added from the top not budgeted amount
   const noBudgetedToCategory = (amt, toCatGrp, toCat) => {

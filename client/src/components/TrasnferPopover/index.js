@@ -15,7 +15,6 @@ function Transferpopover(props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [amt, setAmt] = useState(0);
   const [account, setAccount] = useState("");
-
   const toggle = () => {
     setPopoverOpen(!popoverOpen);
   };

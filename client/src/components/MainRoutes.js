@@ -10,7 +10,8 @@ import NavigationBar from "../components/NavigationBar/";
 import Expenses from "../pages/Expense/";
 import Register from "../pages/Register/";
 import Home from "../pages/Home/";
-import { ADD_USER_INFO } from "../utils/globalStates/actions";
+import { ADD_USER_INFO, REMOVE_USER } from "../utils/globalStates/actions";
+import { logoutAPI } from "../utils/API";
 
 function MainRoutes(props) {
   const [state, dispatch] = useAppContext();
@@ -21,13 +22,23 @@ function MainRoutes(props) {
       dispatch({ type: ADD_USER_INFO, user: JSON.parse(user), loading: false });
     }
   }, [dispatch]);
+
+  const logout = () => {
+    if (state.user.sessionUUID) {
+      logoutAPI(state.user.sessionUUID);
+      dispatch({ type: REMOVE_USER });
+      sessionStorage.removeItem("user");
+      return <Redirect to="/" />;
+    }
+  };
+
   return (
     <Switch>
       <Route path="*" component={NavigationBar} />
       <Route exact path="/" component={Home} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
-
+      <Route exact path="/logout" component={logout} />
       {state.user && !state.loading ? (
         <div>
           <Route exact path="/expense" component={Expenses} />
