@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 
 import { useAppContext } from "../utils/globalStates/stateProvider";
 import Overview from "../pages/Overview";
@@ -33,23 +33,25 @@ function MainRoutes(props) {
   };
 
   return (
-    <Switch>
-      <Route path="*" component={NavigationBar} />
-      <Route exact path="/" component={Home} />
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/register" component={Register} />
-      <Route exact path="/logout" component={logout} />
-      {state.user && !state.loading ? (
-        <div>
-          <Route exact path="/expense" component={Expenses} />
-          <Route exact path="/overview" component={Overview} />
-          <Route exact path="/budget" component={Budget} />
-          <Route exact path="/expense" component={Expense} />
-        </div>
-      ) : (
-        <Redirect to="/login" />
-      )}
-    </Switch>
+    <BrowserRouter>
+      <NavigationBar />
+      <Switch>
+        <Route exact path={["", "/"]} component={Home} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/logout" component={logout} />
+        {state.user && !state.loading ? (
+          <div>
+            <Route exact path="/expense" component={Expenses} />
+            <Route exact path="/overview" component={Overview} />
+            <Route exact path="/budget" component={Budget} />
+            <Route exact path="/expense" component={Expense} />
+          </div>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Switch>
+    </BrowserRouter>
   );
 }
 
