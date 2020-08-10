@@ -3,13 +3,15 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +    Moved file to route/api/user                                                  *
+ *   +  Added this History section                                                      *
+ *   +  Moved file to route/api/user                                                    *
  *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Corrected comment that referred to the path as "/api/register" instead of     *
- *          "/api/user/register"                                                        *
+ *   +  Corrected comment that referred to the path as "/api/register" instead of       *
+ *        "/api/user/register"                                                          *
  *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   +  Added check for "currencyCode"                                                  *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -51,7 +53,7 @@ router.route("/").post((req, res) => {
   console.log(Utilities.getFullUrl(req));
   console.log(req.body);
 
-  let { firstName, lastName, email, password,currencyCode } = req.body;
+  let { firstName, lastName, email, password, currencyCode } = req.body;
   if (firstName == null || (firstName = firstName.trim()).length == 0) {
     res.json({ status: "ERROR", message: "First Name field is required" });
     return;
@@ -68,10 +70,14 @@ router.route("/").post((req, res) => {
     res.json({ status: "ERROR", message: "Email field is required" });
     return;
   }
-  if (currencyCode == null) currencyCode = "USD";
+  if (!currencyCode) currencyCode = "USD";
+  currencyCode = currencyCode.toUpperCase();
+
   // check if email is in the database. If so,
   (async () => {
     try {
+      let dbCurrency = await db.Currency.findById(currencyCode);
+      if (!dbCurrency) currencyCode = "USD";
       let dbResult = await db.UserProfile.find({ email: email });
       console.log(dbResult);
       if (dbResult != null && dbResult.length != 0) {
@@ -110,6 +116,5 @@ router.route("/").post((req, res) => {
     }
   })();
 });
-
 
 module.exports = router;

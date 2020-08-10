@@ -2,12 +2,9 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Added "Currency" collection                                                   *
- *                                                                                      *
+ *   +    Added this History section                                                    *
+ *        Defined Schema                                                                *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -19,14 +16,28 @@
  ****************************************************************************************
  */
 
-// Exporting an object containing all of our models
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const Types = mongoose.Schema.Types;
 
-module.exports = {
-  BudgetAccount: require("./BudgetAccount"),
-  GenericCategoryGroup: require("./GenericCategoryGroup"),
-  Transaction: require("./Transaction"),
-  UserCategoryGroup: require("./UserCategoryGroup"),
-  UserProfile: require("./UserProfile"),
-  Currency: require("./Currency"),
-  Budget: require("./Budget"),
-};
+const { v4 } = require("uuid");
+const uuidv4 = v4;
+
+const SubCategoryValuesSchema = new Schema({
+  _id: { type: Types.String, default: uuidv4 },
+  subCategoryRef: { type: Types.String, required: true },
+  budgeted: { type: Types.Number, required: true, default: 0.0 },
+  activity: { type: Types.Number, required: true, default: 0.0 },
+});
+
+const BudgetSchema = new Schema({
+  _id: { type: Types.String, default: uuidv4 },
+  yearMonth: { type: Types.Number, required: true, min: 200001, max: 205012 },
+  ownerRef: { type: Types.String, required: true, ref: "UserProfile" },
+  categoryRef: { type: Types.String, required: true, ref: "UserCategoryGroup" },
+  subCategoryValues: [SubCategoryValuesSchema],
+});
+
+const Budget = mongoose.model("Budget", BudgetSchema);
+
+module.exports = Budget;

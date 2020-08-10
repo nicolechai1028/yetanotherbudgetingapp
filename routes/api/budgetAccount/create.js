@@ -44,7 +44,7 @@ const Constants = require("../../../constants");
  *  Optional if balance <> 0
  *  - transaction:
  *  {
- *     - id: <transactionID>
+ *     - transactionUUID: <transactionID>
  *     - payee: "Starting Balance"
  *     - accountUUID: <id of created account>
  *     - categoryName: <Name of category Group>
@@ -75,7 +75,7 @@ router.route("/").post((req, res) => {
     balance = 0.0;
   } else if (accountType == null || (accountType = accountType.trim()).length == 0) {
     response = { status: "ERROR", message: "Missing or invalid Account Type" };
-  } else if (Constants.BUDGET_ACCOUNT_TYPES.find((element) => element == accountType) == null) {
+  } else if (Constants.ACCOUNT_TYPES.find((element) => element == accountType) == null) {
     response = { status: "ERROR", message: "Invalid Account Type" };
   }
 
@@ -160,7 +160,7 @@ router.route("/").post((req, res) => {
                 let dbXaction = await db.Transaction.create(xactionModel);
                 if (dbXaction != null) {
                   let transaction = {
-                    id: dbXaction._id,
+                    transactionUUID: dbXaction._id,
                     payee: dbXaction.payee,
                     accountUUID: dbAccount._id,
                     categoryName: dbCategory.categoryName,

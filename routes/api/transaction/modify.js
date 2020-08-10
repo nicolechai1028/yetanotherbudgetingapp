@@ -1,0 +1,257 @@
+/****************************************************************************************
+ *                                    HISTORY                                           *
+ ****************************************************************************************
+ *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   +    Added this History section                                                    *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ ****************************************************************************************
+ */
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
+const router = require("express").Router();
+const db = require("../../../models");
+const Utilities = require("../../../utilities");
+const Constants = require("../../../constants");
+const TransactionController = require("../../../controllers/transactionController");
+const AccountController = require("../../../controllers/budgetAccountController");
+
+/**
+ * Matches routes with /api/transaction/modify
+ *
+ * Success will return the following object:
+ *
+ *  - status: OK
+ *  - message : "Transaction Modified"
+ *  - transaction { }
+ *  - account { }
+ *  - manualAdjustment
+ *
+ *
+ * Error will return:
+ *  - status : ERROR
+ *  - message : <Error message>
+ *
+ * Expects:
+ *  - sessionUUID
+ *  - transactionUUID
+ *  - subCategoryUUID // optional. To change the category/subcategory of the transaction
+ *  - payee // optional
+ *  - date // optional yyyyMMdd format. If invalid or outside 20000101-20501231 it will be ignored
+ *  - amount // optional. Sign based on perspective of category. If the amount changes,
+ *           //the account balance will be adjusted between the old and new values
+ *  - memo // optional. To remove existing memo, send string with at least one space.
+ */
+router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
+  console.log(req.body);
+  let response,
+    dbProfile,
+    ownerRef,
+    dbAccount,
+    accountUUID,
+    dbResults,
+    dbCategory,
+    dbSubCategory,
+    dbXaction,
+    query,
+    xactionModel,
+    perspective,
+    previousAmount,
+    dbXactionUpdated = false,
+    categoryUUID,
+    manualAdjustmentCategoryName,
+    dbManualAdjustmentCategory,
+    dbManualAdjustmentCategoryUUID,
+    dbManualAdjustmentSubCategoryUUID,
+    previousSubCategoryUUID,
+    transactionLog,
+    amountUpdated = false,
+    manualAdjustment = 0.0;
+
+  let { sessionUUID, transactionUUID, subCategoryUUID, payee, date, amount, memo } = req.body;
+
+  if (amount && isNaN(amount) == true) amount = undefined;
+
+  if (!sessionUUID || (sessionUUID = sessionUUID.trim()).length == 0)
+    response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
+  else if (!transactionUUID || (transactionUUID = transactionUUID.trim()).length == 0)
+    response = { status: "ERROR", message: "Missing or invalid transactionUUID" };
+  // make sure there is something to modify before we hit the database
+  else if (
+    (!subCategoryUUID || (subCategoryUUID = subCategoryUUID.trim()).length == 0) &&
+    (!payee || (payee = payee.trim()).length == 0) &&
+    (!date ||
+      (date = date.trim()).length == 0 ||
+      isNaN(date) == true ||
+      (date = parseInt(date)) < Constants.MIN_YYYYMMDD ||
+      date > Constants.MAX_YYYYMMDD) &&
+    !amount &&
+    !memo
+  )
+    response = { status: "ERROR", message: "Empty or invalid paramter(s) for update" };
+
+  if (response) {
+    console.log("Update/Modify Transaction API Response:\n", response);
+    res.json(response);
+    return;
+  }
+  if (memo) memo.trim();
+  response = { status: "UNKNOWN", message: "" };
+  (async () => {
+    dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
+    if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid sessionUUID" };
+    else {
+      dbProfile = dbResults[0];
+      ownerRef = dbProfile._id;
+      dbResults = await db.Transaction.find({ _id: transactionUUID }).populate("categoryRef").populate("accountRef");
+      if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid transactionUUID" };
+      else if (!(dbXaction = dbResults[0]).categoryRef._id || !dbXaction.subCategoryRef) {
+        console.log(dbXaction);
+        response = { status: "ERROR", message: "Unable to resolve Transaction Category/SubCategory" };
+      } else {
+        previousSubCategoryUUID = dbXaction.subCategoryRef;
+        perspective = dbXaction.categoryRef.perspective;
+        transactionLog += "\n\n**** Old Transaction ****\n" + TransactionController.getJSON(dbXaction);
+        /* ********************** DEBUG **************************** */
+        console.log(dbXaction);
+        /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+        dbAccount = dbXaction.accountRef;
+        accountUUID = dbAccount._id;
+        // if the user entered subCategoryUUID and it is the same with the UUID that came back from the database,
+        // then we don't have to change it
+        if (subCategoryUUID == dbXaction.subCategoryRef) {
+          /* ********************** DEBUG **************************** */
+          let debug = `\nTransaction SubCategoryUUID (${dbXaction.subCategoryRef})`;
+          debug += `\nis the same as parameter subCategoryUUID (${subCategoryUUID}).`;
+          debug += "\nNo need to change Category/SubCategory";
+          console.log(debug);
+          /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+          subCategoryUUID = undefined;
+        }
+        // if subCategory is defined to be changed, find it
+        if (
+          subCategoryUUID &&
+          !(dbCategory = await db.UserCategoryGroup.findOne({ "subCategory._id": subCategoryUUID }))
+        )
+          response = { status: "ERROR", message: `Unable to resolve SubCategory UUID (${subCategoryUUID})` };
+        else {
+          response.status = "OK";
+          dbSubCategory = dbCategory.subCategory.id(subCategoryUUID);
+          perspective = dbCategory.perspective;
+          categoryUUID = dbCategory._id;
+          /* ********************** DEBUG **************************** */
+          console.log("\n\n****** Budget Account ******\n", dbAccount);
+          console.log("\n\n****** Transaction ******\n", JSON.stringify(dbXaction, null, 2));
+          console.log("\n\n****** Category ******\n", dbCategory);
+          console.log("\n\n****** SubCategory ******\n", dbSubCategory);
+          /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+          if (!(previousAmount = dbXaction.amount)) previousAmount = 0.0;
+          // change the values
+          if (payee != dbXaction.payee) {
+            dbXaction.payee = payee;
+            dbXactionUpdated = true;
+          }
+          if (date && isNaN(date) == false) {
+            date = parseInt(date);
+            if (date >= Constants.MIN_YYYYMMDD && date <= Constants.MAX_YYYYMMDD && date != dbXaction.date) {
+              dbXaction.date = date;
+              dbXactionUpdated = true;
+            }
+          }
+          // depending on the current perspective set the sign of the amount
+          if (amount) {
+            if ((perspective == "Infow" && amount < 0) || (perspective == "Outflow" && amount > 0)) amount *= -1;
+            if (amount != previousAmount) {
+              dbXaction.amount = amount;
+              dbXactionUpdated = true;
+              amountUpdated = true;
+            }
+          }
+
+          // check if Category and/or SubCategory should be changed. If subCategoryUUID
+          // was passed and it is NOT the same as the one on the original transaction, then update the two fields
+          if (subCategoryUUID && subCategoryUUID != previousSubCategoryUUID) {
+            dbXaction.categoryRef = categoryUUID;
+            dbXaction.subCategoryRef = subCategoryUUID;
+            dbXactionUpdated = true;
+          }
+          if (dbXactionUpdated == true) {
+            dbXaction = await dbXaction.save();
+            response.transaction = TransactionController.getJSON(dbXaction);
+            response.message += "Updated Transaction Record. ";
+            /* ********************** DEBUG **************************** */
+            transactionLog += "\n\n**** Saved Transaction ****\n" + TransactionController.getJSON(dbXaction);
+            /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+            // if there is a change in the amount, update the Account balance
+            if (amountUpdated) {
+              // manual Adjustment = amount (current) - previousAmount
+              manualAdjustment = amount - previousAmount;
+              if (manualAdjustment != 0) {
+                // get account and update it
+                if (accountUUID && (dbAccount = await db.BudgetAccount.findById(accountUUID))) {
+                  /* ********************** DEBUG **************************** */
+                  transactionLog += `\n\nUpdating BudgetAccount (manualAdjustment = ${manualAdjustment})\n`;
+                  transactionLog += "************** OLD BUDGET ACCOUNT ***************\n";
+                  transactionLog += AccountController.getJSON(dbAccount);
+                  /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                  let balance = dbAccount.balance + manualAdjustment;
+                  dbAccount.balance = balance;
+                  dbAccount = await dbAccount.save();
+                  response.account = AccountController.getJSON(dbAccount);
+                  response.message += "Updated BudgetAccount Record. ";
+                  /* ********************** DEBUG **************************** */
+                  transactionLog += "************** UPDATED BUDGET ACCOUNT ***************\n";
+                  transactionLog += AccountController.getJSON(dbAccount);
+                  /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                }
+                if (manualAdjustment < 0) perspective = "Outflow";
+                else perspective = "Inflow";
+                manualAdjustmentCategoryName = perspective + " Adjustment";
+                // find the category for the adjustment
+                query = { categoryName: manualAdjustmentCategoryName, ownerRef: ownerRef };
+                dbResults = await db.UserCategoryGroup.find(query);
+                if (dbResults && dbResults.length != 0) {
+                  dbManualAdjustmentCategory = dbResults[0];
+                  dbManualAdjustmentCategoryUUID = dbManualAdjustmentCategory._id;
+                  dbManualAdjustmentSubCategoryUUID = dbManualAdjustmentCategory.category[0]._id;
+
+                  xactionModel = {
+                    payee: "Manual Adjustment",
+                    ownerRef: ownerRef,
+                    accountRef: dbAccount._id,
+                    categoryRef: dbManualAdjustmentCategoryUUID,
+                    subCategoryRef: dbManualAdjustmentSubCategoryUUID,
+                    perspective: perspective,
+                    amount: manualAdjustment,
+                  };
+                  dbXaction = await db.Transaction.create(xactionModel);
+                  response.manualAdjustment = TransactionController.getJSON(dbXaction);
+                  response.message += "Created Transaction for Account Manual Adjustment";
+                  transactionLog += "\n**** Saved Transaction ****\n" + TransactionController.getJSON(dbXaction);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (transactionLog) console.log("\n\n", transactionLog);
+    console.log("Modify Transaction API Response:\n", response);
+    res.json(response);
+  })();
+});
+
+module.exports = router;

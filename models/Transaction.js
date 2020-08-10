@@ -14,7 +14,9 @@
  *       "perspective" field of the category group                                      *
  *   + Changed format of transaction date from a sub document to a number in yyyymmdd   *
  *       format. Minimum value is 20000101 (Jan. 1, 2000)                               *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   + Added "max" option to the date field                                             *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -33,6 +35,7 @@ const Schema = mongoose.Schema;
 const { v4 } = require("uuid");
 const uuidv4 = v4;
 const Utilities = require("../utilities");
+const Constants = require("../constants");
 
 const TransactionSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
@@ -46,7 +49,8 @@ const TransactionSchema = new Schema({
   date: {
     type: Schema.Types.Number,
     required: true,
-    min: [20000101, "Minimum transaction date is January 01, 2000"],
+    min: [Constants.MIN_YYYYMMDD, "Minimum transaction date is January 01, 2000"],
+    max: [Constants.MAX_YYYYMMDD, "Maximum transaction date is December 31, 2050"],
     default: Utilities.formatTransactionDateFromUTC,
   },
 });
@@ -60,7 +64,7 @@ TransactionSchema.virtual("dateStamp").get(function () {
   value += this.date.month;
   if (this.date.day < 10) value += "0";
   value += this.date.day;
-  return Number.parseInt(value);
+  return parseInt(value);
 });
 // may not have to implement this...
 TransactionSchema.virtual("dateStamp").set(function (value) {});

@@ -285,7 +285,7 @@ function startAndInitializeDatabase() {
  * @param {Number} utcTime
  */
 function formatTransactionDateFromUTC(utcTime) {
-  if (utcTime == null || Number.isNaN(utcTime)) utcTime = Date.now();
+  if (!utcTime || utcTime == null || isNaN(utcTime) == true) utcTime = Date.now();
   let today = new Date(utcTime);
   let value = "" + today.getFullYear();
   let val = today.getMonth() + 1;
@@ -294,8 +294,7 @@ function formatTransactionDateFromUTC(utcTime) {
   if ((val = today.getDate()) < 10) value += "0";
   value += val;
 
-  console.log("\n\nTransaction Date: ", value, " ParseInt: ", Number.parseInt(value));
-  return Number.parseInt(value);
+  return parseInt(value);
 }
 
 function roundToOneHundredthFin(x) {

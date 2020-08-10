@@ -32,6 +32,9 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
   - [Budget Account List](#budget-account-list)
   - [Budget Account Close](#budget-account-close)
 
+- [Transaction API Examples](#transaction-create-example)
+  - [Transaction Create](#transaction-create)
+
 ### <u><span style="color:orange">User</span></u>
 This is a section of resources related to user access to the application
 
@@ -190,7 +193,7 @@ A user can create an unlimited number of these accounts Money flows into and out
 > If "balance" <> 0, the following transaction record will be returned:
 >  - transaction: <br>
 >  {
->     - id: \<transactionID\>
+>     - transactionUUID: \<transactionID\>
 >     - accountUUID: \<id of created account\>
 >     - categoryName: \<Name of category Group\>
 >     - categoryUUID: \<UUID of category Group\>
@@ -267,10 +270,87 @@ Upon account verification, each user is given about eleven categories to work wi
 |           |                               |                                                       |                                                                   |                                                                               |
 
 ### <u><span style="color:orange">Transaction</span></u>
+
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
+| POST      | /api/transaction/create        | \{sessionUUID, accountUUID, payee, categoryUUID, subCategoryUUID, amount, \[memo\]\}  | \{status, message, \[transaction, account\]                             |                                                                               |
+| POST      | /api/transaction/list          | \{sessionUUID, accountUUID, \[filter\{limit, startDate, enddate\}\]   | \{status, message, \[transaction\[array\]\]\}                             |                                                                               |
+| POST      | /api/transaction/delete        | \{sessionUUID, transactionUUID                          | \{status, message, \[account\]                                       |                                                                               |
+| POST      | /api/transaction/modify       | \{sessionUUID, transactionUUID, \[subCategoryUUID, payee, date, amount, memo\]  | \{status, message, \[transaction\{ \}\]\}                                |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
+
+### Transaction Create
+> Matches routes with /api/transaction/create
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Transaction Created
+>  - transaction: \{  \}
+>  - account : \{  \}
+>
+> Error will return:
+>  - status : ERROR
+>  - message : \<Error message\>
+>
+> Expects:
+>  - sessionUUID
+>  - accountUUID
+>  - payee
+>  - categoryUUID
+>  - subCategoryUUID
+>  - amount
+>  - date // optional. Date in yyyymmdd format. If missing, today's date will be used
+>  - memo (optional)
+
+### Transaction List
+> Matches routes with /api/transaction/list
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : "Transaction Modified"
+>  -
+>
+> Error will return:
+>  - status : ERROR
+>  - message : \<Error message\>
+>
+> Expects:
+>  - sessionUUID
+>  - accountUUID
+>  - filter \{ // optional, Default is no condition but with a limit of 1024, decending sort by date
+>    - limit // optional. Default = 1024
+>    - startDate  // optional. Default is today. Format yyyyMMdd
+>    - enddate  // optional. No default. Limited by "limit" filter
+>    - sort // optional. Default is -1 (descending). Value for ascending is 1. Sorts by date
+>   \}
+
+### Transaction Modify/Update
+> Matches routes with /api/transaction/modify
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : "Transaction Modified"
+>  - transactionUUID
+>  - categoryUUID
+>  - subCategoryUUID
+>  - transaction \{  \}
+>
+> Error will return:
+>  - status : ERROR
+>  - message : \<Error message\>
+>
+> Expects:
+>  - sessionUUID
+>  - transactionUUID
+>  - subCategoryUUID // optional. To change the category/subcategory of the transaction
+>  - payee // optional
+>  - date // optional yyyyMMdd format. If invalid or outside 20000101-20501231 it will be ignored
+>  - amount // optional. Sign based on perspective of category
+>  - memo // optional. To remove existing memo, send string with at least one space.
 
 ## <span style="color:blue">API Examples</span> 
 
@@ -453,7 +533,7 @@ Path: ``/api/budgetAccount/create``
   "accountType": "Credit Card",
   "balance": -1254.36,
   "transaction": {
-    "id": "72126b3c-daa5-4df0-b484-089d7845e910",
+    "transactionUUID": "72126b3c-daa5-4df0-b484-089d7845e910",
     "payee": "Starting Balance",
     "accountUUID": "3df8ddf6-6f5d-4d3f-ac2c-596cbce794e0",
     "categoryName": "Outflow Adjustment",
@@ -494,7 +574,7 @@ The request below updates <b>ALL</b> the fields that are editable. Note that no 
   "balance": -254.36,
   "notes": "This is the wife's Visa Credit Card",
   "transaction": {
-    "id": "dba925e7-80a4-45ca-9cd7-5f0b6313ab75",
+    "transactionUUID": "dba925e7-80a4-45ca-9cd7-5f0b6313ab75",
     "payee": "Manual Adjustment",
     "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae4",
     "categoryName": "Inflow Adjustment",
@@ -665,5 +745,102 @@ Path: ``/api/category/list``
       ]
     }
   ]
+}
+```
+
+### Transaction Create Example
+
+- Request
+
+Path: ``/api/transaction/create``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+  "payee": "San Diego Gas & Electric",
+  "categoryUUID": "9b7d0110-b874-4a73-8795-7650f05032f2",
+  "subCategoryUUID": "07cba8e2-d0de-41e8-9101-7d98abfca4ca",
+  "amount": "100",
+  "memo": "Electricity Bill" 
+}
+```
+
+- Response:
+
+```json
+{
+  "status": "OK",
+  "message": "Transaction saved & Account (Citi Visa) updated",
+  "transaction": {
+    "transactionUUID": "6dc31ed8-ce88-49f4-9912-7e4b920d4424",
+    "payee": "San Diego Gas & Electric",
+    "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+    "categoryUUID": "9b7d0110-b874-4a73-8795-7650f05032f2",
+    "subCategoryUUID": "07cba8e2-d0de-41e8-9101-7d98abfca4ca",
+    "memo": "Electricity Bill",
+    "amount": -100,
+    "date": 20200808
+  },
+  "account": {
+    "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+    "name": "Citi Visa",
+    "type": "Credit Card",
+    "balance": -1854.36,
+    "isClosed": false
+  }
+}
+```
+
+### Transaction List Example
+- Request
+
+Path: ``/api/transaction/list``
+
+```json
+{
+    "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+    "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+    "filter":{
+        "startDate": 20000101,
+        "endDate": 20201231,
+        "sort": -1
+    }
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Found 6 transactions",
+  "transaction": [
+     {       
+        "transactionUUID": "ed93463f-c93d-44a4-a1c4-bb1e77687acb",
+        "payee": "San Diego Gas & Electric",
+        "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+        "categoryUUID": "9b7d0110-b874-4a73-8795-7650f05032f2",
+        "subCategoryUUID": "07cba8e2-d0de-41e8-9101-7d98abfca4ca",
+        "memo": "Electricity Bill",
+        "amount": -100,
+        "date": 20200808,
+        "perspective": "Outflow"        
+      },
+      {
+        "transactionUUID": "1c816b8e-5a75-43e1-9bc7-966f3b84d092",
+        "payee": "San Diego Gas & Electric",
+        "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+        "categoryUUID": "9b7d0110-b874-4a73-8795-7650f05032f2",
+        "subCategoryUUID": "07cba8e2-d0de-41e8-9101-7d98abfca4ca",
+        "memo": "Electricity Bill",
+        "amount": -100,
+        "date": 20200808,
+        "perspective": "Outflow"        
+      },
+        :
+        :
+        :
+    ]
 }
 ```

@@ -37,7 +37,7 @@ const BudgetAccountSchema = new Schema({
   ownerRef: { type: Schema.Types.String, required: true, ref: "UserProfile" }, // reference to the UserProfile._id
   accountType: {
     type: Schema.Types.String,
-    enum: Constants.BUDGET_ACCOUNT_TYPES,
+    enum: Constants.ACCOUNT_TYPES,
     required: true,
   },
   balance: { type: Schema.Types.Number, default: 0.0 },
