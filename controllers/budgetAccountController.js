@@ -1,3 +1,19 @@
+/****************************************************************************************
+ *                                    HISTORY                                           *
+ ****************************************************************************************
+ *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   +  Added function to return JSON format of database returned object                *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ *                                                                                      *
+ ****************************************************************************************
+ */
+
 const db = require("../models");
 const utilities = require("../utilities");
 
@@ -44,5 +60,20 @@ module.exports = {
       console.log(err);
       return [];
     }
+  },
+  getJSON: function (dbAccount) {
+    let retval;
+    if (dbAccount) {
+      retval = {
+        accountUUID: dbAccount._id,
+        name: dbAccount.name,
+        ownerRef: dbAccount.ownerRef,
+        type: dbAccount.accountType,
+        balance: dbAccount.balance,
+        isClosed: dbAccount.isClosed,
+        notes: dbAccount.notes,
+      };
+    }
+    return retval;
   },
 };

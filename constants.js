@@ -25,13 +25,17 @@
 
 module.exports = Object.freeze({
   DEV_MONGODB_URI: "mongodb://localhost/yetanotherbudgetingapp",
-  BUDGET_ACCOUNT_TYPES: ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"],
-  BUDGET_ACCOUNT_PERSPECTIVES: ["Outflow", "Inflow"],
+  ACCOUNT_TYPES: ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"],
+  ACCOUNT_PERSPECTIVES: ["Outflow", "Inflow"],
   DEFAULT_PERSPECTIVE: "Outflow",
   // https://girltalkwithfo.com/budget-categories/
-  BUDGET_ACCOUNT_ACCESS_DEFAULT: "User",
-  BUDGET_ACCOUNT_ACCESS_SPECIAL: "System",
-  BUDGET_ACCOUNT_ACCESS_LEVELS: [
+  ACCOUNT_ACCESS_DEFAULT: "User",
+  ACCOUNT_ACCESS_SPECIAL: "System",
+  MIN_YYYYMMDD: 20000101, // January 1, 2000
+  MAX_YYYYMMDD: 20501231, // December 31, 2050
+  MIN_YYYYMM: 200001,
+  MAX_YYYYMM: 205012,
+  ACCOUNT_ACCESS_LEVELS: [
     "System", // this means the Budget Category cannot be edited by the user
     "User",
   ],
@@ -274,4 +278,4 @@ module.exports = Object.freeze({
     { name: "Zimbabwe Dollar", _id: "ZWD", uniDec: "&#90;&#36;" },
   ],
 });
-//module.exports = { DEV_MONGODB_URI, BUDGET_ACCOUNT_TYPES, GENERIC_BUDGET_CATEGORIES, BUDGET_ACCOUNT_PERSPECTIVES };
+//module.exports = { DEV_MONGODB_URI, ACCOUNT_TYPES, GENERIC_BUDGET_CATEGORIES, ACCOUNT_PERSPECTIVES };

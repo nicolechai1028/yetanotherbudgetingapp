@@ -89,6 +89,7 @@ router.route("/:option?").post((req, res) => {
               type: acct.accountType,
               balance: acct.balance,
               isClosed: acct.isClosed,
+              notes: acct.notes,
             });
           }
           response = {

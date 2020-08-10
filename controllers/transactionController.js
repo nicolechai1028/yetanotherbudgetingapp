@@ -2,13 +2,9 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *                                                                                      *
- * == chikeobi-06 ==                                                                    *
- *   +    Added "Currency" collection                                                   *
- *                                                                                      *
- *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   + Created
+ *   +  Added function to return JSON format of database returned object                *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -19,14 +15,25 @@
  ****************************************************************************************
  */
 
-// Exporting an object containing all of our models
+const db = require("../models");
+const utilities = require("../utilities");
 
 module.exports = {
-  BudgetAccount: require("./BudgetAccount"),
-  GenericCategoryGroup: require("./GenericCategoryGroup"),
-  Transaction: require("./Transaction"),
-  UserCategoryGroup: require("./UserCategoryGroup"),
-  UserProfile: require("./UserProfile"),
-  Currency: require("./Currency"),
-  Budget: require("./Budget"),
+  getJSON: function (dbTransaction) {
+    let retval;
+    if (dbTransaction) {
+      retval = {
+        transactionUUID: dbTransaction._id,
+        ownerRef: dbTransaction.ownerRef,
+        payee: dbTransaction.payee,
+        accountUUID: dbTransaction.accountRef,
+        categoryUUID: dbTransaction.categoryRef,
+        subCategoryUUID: dbTransaction.subCategoryRef,
+        memo: dbTransaction.memo,
+        amount: dbTransaction.amount,
+        date: dbTransaction.date,
+      };
+    }
+    return retval;
+  },
 };

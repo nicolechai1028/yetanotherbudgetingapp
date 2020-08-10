@@ -14,7 +14,9 @@
  *       "perspective" field of the category group                                      *
  *   + Changed format of transaction date from a sub document to a number in yyyymmdd   *
  *       format. Minimum value is 20000101 (Jan. 1, 2000)                               *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   + Added "max" option to the date field                                             *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -33,6 +35,7 @@ const Schema = mongoose.Schema;
 const { v4 } = require("uuid");
 const uuidv4 = v4;
 const Utilities = require("../utilities");
+const Constants = require("../constants");
 
 const TransactionSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
@@ -43,30 +46,15 @@ const TransactionSchema = new Schema({
   subCategoryRef: { type: Schema.Types.String, required: true, ref: "UserCategoryGroup.categories" }, // reference to the UserBudgetCategoryGroup.Category._id
   memo: { type: Schema.Types.String },
   amount: { type: Schema.Types.Number, default: 0.0 },
-  // transactionType: { type: Schema.Types.String, default: "OUTFLOW", enum: ["OUTFLOW", "INFLOW"] },
-  // date: {
-  //   year: Schema.Types.Number,
-  //   month: Schema.Types.Number,
-  //   day: Schema.Types.Number,
-  // },
   date: {
     type: Schema.Types.Number,
     required: true,
-    min: [20000101, "Minimum transaction date is January 01, 2000"],
+    min: [Constants.MIN_YYYYMMDD, "Minimum transaction date is January 01, 2000"],
+    max: [Constants.MAX_YYYYMMDD, "Maximum transaction date is December 31, 2050"],
     default: Utilities.formatTransactionDateFromUTC,
   },
 });
 
-function formatTransactionDateFromUTC() {
-  let today = new Date();
-  let value = "" + today.getFullYear();
-  let val = today.getMonth() + 1;
-  if (val < 10) value += "0";
-  value += val;
-  if ((val = today.getDate) < 10) value += "0";
-  value += val;
-  return Number.parseInt(value);
-}
 // setup virtual field "dateStamp" @see https://futurestud.io/tutorials/understanding-virtuals-in-mongoose
 TransactionSchema.virtual("dateStamp").get(function () {
   if (this.date.year == null || this.date.month == null || this.date.day == null) return 0;
@@ -76,7 +64,7 @@ TransactionSchema.virtual("dateStamp").get(function () {
   value += this.date.month;
   if (this.date.day < 10) value += "0";
   value += this.date.day;
-  return Number.parseInt(value);
+  return parseInt(value);
 });
 // may not have to implement this...
 TransactionSchema.virtual("dateStamp").set(function (value) {});
