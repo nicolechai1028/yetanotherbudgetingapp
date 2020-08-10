@@ -3,16 +3,13 @@ import { useLocation } from "react-router-dom";
 import { Button, Navbar, NavbarBrand, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
+import "./index.css";
+
 const Navigation = props => {
   const { pathname } = useLocation();
   const [state] = useAppContext();
   return (
-    <Navbar
-      className="border-bottom border-dark d-flex "
-      color="light"
-      expand="md"
-      style={{ margin: "1rem" }}
-    >
+    <Navbar color="light" expand="md" style={{ margin: "1rem" }}>
       <NavbarBrand tag={Link} to={"/"}>
         Y.A.B.A
       </NavbarBrand>
@@ -85,25 +82,22 @@ const loggedIn = {
     id: 1,
     pages: { "/expense": true, "/budget": true },
     path: "/overview",
-    color: "success",
     display: "Overview",
-    classes: "ml-5"
+    classes: "ml-5 btn-color text-white"
   },
   expense: {
     id: 2,
     pages: { "/overview": true, "/budget": true },
     path: "/expense",
-    color: "success",
     display: "Expenses",
-    classes: "ml-5"
+    classes: "ml-5 btn-color text-white"
   },
   budget: {
     id: 3,
     pages: { "/overview": true, "/expense": true },
     path: "/budget",
-    color: "success",
     display: "Budget",
-    classes: "ml-5"
+    classes: "ml-5 btn-color text-white"
   },
   logout: {
     id: 4,

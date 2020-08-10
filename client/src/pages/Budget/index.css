@@ -4,13 +4,21 @@
 .top-container  {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;	
-	margin-top: .5em;
+	margin-top: 1rem;
 	padding: .5em 0;
 }
 
-.name-item {
-	padding-left: 3em;
+.column-name {
+	justify-self: center;
+	font-weight: bold;
+	font-size: 1.25rem;
 }
+.name-item {
+	padding-left: 2.5em;
+	font-weight: bold;
+	font-size: 1.25rem;
+}
+
 .justify-self-center{
 	justify-self: center ;
 }
@@ -29,14 +37,26 @@
 }
 
 .sub-container {
-	display: block;
-	
+	display: flex;
+	align-items: center;	
 }
 
 .tobe-budgeted-container{
-	background-color: green; 
+	display: flex;
+	border: 1px solid black;
 	text-align: center;
+	align-items: baseline;
+	justify-content: center;
+	border-radius: 10px;
+	background-color: lightgray;
+	font-size: 2rem;
+} 
+
+.text-p{
+	font-size: 10;
+	color: blue;
 }
+
 @media only screen and (min-width: 900px) {
 	.top-container {
 		grid-template-columns: 2fr 1fr 1fr 1fr;	

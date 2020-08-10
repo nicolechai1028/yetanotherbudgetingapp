@@ -58,7 +58,7 @@ function Category(props) {
   return (
     <div>
       <div className="top-container category-container">
-        <div className="d-flex ml-3 align-items-center">
+        <div onClick={toExpand} className="d-flex ml-3 align-items-center ">
           {/*Toggle modal to uncollapse/collapse subcategories div */}
           <div
             onClick={toExpand}
@@ -66,15 +66,16 @@ function Category(props) {
               width: "20px",
               transform: `rotate(${arrowTranslation}deg)`,
             }}
+            className="pointer"
           >
             {/** Arrow SVG icon **/}
             <Arrow />
           </div>
-          <div className="mx-3">
+          <div className="mx-2 s">
             <ChangeNamePopover currentName={props.categoryGroup.name} />
           </div>
           {/*Toggle modal to add subcategories*/}
-          <div onClick={toggle} style={{ width: "20px" }}>
+          <div onClick={toggle} style={{ width: "20px" }} className="pointer">
             {/** Add SVG icon **/}
             <Add />
           </div>
@@ -87,9 +88,9 @@ function Category(props) {
           />
         </div>
         {/*Display total amounts in the category group*/}
-        <div className="justify-self-center"> {totalBudgeted} </div>
-        <div className="justify-self-center"> {spentTotal} </div>
-        <div className="justify-self-center"> {availableTotal} </div>
+        <div className="justify-self-center"> $ {totalBudgeted} </div>
+        <div className="justify-self-center"> $ {spentTotal} </div>
+        <div className="justify-self-center"> $ {availableTotal} </div>
       </div>
 
       <Collapse isOpen={open}>

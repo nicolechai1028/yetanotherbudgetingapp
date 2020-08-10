@@ -14,7 +14,7 @@ function Expense() {
             <Col sm="4">
               <Balance />
             </Col>
-            <Col sm="6">
+            <Col sm="6" md={{ offset: 2 }}>
               <AddTransaction />
             </Col>
           </Row>

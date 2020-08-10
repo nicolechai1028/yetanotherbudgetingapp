@@ -91,7 +91,7 @@ router.route("/").post((req, res) => {
         firstName: firstName,
         lastName: lastName,
         password: hashedPassword, // hashed password
-        isVerified: false,
+        isVerified: true,
         emailVerificationId: emailVerificationId,
         currencyRef: currencyCode,
       };
