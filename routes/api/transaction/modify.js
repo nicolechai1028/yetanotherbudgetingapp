@@ -111,6 +111,9 @@ router.route("/").post((req, res) => {
   if (memo) memo.trim();
   response = { status: "UNKNOWN", message: "" };
   (async () => {
+    if (process.env.YET_DEBUG) {
+      transactionLog = "\n\n*************** TRANSACTION LOGGER START *********************\n\n";
+    }
     dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
     if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid sessionUUID" };
     else {
@@ -119,26 +122,34 @@ router.route("/").post((req, res) => {
       dbResults = await db.Transaction.find({ _id: transactionUUID }).populate("categoryRef").populate("accountRef");
       if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid transactionUUID" };
       else if (!(dbXaction = dbResults[0]).categoryRef._id || !dbXaction.subCategoryRef) {
-        console.log(dbXaction);
+        if (process.env.YET_DEBUG) {
+          /* ********************** DEBUG **************************** */
+          console.log("\n\nTansaction from Database:\n", JSON.stringify(dbXaction, null, 2));
+          /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+        }
         response = { status: "ERROR", message: "Unable to resolve Transaction Category/SubCategory" };
       } else {
         previousSubCategoryUUID = dbXaction.subCategoryRef;
         perspective = dbXaction.categoryRef.perspective;
-        transactionLog += "\n\n**** Old Transaction ****\n" + TransactionController.getJSON(dbXaction);
-        /* ********************** DEBUG **************************** */
-        console.log(dbXaction);
-        /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+        if (process.env.YET_DEBUG) {
+          /* ********************** DEBUG **************************** */
+          transactionLog += "\n\n**** Old Transaction ****\n" + TransactionController.getJSON(dbXaction);
+          console.log("\n\nTansaction from Database:\n", JSON.stringify(dbXaction, null, 2));
+          /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+        }
         dbAccount = dbXaction.accountRef;
         accountUUID = dbAccount._id;
         // if the user entered subCategoryUUID and it is the same with the UUID that came back from the database,
         // then we don't have to change it
         if (subCategoryUUID == dbXaction.subCategoryRef) {
-          /* ********************** DEBUG **************************** */
-          let debug = `\nTransaction SubCategoryUUID (${dbXaction.subCategoryRef})`;
-          debug += `\nis the same as parameter subCategoryUUID (${subCategoryUUID}).`;
-          debug += "\nNo need to change Category/SubCategory";
-          console.log(debug);
-          /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+          if (process.env.YET_DEBUG) {
+            /* ********************** DEBUG **************************** */
+            let debug = `\nTransaction SubCategoryUUID (${dbXaction.subCategoryRef})`;
+            debug += `\nis the same as parameter subCategoryUUID (${subCategoryUUID}).`;
+            debug += "\nNo need to change Category/SubCategory";
+            console.log(debug);
+            /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+          }
           subCategoryUUID = undefined;
         }
         // if subCategory is defined to be changed, find it
@@ -152,12 +163,14 @@ router.route("/").post((req, res) => {
           dbSubCategory = dbCategory.subCategory.id(subCategoryUUID);
           perspective = dbCategory.perspective;
           categoryUUID = dbCategory._id;
-          /* ********************** DEBUG **************************** */
-          console.log("\n\n****** Budget Account ******\n", dbAccount);
-          console.log("\n\n****** Transaction ******\n", JSON.stringify(dbXaction, null, 2));
-          console.log("\n\n****** Category ******\n", dbCategory);
-          console.log("\n\n****** SubCategory ******\n", dbSubCategory);
-          /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+          if (process.env.YET_DEBUG) {
+            /* ********************** DEBUG **************************** */
+            console.log("\n\n****** Budget Account ******\n", JSON.stringify(dbAccount, null, 2));
+            console.log("\n\n****** Transaction ******\n", JSON.stringify(dbXaction, null, 2));
+            console.log("\n\n****** Original Category ******\n", JSON.stringify(dbCategory));
+            console.log("\n\n****** Original SubCategory ******\n", JSON.stringify(dbSubCategory));
+            /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+          }
           if (!(previousAmount = dbXaction.amount)) previousAmount = 0.0;
           // change the values
           if (payee != dbXaction.payee) {
@@ -167,6 +180,9 @@ router.route("/").post((req, res) => {
           if (date && isNaN(date) == false) {
             date = parseInt(date);
             if (date >= Constants.MIN_YYYYMMDD && date <= Constants.MAX_YYYYMMDD && date != dbXaction.date) {
+              if (process.env.YET_DEBUG) {
+                transactionLog += `\n++++ Updating Tansaction Date:\n\tOld Date: ${dbXaction.date}\n\tNew Date: ${date}`;
+              }
               dbXaction.date = date;
               dbXactionUpdated = true;
             }
@@ -175,6 +191,9 @@ router.route("/").post((req, res) => {
           if (amount) {
             if ((perspective == "Infow" && amount < 0) || (perspective == "Outflow" && amount > 0)) amount *= -1;
             if (amount != previousAmount) {
+              if (process.env.YET_DEBUG) {
+                transactionLog += `\n++++ Updating Tansaction Amount:\n\tOld Amount: ${dbXaction.amount}\n\tNew Amount: ${amount}`;
+              }
               dbXaction.amount = amount;
               dbXactionUpdated = true;
               amountUpdated = true;
@@ -184,17 +203,34 @@ router.route("/").post((req, res) => {
           // check if Category and/or SubCategory should be changed. If subCategoryUUID
           // was passed and it is NOT the same as the one on the original transaction, then update the two fields
           if (subCategoryUUID && subCategoryUUID != previousSubCategoryUUID) {
+            if (process.env.YET_DEBUG) {
+              /* ********************** DEBUG **************************** */
+              transactionLog += "\n++++ Updating Category/SubCategory:";
+              transactionLog += `\n\tOld Category UUID:    ${dbXaction.categoryRef}`;
+              transactionLog += `\n\tNew Category UUID:    ${categoryUUID}`;
+              transactionLog += `\n\tOld SubCategory UUID: ${dbXaction.subCategoryRef}`;
+              transactionLog += `\n\tNew SubCategory UUID: ${subCategoryRef}`;
+              /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+            }
             dbXaction.categoryRef = categoryUUID;
             dbXaction.subCategoryRef = subCategoryUUID;
             dbXactionUpdated = true;
           }
+          // check if memo is to be updated
+          if (memo) {
+            dbXaction.memo = memo;
+            dbXactionUpdated = true;
+          }
           if (dbXactionUpdated == true) {
+            // ******* SAVE/UPDATE Transaction ***************
             dbXaction = await dbXaction.save();
             response.transaction = TransactionController.getJSON(dbXaction);
             response.message += "Updated Transaction Record. ";
-            /* ********************** DEBUG **************************** */
-            transactionLog += "\n\n**** Saved Transaction ****\n" + TransactionController.getJSON(dbXaction);
-            /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+            if (process.env.YET_DEBUG) {
+              /* ********************** DEBUG **************************** */
+              transactionLog += "\n\n**** Saved Transaction ****\n" + TransactionController.getJSON(dbXaction);
+              /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+            }
             // if there is a change in the amount, update the Account balance
             if (amountUpdated) {
               // manual Adjustment = amount (current) - previousAmount
@@ -202,20 +238,24 @@ router.route("/").post((req, res) => {
               if (manualAdjustment != 0) {
                 // get account and update it
                 if (accountUUID && (dbAccount = await db.BudgetAccount.findById(accountUUID))) {
-                  /* ********************** DEBUG **************************** */
-                  transactionLog += `\n\nUpdating BudgetAccount (manualAdjustment = ${manualAdjustment})\n`;
-                  transactionLog += "************** OLD BUDGET ACCOUNT ***************\n";
-                  transactionLog += AccountController.getJSON(dbAccount);
-                  /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                  if (process.env.YET_DEBUG) {
+                    /* ********************** DEBUG **************************** */
+                    transactionLog += `\n\nUpdating BudgetAccount (manualAdjustment = ${manualAdjustment})\n`;
+                    transactionLog += "************** OLD BUDGET ACCOUNT ***************\n";
+                    transactionLog += AccountController.getJSON(dbAccount);
+                    /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                  }
                   let balance = dbAccount.balance + manualAdjustment;
                   dbAccount.balance = balance;
                   dbAccount = await dbAccount.save();
                   response.account = AccountController.getJSON(dbAccount);
                   response.message += "Updated BudgetAccount Record. ";
-                  /* ********************** DEBUG **************************** */
-                  transactionLog += "************** UPDATED BUDGET ACCOUNT ***************\n";
-                  transactionLog += AccountController.getJSON(dbAccount);
-                  /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                  if (process.env.YET_DEBUG) {
+                    /* ********************** DEBUG **************************** */
+                    transactionLog += "************** UPDATED BUDGET ACCOUNT ***************\n";
+                    transactionLog += AccountController.getJSON(dbAccount);
+                    /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                  }
                 }
                 if (manualAdjustment < 0) perspective = "Outflow";
                 else perspective = "Inflow";
@@ -248,7 +288,10 @@ router.route("/").post((req, res) => {
         }
       }
     }
-    if (transactionLog) console.log("\n\n", transactionLog);
+    if (transactionLog) {
+      transactionLog += "\n^^^^^^^^^^^^^^^ TRANSACTION LOGGER END ^^^^^^^^^^^^^^^^^^^^^\n\n";
+      console.log("\n\n", transactionLog);
+    }
     console.log("Modify Transaction API Response:\n", response);
     res.json(response);
   })();
