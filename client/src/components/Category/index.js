@@ -22,11 +22,12 @@ function Category(props) {
   };
 
   const subcategories = props.categoryGroup.categories.map(
-    ({ name, budgeted, spent, id }) => {
+    ({ name, budgeted, spent, uuid }) => {
       const available = budgeted - spent;
       return (
         <Subcategory
-          key={id}
+          key={uuid}
+          uuid={uuid}
           name={name}
           budgeted={budgeted}
           spent={spent}
@@ -57,8 +58,11 @@ function Category(props) {
   };
   return (
     <div>
-      <div className="top-container category-container">
-        <div onClick={toExpand} className="d-flex ml-3 align-items-center ">
+      <div
+        onClick={toExpand}
+        className="top-container  category-container shadow"
+      >
+        <div className="d-flex ml-3 align-items-center ">
           {/*Toggle modal to uncollapse/collapse subcategories div */}
           <div
             onClick={toExpand}

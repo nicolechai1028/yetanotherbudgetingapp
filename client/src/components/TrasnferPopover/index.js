@@ -15,10 +15,10 @@ function Transferpopover(props) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [amt, setAmt] = useState(0);
   const [account, setAccount] = useState("");
-
   const toggle = () => {
     setPopoverOpen(!popoverOpen);
   };
+  console.log(props.uuid);
 
   let value = 0;
   const categoriesOptions = props.categories.map((categoryname) => {
@@ -40,7 +40,7 @@ function Transferpopover(props) {
   return (
     <div>
       <Button
-        id={props.name}
+        id={`${props.uuid}`}
         type="button"
         onClick={(event) => {
           event.stopPropagation();
@@ -54,7 +54,7 @@ function Transferpopover(props) {
       <Popover
         placement="bottom"
         isOpen={popoverOpen}
-        target={props.name}
+        target={`${props.uuid}`}
         toggle={toggle}
       >
         <PopoverHeader>Transfer</PopoverHeader>
