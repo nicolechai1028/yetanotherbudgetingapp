@@ -244,6 +244,7 @@ function startAndInitializeDatabase() {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   });
 
   const dropDb = process.env.DROP_DATABASE || false;

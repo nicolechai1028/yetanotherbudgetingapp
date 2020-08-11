@@ -13,6 +13,8 @@
  * == chikeobi-07 ==                                                                    *
  *   +  Added Special Budget Categories and Groups                                      *
  *                                                                                      *
+ * == chikeobi-10 ==                                                                    *
+ *   + Added Account Transfer Categories                                                *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -50,6 +52,8 @@ module.exports = Object.freeze({
       categories: ["To be budgeted"],
       perspective: "Outflow",
     },
+    { groupName: "Account Inflow", categories: ["Transfer"], perspective: "Inflow", access: "System" },
+    { groupName: "Account Outflow", categories: ["Transfer"], perspective: "Outflow", access: "System" },
   ],
   GENERIC_BUDGET_CATEGORIES: [
     {
