@@ -30,7 +30,7 @@ const Utilities = require("../../../utilities");
 const db = require("../../../models");
 
 /**
- * Matches with /api/budget/getBudgetItem
+ * Matches with /api/budget/getItem
  * Gets the budget for a specific user. Parameters will determine for which year and month.
  * Budgets can also be retrieved for a Category Group and/or a specific category
  *

@@ -22,7 +22,7 @@ const Utilities = require("../../../utilities");
 const db = require("../../../models");
 
 /**
- * Matches with /api/budget/modifyBudgetItem
+ * Matches with /api/budget/modifyItem
  *
  */
 router.route("/").post((req, res) => {

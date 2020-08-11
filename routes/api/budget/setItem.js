@@ -31,7 +31,7 @@ const Utilities = require("../../../utilities");
 const db = require("../../../models");
 
 /**
- * Matches with /api/budget/setBudgetItem
+ * Matches with /api/budget/setItem
  *
  */
 router.route("/").post((req, res) => {
