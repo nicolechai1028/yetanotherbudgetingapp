@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Button,
   Form,
@@ -7,15 +7,30 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  Label,
+  Label
 } from "reactstrap";
 
+import { ADD_CATEGORY } from "../../utils/globalStates/actions";
+
+import { GlobalContext } from "../../context/GlobalState";
+import { useAppContext } from "../../utils/globalStates/stateProvider";
+
+const flowKeys = {
+  Income: "Inflow",
+  Expense: "Outflow"
+};
+
 function AddCategoryModal(props) {
+  const [state, dispatch] = useAppContext();
   const [newName, setNewName] = useState("");
-  const handleSubmit = (event) => {
+  const [perspective, setPerspective] = useState("Inflow");
+
+  const handleSelect = e => setPerspective(flowKeys[e.target.value]);
+  const handleSubmit = event => {
     event.preventDefault();
     props.handleSubmit(newName);
     props.toggle();
+    dispatch({ type: ADD_CATEGORY, payload: { newName, perspective } });
   };
   const cleanUp = () => {
     setNewName("");
@@ -31,12 +46,24 @@ function AddCategoryModal(props) {
             <Input
               type="text"
               placeholder={props.text}
-              onChange={(event) => {
+              onChange={event => {
                 setNewName(event.target.value);
               }}
               value={newName}
               className="my-3"
             />
+            <FormGroup>
+              <Label for="exampleSelectMulti">Select Type</Label>
+              <Input
+                onChange={handleSelect}
+                type="select"
+                name="select"
+                id="exampleSelectMulti"
+              >
+                <option>Income</option>
+                <option>Expense</option>
+              </Input>
+            </FormGroup>
           </FormGroup>
           <Button className="mr-3" type="submit">
             Add Category Group

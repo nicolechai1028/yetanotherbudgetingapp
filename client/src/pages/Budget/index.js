@@ -21,26 +21,24 @@ function Budget() {
         name: "Saving",
         categories: [
           { id: 1, name: "Stocks", budgeted: 500, spent: 0 },
-          { id: 2, name: "Vacation", budgeted: 500, spent: 100 },
-        ],
+          { id: 2, name: "Vacation", budgeted: 500, spent: 100 }
+        ]
       },
       {
         id: 2,
         name: "Saving",
         categories: [
           { id: 1, name: "Stocks", budgeted: 500, spent: 0 },
-          { id: 2, name: "Vacation", budgeted: 500, spent: 100 },
-        ],
-      },
+          { id: 2, name: "Vacation", budgeted: 500, spent: 100 }
+        ]
+      }
     ],
-    transfer: transfer,
+    transfer: transfer
   });
 
-  const categoriesDisplay = categoryGroups.categoryGroups.map(
-    (categoryGroup) => {
-      return <Category key={categoryGroup.id} categoryGroup={categoryGroup} />;
-    }
-  );
+  const categoriesDisplay = categoryGroups.categoryGroups.map(categoryGroup => {
+    return <Category key={categoryGroup.id} categoryGroup={categoryGroup} />;
+  });
   useEffect(() => {
     //Call API and set categoriesState as value
   });
@@ -50,7 +48,7 @@ function Budget() {
   const toggle = () => {
     setShowModal(!showModal);
   };
-  const addCategoryGroup = (name) => {
+  const addCategoryGroup = name => {
     //do something and make popup
     setShowModal(false);
 

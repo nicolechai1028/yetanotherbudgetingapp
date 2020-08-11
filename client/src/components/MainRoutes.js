@@ -27,7 +27,6 @@ function MainRoutes(props) {
           <Route exact path="/expense" component={Expenses} />
           <Route exact path="/overview" component={Overview} />
           <Route exact path="/budget" component={Budget} />
-          <Route exact path="/expense" component={Expense} />
         </div>
       ) : (
         <Redirect to="/login" />
