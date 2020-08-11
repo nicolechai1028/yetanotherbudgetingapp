@@ -14,7 +14,7 @@
 	font-size: 1.25rem;
 }
 .name-item {
-	padding-left: 2.5em;
+	padding-left: 2.5rem;
 	font-weight: bold;
 	font-size: 1.25rem;
 }
@@ -43,19 +43,18 @@
 
 .tobe-budgeted-container{
 	display: flex;
-	border: 1px solid black;
 	text-align: center;
 	align-items: baseline;
 	justify-content: center;
 	border-radius: 10px;
-	background-color: lightgray;
+	background-color: white;
 	font-size: 2rem;
 } 
 
-.text-p{
+.text-budgeted {
 	font-size: 10;
-	color: blue;
 }
+
 
 @media only screen and (min-width: 900px) {
 	.top-container {
@@ -65,5 +64,7 @@
 		display: grid;
 		grid-template-columns: 1fr 5fr;
 	}
-}
+.add-cat-group-btn{
+	height: 4rem;
+}}
 
