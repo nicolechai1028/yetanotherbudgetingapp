@@ -6,6 +6,7 @@ import {
   CHECK_USER_INFO,
   REMOVE_USER,
   SET_LOADING,
+  ADD_CATEGORY,
 } from "./actions";
 
 const AppContext = createContext({});
@@ -22,13 +23,17 @@ const reducer = (state, action) => {
       return { ...state, user: { ...action.payload }, loading: false };
     case SET_LOADING:
       return { ...state, loading: action.payload };
-
     case REMOVE_USER:
       const newState = { ...state };
       delete newState.user;
       return { ...newState, loading: false };
     case CHECK_USER_INFO:
-      return;
+      return { ...state };
+    case ADD_CATEGORY:
+      return {
+        ...state,
+        categories: [...state.categories, action.payload],
+      };
     default:
       throw new Error("Error in reducer.");
   }
@@ -38,6 +43,7 @@ const UserProvider = ({ value = {}, ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
     user: null,
     loading: false,
+    categories: [],
   });
 
   return <Provider value={[state, dispatch]} {...props} />;

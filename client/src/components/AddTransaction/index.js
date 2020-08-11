@@ -13,12 +13,14 @@ import {
   DropdownMenu,
   DropdownItem
 } from "reactstrap";
+import { ADD_TRANSACTION } from "../../utils/globalStates/actions";
+import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 export const AddTransaction = () => {
   const [text, setText] = useState("");
   const [amount, setAmount] = useState(0);
 
-  const { addTransaction } = useContext(GlobalContext);
+  const [state, dispatch] = useAppContext();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -30,10 +32,11 @@ export const AddTransaction = () => {
     const newTransaction = {
       id: Math.floor(Math.random() * 100000000),
       text,
-      amount: +amount
+      amount: +amount,
+      name: e.target.value
     };
 
-    addTransaction(newTransaction);
+    dispatch({ action: ADD_TRANSACTION, payload: newTransaction });
   };
 
   return (
@@ -57,12 +60,9 @@ export const AddTransaction = () => {
             >
               <DropdownToggle caret>Dropdown</DropdownToggle>
               <DropdownMenu>
-                <DropdownItem>Header</DropdownItem>
-                <DropdownItem>Some Action</DropdownItem>
-                <DropdownItem>Action</DropdownItem>
-                <DropdownItem>Foo Action</DropdownItem>
-                <DropdownItem>Bar Action</DropdownItem>
-                <DropdownItem>Quo Action</DropdownItem>
+                {state.categories.map(a => (
+                  <DropdownItem>{a.newName}</DropdownItem>
+                ))}
               </DropdownMenu>
             </Dropdown>
           </InputGroup>

@@ -5,9 +5,8 @@ import { useAppContext } from "../utils/globalStates/stateProvider";
 import Overview from "../pages/Overview";
 import Budget from "../pages/Budget/";
 import Login from "../pages/Login/";
-import Expense from "../pages/Expense/";
-import NavigationBar from "../components/NavigationBar/";
 import Expenses from "../pages/Expense/";
+import NavigationBar from "../components/NavigationBar/";
 import Register from "../pages/Register/";
 import Home from "../pages/Home/";
 import { ADD_USER_INFO, REMOVE_USER } from "../utils/globalStates/actions";
@@ -40,12 +39,12 @@ function MainRoutes(props) {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/logout" component={logout} />
+
         {state.user && !state.loading ? (
           <div>
             <Route exact path="/expense" component={Expenses} />
             <Route exact path="/overview" component={Overview} />
             <Route exact path="/budget" component={Budget} />
-            <Route exact path="/expense" component={Expense} />
           </div>
         ) : (
           <Redirect to="/login" />
