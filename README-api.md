@@ -276,7 +276,7 @@ Upon account verification, each user is given about eleven categories to work wi
 | POST      | /api/transaction/create        | \{sessionUUID, accountUUID, payee, categoryUUID, subCategoryUUID, amount, \[memo\]\}  | \{status, message, \[transaction, account\]                             |                                                                               |
 | POST      | /api/transaction/list          | \{sessionUUID, accountUUID, \[filter\{limit, startDate, enddate\}\]   | \{status, message, \[transaction\[array\]\]\}                             |                                                                               |
 | POST      | /api/transaction/delete        | \{sessionUUID, transactionUUID                          | \{status, message, \[account\]                                       |                                                                               |
-| POST      | /api/transaction/modify       | \{sessionUUID, transactionUUID, \[subCategoryUUID, payee, date, amount, memo\]  | \{status, message, \[transaction\{ \}\]\}                                |                                                                               |
+| POST      | /api/transaction/modify       | \{sessionUUID, transactionUUID, \[subCategoryUUID, payee, date, amount, memo\]  | \{status, message, \[transaction\{ \},account\{ \}, manualAdjustment\{ \}\]\}                                |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
 
@@ -333,11 +333,10 @@ Upon account verification, each user is given about eleven categories to work wi
 > Success will return the following object:
 >
 >  - status: OK
->  - message : "Transaction Modified"
->  - transactionUUID
->  - categoryUUID
->  - subCategoryUUID
->  - transaction \{  \}
+>  - message : "Updated Transaction Record. ..."
+>  - transaction \{ ... \}
+>  - account \{ ... \}
+>  - manualAdjustment \{ ... \}
 >
 > Error will return:
 >  - status : ERROR
@@ -349,7 +348,7 @@ Upon account verification, each user is given about eleven categories to work wi
 >  - subCategoryUUID // optional. To change the category/subcategory of the transaction
 >  - payee // optional
 >  - date // optional yyyyMMdd format. If invalid or outside 20000101-20501231 it will be ignored
->  - amount // optional. Sign based on perspective of category
+>  - amount // optional. Sign based on perspective of category. If the amount changes, the account balance will be adjusted between the old and new values
 >  - memo // optional. To remove existing memo, send string with at least one space.
 
 ## <span style="color:blue">API Examples</span> 
@@ -842,5 +841,73 @@ Path: ``/api/transaction/list``
         :
         :
     ]
+}
+```
+
+### Transaction Modify Example
+- Request
+
+Path: ``/api/transaction/modify``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "transactionUUID": "1c816b8e-5a75-43e1-9bc7-966f3b84d092",
+  "subCategoryUUID": "083eb327-aa38-4ef7-8d41-2909c4c7c1b3",
+  "payee": "Cox Communications",
+  "date": "20200526",
+  "amount": "167.12",
+  "memo": "Cable & Internet #5" 
+}
+```
+
+- Response
+
+With status of "OK", the response many return the following objects depending on what is modified. 
+If any permitted transaction fields is modified, a transaction record (object) is appended. If transaction amount is one of the parameters passed, an "account" (Budget Account) and "manualAdjustment" transaction records are also returned. Changes to the transaction amount will result in funds added to or subtracted from the account depending on the amount and the <i>perspective</i> of the Category/SubCategory.
+The example below shows when amount, memo, date, payee and subCategory fields are modified.
+
+##### Original Transaction
+>
+> ```json
+> {
+>   "amount" : -100,
+>   "payee" : "San Diego Gas & Electric",
+>   "accountRef" : "88090449-f3aa-4386-8500-a218d1849ae5",
+>   "categoryRef" : "9b7d0110-b874-4a73-8795-7650f05032f2",
+>   "subCategoryRef" : "07cba8e2-d0de-41e8-9101-7d98abfca4ca",
+>   "memo" : "Electricity Bill",
+>   "date" : 20200808,
+> }
+> ```
+
+```json
+{
+  "status": "OK",
+  "message": "Updated Transaction Record. Updated BudgetAccount Record. Created Transaction for Account Manual Adjustment",
+  "transaction": {
+    "transactionUUID": "1c816b8e-5a75-43e1-9bc7-966f3b84d092",
+    "payee": "Cox Communications",
+    "categoryUUID": "9b7d0110-b874-4a73-8795-7650f05032f2",
+    "subCategoryUUID": "083eb327-aa38-4ef7-8d41-2909c4c7c1b3",
+    "memo": "Cable & Internet #5",
+    "amount": -167.12,
+    "date": 20200526
+  },
+  "account": {
+    "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+    "name": "Citi Visa",
+    "balance": -2337.04,
+    "isClosed": false
+  },
+  "manualAdjustment": {
+    "transactionUUID": "1e5ca291-1e5d-4101-8320-da038cae6d4b",
+    "payee": "Manual Adjustment",
+    "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+    "categoryUUID": "f30059bf-a228-4636-84b3-1f987f267551",
+    "subCategoryUUID": "9c4f1bbe-814e-4300-8b1b-26f6d9513829",
+    "amount": -67.12,
+    "date": 20200810
+  }
 }
 ```
