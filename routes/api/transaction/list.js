@@ -109,7 +109,7 @@ router.route("/").post((req, res) => {
           if (!dbResults) response = { status: "ERROR", message: "Error retreiving data" };
           else {
             let transactions = [];
-            dbResults.map((result) => {
+            dbResults.every((result) => {
               perspective = result.categoryRef.perspective;
               categoryUUID = result.categoryRef._id;
               xactionJSON = TransactionController.getJSON(result);
@@ -119,6 +119,7 @@ router.route("/").post((req, res) => {
                 delete xactionJSON.ownerRef;
                 transactions.push(xactionJSON);
               }
+              return true;
             });
             response = { status: "OK", message: `Found ${dbResults.length} transactions`, transaction: transactions };
           }

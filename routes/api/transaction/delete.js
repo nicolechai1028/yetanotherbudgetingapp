@@ -88,7 +88,7 @@ router.route("/").post((req, res) => {
       if (process.env.YET_DEBUG) debugLog += "\nResponse:\n" + JSON.stringify(response, null, 2);
 
       // update account. Since the transaction is being reversed, multiply the amount by -1 and add to the account balance
-      let balance = new Number(dbAccount.balance) + amount * -1;
+      let balance = new Number(dbAccount.balance) + Utilities.flipSign(amount);
       dbAccount.balance = Utilities.roundToOneHundredthFin(balance);
       dbAccount = await dbAccount.save();
       if (process.env.YET_DEBUG) {

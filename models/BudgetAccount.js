@@ -33,7 +33,9 @@ const uuidv4 = v4;
 const BudgetAccountSchema = new Schema({
   _id: { type: Schema.Types.String, default: uuidv4 },
   name: { type: Schema.Types.String, required: true },
+  // consider index of this field, since this is how we check for duplicate names
   accountName4Compare: { type: Schema.Types.String, required: true },
+  // consider index of this field
   ownerRef: { type: Schema.Types.String, required: true, ref: "UserProfile" }, // reference to the UserProfile._id
   accountType: {
     type: Schema.Types.String,

@@ -118,8 +118,7 @@ router.route("/").post((req, res) => {
         else {
           // make sure the amount is the right sign base on the perspective of the Category
           perspective = dbCategory.perspective;
-          if (perspective == "Inflow" && amount < 0) amount *= -1;
-          else if (perspective == "Outflow" && amount > 0) amount *= -1;
+          amount = perspective == "Inflow" ? Utilities.makePositive(amount) : Utilities.makeNegative(amount);
           // make sure budget account is valid
           dbAccount = await db.BudgetAccount.findById(accountUUID);
           if (!dbAccount) response = { status: "ERROR", message: "Unable to find Budget Account" };

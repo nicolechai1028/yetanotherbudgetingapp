@@ -202,7 +202,8 @@ router.route("/").post((req, res) => {
             }
             // depending on the current perspective set the sign of the amount
             if (amount) {
-              if ((perspective == "Infow" && amount < 0) || (perspective == "Outflow" && amount > 0)) amount *= -1;
+              amount = perspective == "Infow" ? Utilities.makePositive(amount) : Utilities.makeNegative(amount);
+              // if ((perspective == "Infow" && amount < 0) || (perspective == "Outflow" && amount > 0)) amount *= -1;
               if (process.env.YET_DEBUG) {
                 /* ********************** DEBUG **************************** */
                 transactionLog += `\n++++ Updating Tansaction Amount:\n\tOld Amount: ${previousAmount}\n\tNew Amount: ${amount}`;

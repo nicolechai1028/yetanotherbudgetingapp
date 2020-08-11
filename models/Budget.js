@@ -23,7 +23,7 @@ const Types = mongoose.Schema.Types;
 const { v4 } = require("uuid");
 const uuidv4 = v4;
 
-const SubCategoryValuesSchema = new Schema({
+const SubCategorySchema = new Schema({
   _id: { type: Types.String, default: uuidv4 },
   subCategoryRef: { type: Types.String, required: true },
   budgeted: { type: Types.Number, required: true, default: 0.0 },
@@ -32,10 +32,12 @@ const SubCategoryValuesSchema = new Schema({
 
 const BudgetSchema = new Schema({
   _id: { type: Types.String, default: uuidv4 },
+  // consider creating unique compound index of the next three fields
   yearMonth: { type: Types.Number, required: true, min: 200001, max: 205012 },
+  // consider separate index of this field
   ownerRef: { type: Types.String, required: true, ref: "UserProfile" },
   categoryRef: { type: Types.String, required: true, ref: "UserCategoryGroup" },
-  subCategoryValues: [SubCategoryValuesSchema],
+  subCategory: [SubCategorySchema],
 });
 
 const Budget = mongoose.model("Budget", BudgetSchema);
