@@ -32,7 +32,7 @@ function ChangeNamePopover(props) {
   return (
     <div>
       <button
-        className="clear-button d"
+        className="clear-button "
         id={props.currentName}
         type="button"
         onClick={(event) => {
@@ -52,6 +52,7 @@ function ChangeNamePopover(props) {
         <PopoverBody>
           <Form onSubmit={handleSubmit}>
             <Input
+              height="20px"
               type="text"
               placeholder={props.currentName}
               value={newName}

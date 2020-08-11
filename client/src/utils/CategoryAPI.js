@@ -17,3 +17,7 @@ export const createCategoryAPI = (
 export const getCategoryListAPI = (sessionUUID, categoryName) => {
   return axios.post("/api/category/list", { sessionUUID, categoryName });
 };
+
+export const transferAPI = (sessionUUID) => {
+  return axios.post("/api/category/transfer", { sessionUUID });
+};

@@ -1,22 +1,19 @@
 import React, { useReducer, useContext, createContext } from "react";
 
 import {
-  TRANSFER_BALANCE,
   ADD_USER_INFO,
   CHECK_USER_INFO,
   REMOVE_USER,
   SET_LOADING,
   ADD_CATEGORY,
 } from "./actions";
+import { createCategoryAPI } from "../CategoryAPI";
 
 const AppContext = createContext({});
 const { Provider } = AppContext;
 
 const reducer = (state, action) => {
-  console.log(action);
   switch (action.type) {
-    case TRANSFER_BALANCE:
-      return { ...state };
     case ADD_USER_INFO:
       //store user info in sessionStorage
       sessionStorage.setItem("user", JSON.stringify(action.payload));

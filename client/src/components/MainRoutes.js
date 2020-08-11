@@ -12,12 +12,12 @@ import Home from "../pages/Home/";
 import { ADD_USER_INFO, REMOVE_USER } from "../utils/globalStates/actions";
 import { logoutAPI } from "../utils/API";
 
-function MainRoutes(props) {
+function MainRoutes() {
   const [state, dispatch] = useAppContext();
   useEffect(() => {
     //Check if there is a user in sessionStorage
     const user = sessionStorage.getItem("user");
-    if (user) {
+    if (user && !(user === "undefined") && user !== null) {
       dispatch({ type: ADD_USER_INFO, user: JSON.parse(user), loading: false });
     }
   }, [dispatch]);
@@ -27,8 +27,8 @@ function MainRoutes(props) {
       logoutAPI(state.user.sessionUUID);
       dispatch({ type: REMOVE_USER });
       sessionStorage.removeItem("user");
-      return <Redirect to="/" />;
     }
+    return <Redirect to="/" />;
   };
 
   return (

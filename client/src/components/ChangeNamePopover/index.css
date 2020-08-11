@@ -15,3 +15,7 @@
 .clear-button:focus{
 	border: none;
 }
+.category-container {
+	 background-color: var(--var4);
+	 border: none !important;
+}

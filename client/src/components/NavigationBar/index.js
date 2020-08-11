@@ -15,7 +15,11 @@ const Navigation = (props) => {
         Y.A.B.A
       </NavbarBrand>
       {/*Check if there is user info in state*/}
-      {!("user" in state && state.user !== null) ? (
+      {!(
+        "user" in state &&
+        state.user !== null &&
+        state.user !== "undefined"
+      ) ? (
         <div className="ml-auto ">
           {Object.keys(notLoggedIn).map((key) => {
             const btn = notLoggedIn[key];
@@ -58,7 +62,7 @@ const notLoggedIn = {
     path: "/",
     color: "info",
     display: "Home",
-    classes: "mr-5",
+    classes: "mr-5 btn-color",
   },
   login: {
     id: 2,
@@ -66,7 +70,7 @@ const notLoggedIn = {
     path: "/login",
     color: "info",
     display: "Log In",
-    classes: "mr-5",
+    classes: "mr-5 btn-color",
   },
   signup: {
     id: 3,
@@ -74,7 +78,7 @@ const notLoggedIn = {
     path: "/register",
     color: "info",
     display: "Sign Up",
-    classes: "mr-5",
+    classes: "mr-5 btn-color",
   },
 };
 
