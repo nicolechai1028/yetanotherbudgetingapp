@@ -180,7 +180,7 @@ router.route("/").post((req, res) => {
               console.log("\nSaved Transaction:\n", dbXaction);
               if (dbXaction != null) {
                 let transaction = {
-                  id: dbXaction._id,
+                  transactionUUID: dbXaction._id,
                   payee: dbXaction.payee,
                   accountUUID: dbAccount._id,
                   categoryName: dbCategory.categoryName,

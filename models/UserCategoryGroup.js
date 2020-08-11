@@ -44,14 +44,14 @@ const UserCategoryGroupSchema = new Schema({
     // defines if transaction is INFLOW or OUTFLOW type
     type: Schema.Types.String,
     required: true,
-    enum: Constants.BUDGET_ACCOUNT_PERSPECTIVES,
+    enum: Constants.ACCOUNT_PERSPECTIVES,
     default: Constants.DEFAULT_PERSPECTIVE,
   },
   access: {
     type: Schema.Types.String,
-    enum: Constants.BUDGET_ACCOUNT_ACCESS_LEVELS,
+    enum: Constants.ACCOUNT_ACCESS_LEVELS,
     required: true,
-    default: Constants.BUDGET_ACCOUNT_ACCESS_DEFAULT,
+    default: Constants.ACCOUNT_ACCESS_DEFAULT,
   },
 });
 

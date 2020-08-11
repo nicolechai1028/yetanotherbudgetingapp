@@ -73,7 +73,7 @@ module.exports = {
             ownerRef: ownerRef,
             categoryName: specialCategory.groupName,
             perspective: specialCategory.perspective || Constants.DEFAULT_PERSPECTIVE,
-            access: Constants.BUDGET_ACCOUNT_ACCESS_SPECIAL,
+            access: Constants.ACCOUNT_ACCESS_SPECIAL,
           });
           for (let count = 0; count < specialCategory.categories.length; count++) {
             let subCategoryName = specialCategory.categories[count];

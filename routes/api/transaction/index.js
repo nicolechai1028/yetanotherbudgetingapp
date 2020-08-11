@@ -2,11 +2,9 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +  Added this History section                                                      *
- *                                                                                      *
  * == chikeobi-08 ==                                                                    *
- *   +  Added Transaction (/api/transaction/*) route                                    *
+ *   +    Added this History section                                                    *
+ *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -18,26 +16,20 @@
  *                                                                                      *
  ****************************************************************************************
  */
-
-const path = require("path");
 const router = require("express").Router();
-const apiRoutesUser = require("./api/user");
-const apiRoutesBudget = require("./api/budget");
-const apiRoutesBudgetAccount = require("./api/budgetAccount");
-const apiRoutesCategory = require("./api/category");
-const apiRoutesTransaction = require("./api/transaction");
 
-// @see https://scotch.io/tutorials/keeping-api-routing-clean-using-express-routers
-// API Routes
-router.use("/api/user", apiRoutesUser);
-router.use("/api/budget", apiRoutesBudget);
-router.use("/api/budgetAccount", apiRoutesBudgetAccount);
-router.use("/api/category", apiRoutesCategory);
-router.use("/api/transaction", apiRoutesTransaction);
+const createRoute = require("./create");
+const deleteRoute = require("./delete");
+const modifyRoute = require("./modify");
+const listRoute = require("./list");
+const findRoute = require("./find");
+// const Route = require("./");
 
-// If no API routes are hit, send the React app
-router.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
-});
+router.use("/create", createRoute);
+router.use("/delete", deleteRoute);
+router.use("/modify", modifyRoute);
+router.use("/list", listRoute);
+router.use("/find", findRoute);
+// router.use("/", Route);
 
 module.exports = router;

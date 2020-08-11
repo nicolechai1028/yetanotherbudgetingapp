@@ -2,12 +2,8 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
- *   +  Added this History section                                                      *
- *                                                                                      *
  * == chikeobi-08 ==                                                                    *
- *   +  Added Transaction (/api/transaction/*) route                                    *
- *                                                                                      *
+ *   +    Added this History section                                                    *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -19,25 +15,48 @@
  ****************************************************************************************
  */
 
-const path = require("path");
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
+ * @see https://codeforgeek.com/expressjs-router-tutorial/
+ */
+
+const crypto = require("crypto");
 const router = require("express").Router();
-const apiRoutesUser = require("./api/user");
-const apiRoutesBudget = require("./api/budget");
-const apiRoutesBudgetAccount = require("./api/budgetAccount");
-const apiRoutesCategory = require("./api/category");
-const apiRoutesTransaction = require("./api/transaction");
+// const db = require("../../../models");
+// const Utilities = require("../../../utilities");
+// const Constants = require("../../../constants");
 
-// @see https://scotch.io/tutorials/keeping-api-routing-clean-using-express-routers
-// API Routes
-router.use("/api/user", apiRoutesUser);
-router.use("/api/budget", apiRoutesBudget);
-router.use("/api/budgetAccount", apiRoutesBudgetAccount);
-router.use("/api/category", apiRoutesCategory);
-router.use("/api/transaction", apiRoutesTransaction);
+/**
+ * Matches routes with /api/
+ *
+ * Success will return the following object:
+ *  - status: OK
+ *  - message : <message>
+ *  - ?...
+ *
+ * Error will return:
+ *  - status : ERROR
+ *  - message : <Error message>
+ *
+ * Expects:
+ *  - sessionUUID
+ *  - ?...
+ * 
+ */
+router.route("/").post((req, res) => {
+  console.log(Utilities.getFullUrl(req));
+  console.log(req.body);
 
-// If no API routes are hit, send the React app
-router.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../../client/build/index.html"));
+  (async () => {
+    dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
+    if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid sessionUUID" };
+    else {
+      dbProfile = dbResults[0];
+      ownerRef = dbProfile._id;
+    }
+    console.log("Create Transaction API Response:\n", response);
+    res.json(response);
+  })();
 });
 
 module.exports = router;

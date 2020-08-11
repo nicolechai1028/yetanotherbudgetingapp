@@ -146,10 +146,10 @@ router.route("/").post((req, res) => {
 function checkPerspective(perspective) {
   let retval;
   let perspectiveLC = perspective.toLowerCase();
-  let index = Constants.BUDGET_ACCOUNT_PERSPECTIVES.findIndex((ele) => {
+  let index = Constants.ACCOUNT_PERSPECTIVES.findIndex((ele) => {
     return Utilities.multipleSpaceRemovedTrimLC(ele) === perspectiveLC;
   });
-  if (index != -1) retval = Constants.BUDGET_ACCOUNT_PERSPECTIVES[index];
+  if (index != -1) retval = Constants.ACCOUNT_PERSPECTIVES[index];
   return retval;
 }
 module.exports = router;
