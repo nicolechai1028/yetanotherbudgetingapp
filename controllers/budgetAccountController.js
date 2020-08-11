@@ -73,7 +73,7 @@ module.exports = {
         isClosed: dbAccount.isClosed,
         notes: dbAccount.notes,
       };
-    }
-    return retval;
+    } else return;
+    return JSON.stringify(retval,null,2);
   },
 };

@@ -33,7 +33,10 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
   - [Budget Account Close](#budget-account-close)
 
 - [Transaction API Examples](#transaction-create-example)
-  - [Transaction Create](#transaction-create)
+  - [Transaction Create](#transaction-create-example)
+  - [Transaction List](#transaction-list-example)
+  - [Transaction Modify](#transaction-modify-example)
+  - [Transaction Delete](#transaction-delete-example)
 
 ### <u><span style="color:orange">User</span></u>
 This is a section of resources related to user access to the application
@@ -277,6 +280,7 @@ Upon account verification, each user is given about eleven categories to work wi
 | POST      | /api/transaction/list          | \{sessionUUID, accountUUID, \[filter\{limit, startDate, enddate\}\]   | \{status, message, \[transaction\[array\]\]\}                             |                                                                               |
 | POST      | /api/transaction/delete        | \{sessionUUID, transactionUUID                          | \{status, message, \[account\]                                       |                                                                               |
 | POST      | /api/transaction/modify       | \{sessionUUID, transactionUUID, \[subCategoryUUID, payee, date, amount, memo\]  | \{status, message, \[transaction\{ \},account\{ \}, manualAdjustment\{ \}\]\}                                |                                                                               |
+| POST      | /api/transaction/delete       | \{sessionUUID, transactionUUID\}                      | \{status, message, \[transactionUUID, account\{ ... \}\]              |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
 
@@ -350,6 +354,24 @@ Upon account verification, each user is given about eleven categories to work wi
 >  - date // optional yyyyMMdd format. If invalid or outside 20000101-20501231 it will be ignored
 >  - amount // optional. Sign based on perspective of category. If the amount changes, the account balance will be adjusted between the old and new values
 >  - memo // optional. To remove existing memo, send string with at least one space.
+
+### Transaction Delete
+> Matches routes with /api/transaction/delete
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Transaction {UUID} Deleted. Account {UUID} Updated
+>  - transactionUUID
+>  - account { ... }
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+>
+> Expects:
+>  - sessionUUID
+>  - transactionUUID
 
 ## <span style="color:blue">API Examples</span> 
 
@@ -908,6 +930,35 @@ The example below shows when amount, memo, date, payee and subCategory fields ar
     "subCategoryUUID": "9c4f1bbe-814e-4300-8b1b-26f6d9513829",
     "amount": -67.12,
     "date": 20200810
+  }
+}
+```
+
+### Transaction Delete Example
+- Request
+
+Path: ``/api/transaction/delete``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "transactionUUID": "779b4d90-d197-4ca3-8875-d680808de791" 
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Transaction (779b4d90-d197-4ca3-8875-d680808de791) Deleted. Account 88090449-f3aa-4386-8500-a218d1849ae5 Updated",
+  "transactionUUID": "779b4d90-d197-4ca3-8875-d680808de791",
+  "account": {
+    "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+    "name": "Citi Visa",
+    "accountType": "Credit Card",
+    "balance": -1321.48,
+    "isClosed": false
   }
 }
 ```
