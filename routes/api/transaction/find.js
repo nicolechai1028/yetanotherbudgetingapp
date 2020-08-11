@@ -67,7 +67,7 @@ router.route("/:findBy?/:using?").post((req, res) => {
   console.log(req.body);
 
   let(sessionUUID, accountUUID, value, (matchCase = false), (regex = false)) = req.body;
-  
+  let response = {status:"ERROR",message:"Not yet implemented... sorry..."};
   (async () => {
     dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
     if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid sessionUUID" };

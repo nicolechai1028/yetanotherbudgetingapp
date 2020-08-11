@@ -17,6 +17,8 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
   - [create](#create)
   - [list](#list)
   - [modify](#modify)
+- [Budget Route (/api/budget)](#ubudgetu)
+  - [list](#budget-list)
 
 - [User API Examples](#user-register)
   - [Register](#user-register)
@@ -269,8 +271,30 @@ Upon account verification, each user is given about eleven categories to work wi
 ### <u><span style="color:orange">Budget</span></u>
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
+| POST      | /api/budget/list              | \{sessionUUID, \[yearMonth\]\}                        | \{status, message, \[yearMonth, budget[ { ... \}\]]               |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
 |           |                               |                                                       |                                                                   |                                                                               |
+
+### Budget List
+> Matches with /api/budget/list
+> Used to retreive Budget for a given Month and Year. It returns budget for all Categories and
+> SubCategories, even ones that have not been set. Those not set are given a value of zero (0.0)
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Budget for YYYYMMDD
+>  - yearMonth : YYYYMM
+>  - budget [{ ... }]
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+>
+> Expects:
+>  - sessionUUID
+>  - yearMonth // optional. If not present or invalid, current year-month will be used
+>
 
 ### <u><span style="color:orange">Transaction</span></u>
 
@@ -960,5 +984,142 @@ Path: ``/api/transaction/delete``
     "balance": -1321.48,
     "isClosed": false
   }
+}
+```
+
+### Budget List Example
+
+- Request
+
+Path: ``/api/budget/list``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "yearMonth": "202008" 
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Retreived 12 budgets",
+  "yearMonth": "202008",
+  "budget": [
+    {
+      "categoryUUID": "661f237a-db65-4aae-9cc5-b80d6836ee8e",
+      "categoryName": "Inflow",
+      "perspective": "Inflow",
+      "subCategory": [
+        {
+          "subCategoryName": "To be budgeted",
+          "subCategoryUUID": "33825288-d97b-4495-83ad-28b905a44ba0",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Weekly Income",
+          "subCategoryUUID": "28281b33-178b-4923-b869-ef695f59dc1e",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Bi-Weekly Income",
+          "subCategoryUUID": "a11bcfeb-7d33-4a5c-a1df-8b127ab3eb03",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Monthly Income",
+          "subCategoryUUID": "efef013a-2160-4bd7-b317-df094be0f189",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Dividend",
+          "subCategoryUUID": "12172b1e-2316-4b87-9c17-c541c851b289",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Interest",
+          "subCategoryUUID": "aaa6cb28-07e3-430e-88e1-de2ea057b316",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Refund",
+          "subCategoryUUID": "1d20d628-3367-4acc-8340-6c7d7927f45f",
+          "budgeted": 0,
+          "activity": 0
+        }
+      ]
+    },
+    {
+      "categoryUUID": "9b7d0110-b874-4a73-8795-7650f05032f2",
+      "categoryName": "Utilities",
+      "perspective": "Outflow",
+      "subCategory": [
+        {
+          "subCategoryName": "Electricity",
+          "subCategoryUUID": "07cba8e2-d0de-41e8-9101-7d98abfca4ca",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Heat/Gas",
+          "subCategoryUUID": "e50f971f-1f54-44ad-ae55-65f1da5ccd3b",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Water",
+          "subCategoryUUID": "84f67316-03f8-4a89-953d-98c365cfcd1b",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Trash",
+          "subCategoryUUID": "baada2d9-9f4e-4c8d-bcb5-b803d62ea2be",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Phone/Mobile",
+          "subCategoryUUID": "c3bef099-30bf-444d-bbdb-d807eea96083",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Internet",
+          "subCategoryUUID": "60d5971d-5acd-4a07-b98e-179009aebcfe",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Cable",
+          "subCategoryUUID": "083eb327-aa38-4ef7-8d41-2909c4c7c1b3",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Sewage",
+          "subCategoryUUID": "a814098c-cf72-4b82-9986-07103b86e175",
+          "budgeted": 0,
+          "activity": 0
+        },
+        {
+          "subCategoryName": "Alarm System",
+          "subCategoryUUID": "3b076511-3606-48c1-855e-112338d8d568",
+          "budgeted": 0,
+          "activity": 0
+        }
+      ]
+    },
+    :
+    :
+  ]
 }
 ```

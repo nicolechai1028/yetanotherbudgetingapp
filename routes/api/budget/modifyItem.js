@@ -2,12 +2,10 @@
  *                                    HISTORY                                           *
  ****************************************************************************************
  *                                                                                      *
- * == chikeobi-03 ==                                                                    *
+ * == chikeobi-05 ==                                                                    *
  *   +    Created                                                                       *
  *                                                                                      *
- * == chikeobi-05 ==                                                                    *
- *   +    Changed name of file from "getBudget" to "getBudgetItem". Will be used to     *
- *          retreive a single budget item                                               *
+ *                                                                                      *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -18,44 +16,38 @@
  *                                                                                      *
  ****************************************************************************************
  */
-
-/**
- * @see https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes
- * @see https://codeforgeek.com/expressjs-router-tutorial/
- */
-
 const crypto = require("crypto");
 const router = require("express").Router();
 const Utilities = require("../../../utilities");
 const db = require("../../../models");
 
 /**
- * Matches with /api/budget/getBudgetItem
- * Gets the budget for a specific user. Parameters will determine for which year and month.
- * Budgets can also be retrieved for a Category Group and/or a specific category
+ * Matches with /api/budget/modifyBudgetItem
  *
- *
- *
- *  - status: "OK | ERROR"
- *  - message : "Success | <Error text>"
- *  - response {
- *               date{
- *                     year: <yyyy>
- *                     month: <mm>
- *                   },
- *                data[
- *
- *                    ]
- *             }
- *
- * */
-
+ */
 router.route("/").post((req, res) => {
   const body = req.body;
   console.log(Utilities.getFullUrl(req));
-  console.log(body);
-
-  res.json({ status: "OK", message: `(${req.method}) ==> ${Utilities.getFullUrl(req)}` });
-});
-
-module.exports = router;
+  console.log(req.body);
+  
+  let { sessionUUID } = req.body;
+  
+  let response = { status: "ERROR", message: "Not yet implemented... sorry..." };
+  (async () => {
+    try {
+      dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
+      if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid sessionUUID" };
+      else {
+        dbProfile = dbResults[0];
+        ownerRef = dbProfile._id;
+      }
+    } catch (error) {
+      response = { status: "ERROR", message: error.message };
+    }
+    console.log("Create Transaction API Response:\n", response);
+    res.json(response);
+  })();
+  });
+  
+  module.exports = router;
+  

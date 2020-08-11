@@ -3,11 +3,14 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
- *   +    Replaced SMTP configurations with values derived from .env file               *
+ *   +  Added this History section                                                      *
+ *   +  Replaced SMTP configurations with values derived from .env file                 *
  *                                                                                      *
  * == chikeobi-06 ==                                                                    *
- *   +    Moved Database connection and initialization from server.js to here           *
+ *   +  Moved Database connection and initialization from server.js to here             *
+ *                                                                                      *
+ * == chikeobi-11 ==                                                                    *
+ *   +  Added getYearMonth function                                                     *
  *   +                                                                                  *
  *   +                                                                                  *
  *                                                                                      *
@@ -229,9 +232,10 @@ function multipleSpaceRemovedTrimLC(inputObj) {
       retval = inputObj.trim().replace(/ +/g, " ").toLowerCase();
     } else if (Array.isArray(inputObj)) {
       retval = [];
-      inputObj.map((ele) => {
+      inputObj.every((ele) => {
         if (typeof ele == "string") retval.push(ele.trim().replace(/ +/g, " ").toLowerCase());
         else retval.push(ele);
+        return true;
       });
     }
   }
@@ -298,6 +302,9 @@ function formatTransactionDateFromUTC(utcTime) {
   return parseInt(value);
 }
 
+function getYearMonth(utcTime) {
+  return `${formatTransactionDateFromUTC(utcTime)}`.slice(0, 6);
+}
 function roundToOneHundredthFin(x) {
   return (Math.round(100 * x) / 100).toFixed(2);
 }
@@ -321,18 +328,42 @@ function findDuplicateInArrayTrimLC(inputArray) {
   return result;
 }
 
+function makePositive(input) {
+  let retval = Math.abs(input);
+  console.log(`Typeof Input: ${typeof input}\tInput: ${input}\tOutput: ${retval}`);
+  return retval;
+}
+
+function makeNegative(input) {
+  let retval = -Math.abs(input);
+  console.log(`Typeof Input: ${typeof input}\tInput: ${input}\tOutput: ${retval}`);
+  return retval;
+}
+
+function flipSign(input) {
+  let retval;
+  if (isNaN(input) == false) {
+    retval = input < 0 ? makePositive(input) : makeNegative(input);
+  }
+  return retval;
+}
+
 module.exports = {
-  getFullUrl,
-  generateUUID,
   createHmacSHA256Hash,
   createSHA256Hash,
-  getProtocolHostUrl,
-  sendConfirmationEmail,
   emailValidationPage,
+  findDuplicateInArrayTrimLC,
+  flipSign,
+  formatTransactionDateFromUTC,
+  generateUUID,
+  getFullUrl,
+  getProtocolHostUrl,
+  getYearMonth,
+  makeNegative,
+  makePositive,
   multipleSpaceRemovedTrim,
   multipleSpaceRemovedTrimLC,
-  startAndInitializeDatabase,
-  formatTransactionDateFromUTC,
   roundToOneHundredthFin,
-  findDuplicateInArrayTrimLC,
+  sendConfirmationEmail,
+  startAndInitializeDatabase,
 };

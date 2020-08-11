@@ -83,17 +83,18 @@ router.route("/").post((req, res) => {
         else {
           response = { status: "OK", message: `Found ${dbResults.length} Categories` };
           let categories = [];
-          dbResults.map((dbCategory) => {
+          dbResults.every((dbCategory) => {
             categoryName = dbCategory.categoryName;
             categoryUUID = dbCategory._id;
             perspective = dbCategory.perspective;
             let subCategories = [];
             if (dbCategory.subCategory) {
-              dbCategory.subCategory.map((dbSubCategory) => {
+              dbCategory.subCategory.every((dbSubCategory) => {
                 subCategories.push({
                   subCategoryUUID: dbSubCategory._id,
                   subCategoryName: dbSubCategory.subCategoryName,
                 });
+                return true;
               });
             }
             categories.push({
@@ -102,6 +103,7 @@ router.route("/").post((req, res) => {
               perspective: perspective,
               subCategory: subCategories,
             });
+            return true;
           });
           response["category"] = categories;
         }

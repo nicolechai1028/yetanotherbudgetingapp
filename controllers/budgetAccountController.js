@@ -17,7 +17,7 @@
 const db = require("../models");
 const utilities = require("../utilities");
 
-// Define methods for the UserProfile controller
+// Define methods for the BudgetAccount controller
 
 module.exports = {
   findByOwnerAndName: function (ownerRef, name) {

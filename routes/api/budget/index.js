@@ -21,14 +21,14 @@
  */
 const router = require("express").Router();
 
-const getBudgetItemRoute = require("./getBudgetItem");
-const listBudgetRoute = require("./listBudget");
-const modifyBudgetItemRoute = require("./modifyBudgetItem");
-const setBudgetItemRoute = require("./setBudgetItem");
+const getItemRoute = require("./getItem");
+const listRoute = require("./list");
+const modifyItemRoute = require("./modifyItem");
+const setItemRoute = require("./setItem");
 
-router.use("/getBudgetItem", getBudgetItemRoute);
-router.use("/listBudget", listBudgetRoute);
-router.use("/modifyBudgetItem", modifyBudgetItemRoute);
-router.use("/setBudgetItem", setBudgetItemRoute);
+router.use("/getItem", getItemRoute);
+router.use("/list", listRoute);
+router.use("/modifyItem", modifyItemRoute);
+router.use("/setItem", setItemRoute);
 
 module.exports = router;

@@ -97,8 +97,9 @@ router.route("/").post((req, res) => {
         else {
           // create Category. First make subCategory
           let subCat = [];
-          subCategory.map((sub) => {
+          subCategory.every((sub) => {
             subCat.push({ subCategoryName: Utilities.multipleSpaceRemovedTrim(sub) });
+            return true;
           });
           let dbModel = {
             ownerRef: ownerRef,

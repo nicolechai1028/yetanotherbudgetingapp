@@ -46,11 +46,13 @@ module.exports = Object.freeze({
       groupName: "Inflow Adjustment",
       categories: ["To be budgeted"],
       perspective: "Inflow",
+      access: "System",
     },
     {
       groupName: "Outflow Adjustment",
       categories: ["To be budgeted"],
       perspective: "Outflow",
+      access: "System",
     },
     { groupName: "Account Inflow", categories: ["Transfer"], perspective: "Inflow", access: "System" },
     { groupName: "Account Outflow", categories: ["Transfer"], perspective: "Outflow", access: "System" },
