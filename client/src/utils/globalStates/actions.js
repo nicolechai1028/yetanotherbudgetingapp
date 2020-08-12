@@ -5,4 +5,4 @@ export const CHECK_USER_INFO = "CHECK_USER_INFO";
 export const SET_LOADING = "SET_LOADING";
 export const REMOVE_USER = "REMOVE_USER";
 export const ADD_CATEGORY = "ADD_CATEGORY";
-export const ADD_TRANSACTION = "ADD TRANSACTION";
+export const ADD_TRANSACTION = "ADD_TRANSACTION";

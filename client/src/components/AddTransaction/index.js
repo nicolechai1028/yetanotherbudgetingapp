@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { GlobalContext } from "../../context/GlobalState";
 import {
   Row,
   Button,
@@ -36,7 +35,7 @@ export const AddTransaction = () => {
       name: e.target.value
     };
 
-    dispatch({ action: ADD_TRANSACTION, payload: newTransaction });
+    dispatch({ type: ADD_TRANSACTION, payload: newTransaction });
   };
 
   return (
