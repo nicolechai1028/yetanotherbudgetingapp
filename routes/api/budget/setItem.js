@@ -4,7 +4,9 @@
  *                                                                                      *
  * == chikeobi-12 ==                                                                    *
  *   +  Created                                                                         *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-16 ==                                                                    *
+ *   +  setItem is the same as modify item                                              *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -25,7 +27,7 @@ const crypto = require("crypto");
 const router = require("express").Router();
 const Utilities = require("../../../utilities");
 const db = require("../../../models");
-const Constants = require ("../../../constants");
+const Constants = require("../../../constants");
 
 /**
  * Matches with /api/budget/setItem
@@ -128,11 +130,11 @@ router.route("/").post((req, res) => {
         }
         if (dbBudgetSubCategory) {
           // one already exists. If it is zero, then set it. Otherwise throw exception
-          if (dbBudgetSubCategory.budgeted == 0) {
-            dbBudgetSubCategory.budgeted = budgetedAmount;
-            await dbBudgetCategory.save();
-            saved = true;
-          }
+          // if (dbBudgetSubCategory.budgeted == 0) {
+          dbBudgetSubCategory.budgeted = budgetedAmount;
+          await dbBudgetCategory.save();
+          saved = true;
+          // }
         } else {
           // budgetCategory found but not budgetSubCategory
           dbBudgetSubCategory = { subCategoryRef: subCategoryUUID, budgeted: budgetedAmount, activity: 0.0 };

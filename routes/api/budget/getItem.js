@@ -99,7 +99,7 @@ router.route("/").post((req, res) => {
       if (subCategoryUUID){
         let found = false;
         for (let index = 0; index < dbCategory.dbSubCategory.length; index++){
-          
+          //****** stopped here *******
         }
       }
     } catch (error) {
