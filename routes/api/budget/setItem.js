@@ -181,7 +181,7 @@ router.route("/").post((req, res) => {
     } catch (error) {
       response = { status: "ERROR", message: error.message };
     }
-    console.log("Create Transaction API Response:\n", response);
+    console.log("Buget setItem API Response:\n", response);
     res.json(response);
   })();
 });
