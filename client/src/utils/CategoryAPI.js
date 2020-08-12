@@ -3,8 +3,8 @@ import axios from "axios";
 export const createCategoryAPI = (
   sessionUUID,
   categoryName,
-  subCategory,
-  perspective
+  perspective,
+  subCategory
 ) => {
   return axios.post("/api/category/create", {
     sessionUUID,
