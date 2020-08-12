@@ -4,6 +4,9 @@
  *                                                                                      *
  * == chikeobi-07 ==                                                                    *
  *   +  Added this History section                                                      *
+ *                                                                                      *
+ * == chikeobi-14 ==                                                                    *
+ *   +  Modified it so you can reate a Category without subCategories.                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -72,8 +75,7 @@ router.route("/").post((req, res) => {
   // make sure perspective is one of the valid values, case insensitive
   else if (!(perspective = checkPerspective(perspective)))
     response = { status: "ERROR", message: "Invalid Perspective" };
-  else if (!Array.isArray(subCategory) || subCategory.length == 0)
-    response = { status: "ERROR", message: "Invalid or missing SubCategory" };
+  else if (!Array.isArray(subCategory)) response = { status: "ERROR", message: "Invalid SubCategory" };
   else if (Utilities.findDuplicateInArrayTrimLC(subCategory))
     response = { status: "ERROR", message: "Duplicates in SubCategory" };
 
@@ -85,55 +87,51 @@ router.route("/").post((req, res) => {
 
   (async () => {
     try {
-      dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID });
-      if (dbResults != null && dbResults.length != 0) dbProfile = dbResults[0];
-      if (dbProfile && dbProfile.isVerified == true) {
-        let ownerRef = dbProfile._id;
-        // check to see if there is a Category beloing to the user that has the "same" name
-        let categoryName4Compare = Utilities.multipleSpaceRemovedTrimLC(categoryName);
-        dbResults = await db.UserCategoryGroup.find({ ownerRef: ownerRef, categoryName4Compare: categoryName4Compare });
-        if (dbResults && dbResults.length != 0)
-          response = { status: "ERROR", message: `A Category Exists with name (${categoryName})` };
-        else {
-          // create Category. First make subCategory
-          let subCat = [];
-          subCategory.every((sub) => {
-            subCat.push({ subCategoryName: Utilities.multipleSpaceRemovedTrim(sub) });
-            return true;
-          });
-          let dbModel = {
-            ownerRef: ownerRef,
-            categoryName: categoryName,
-            categoryName4Compare: categoryName4Compare,
-            perspective: perspective,
+      if (!(dbProfile = await db.UserProfile.findOne({ sessionUUID: sessionUUID }))) throw "Invalid SessionUUID";
+
+      let ownerRef = dbProfile._id;
+      // check to see if there is a Category beloing to the user that has the "same" name
+      let categoryName4Compare = Utilities.multipleSpaceRemovedTrimLC(categoryName);
+      dbResults = await db.UserCategoryGroup.find({ ownerRef: ownerRef, categoryName4Compare: categoryName4Compare });
+      if (dbResults && dbResults.length != 0)
+        response = { status: "ERROR", message: `A Category Exists with name (${categoryName})` };
+      else {
+        // create Category. First make subCategory
+        let subCat = [];
+        subCategory.every((sub) => {
+          subCat.push({ subCategoryName: Utilities.multipleSpaceRemovedTrim(sub) });
+          return true;
+        });
+        let dbModel = {
+          ownerRef: ownerRef,
+          categoryName: categoryName,
+          categoryName4Compare: categoryName4Compare,
+          perspective: perspective,
+          subCategory: subCat,
+        };
+
+        console.log("\n\ndbModel:\n", dbModel);
+
+        dbCategory = await db.UserCategoryGroup.create(dbModel);
+        console.log("\n\nSaved Category:\n", dbCategory);
+        if (!dbCategory) {
+          response = { status: "ERROR", message: `Unable to create Category: (${categoryName})` };
+        } else {
+          // make response
+          subCat = [];
+          for (let index = 0; index < dbCategory.subCategory.length; index++) {
+            dbSubScategory = dbCategory.subCategory[index];
+            subCat.push({ subCategoryName: dbSubScategory.subCategoryName, subCategoryUUID: dbSubScategory._id });
+          }
+          response = {
+            status: "OK",
+            message: `Category with ${dbCategory.subCategory.length} Sub Categories created`,
+            categoryName: dbCategory.categoryName,
+            perspective: dbCategory.perspective,
+            categoryUUID: dbCategory._id,
             subCategory: subCat,
           };
-
-          console.log("\n\ndbModel:\n", dbModel);
-
-          dbCategory = await db.UserCategoryGroup.create(dbModel);
-          console.log("\n\nSaved Category:\n", dbCategory);
-          if (!dbCategory) {
-            response = { status: "ERROR", message: `Unable to create Category: (${categoryName})` };
-          } else {
-            // make response
-            subCat = [];
-            for (let index = 0; index < dbCategory.subCategory.length; index++) {
-              dbSubScategory = dbCategory.subCategory[index];
-              subCat.push({ subCategoryName: dbSubScategory.subCategoryName, subCategoryUUID: dbSubScategory._id });
-            }
-            response = {
-              status: "OK",
-              message: `Category with ${dbCategory.subCategory.length} Sub Categories created`,
-              categoryName: dbCategory.categoryName,
-              perspective: dbCategory.perspective,
-              categoryUUID: dbCategory._id,
-              subCategory: subCat,
-            };
-          }
         }
-      } else {
-        response = { status: "ERROR", message: "Invalid sessionUUID" };
       }
     } catch (error) {
       console.log(error);
