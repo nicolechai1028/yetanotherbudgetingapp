@@ -11,7 +11,9 @@ import {
   CardTitle,
   CardSubtitle,
 } from "reactstrap";
+
 import { register } from "../../utils/API";
+import Modal from '../../components/AlertModal';
 
 function Register() {
   const [input, setInput] = useState({
@@ -21,6 +23,9 @@ function Register() {
     password: "",
   });
 
+  const [message,setMessage] = useState("");
+  const [modalShow, setModalShow] = useState(false);
+
   const validateInput = () => {
     const emailRegex = new RegExp(/^(.+)@(.+)\.(.+)$/i);
     return emailRegex.test(input.email) && input.password.length > 3;
@@ -29,7 +34,12 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateInput()) {
-      register(input);
+      register(input).then(({data})=> {
+        console.log(data);
+        setMessage(`Success! Welcome to Y.A.B.A ${data.firstName}! \nCheck your email to verify your account!`)
+        setModalShow(true);
+        setTimeout(()=> setModalShow(false), 5000)
+      })
     } else {
       alert("invalid input!");
     }
@@ -39,10 +49,12 @@ function Register() {
     setInput({ ...input, [name]: value });
 
   return (
+    <>
+    <Modal show={modalShow} title="Registration Successful!" body={message} />
     <Card
       color=""
       body={true}
-      style={{ width: "80%", margin: "auto", align: "center" }}
+      style={{ width: "60%", margin: "auto", align: "center"}}
     >
       <CardBody>
         <Form className="login-form" onSubmit={handleSubmit}>
@@ -50,7 +62,6 @@ function Register() {
             <h1>Y.A.B.A</h1>
           </CardTitle>
           <CardSubtitle className="text-center">Welcome</CardSubtitle>
-          
           <FormGroup>
             <Label>First Name</Label>
             <Input
@@ -81,15 +92,11 @@ function Register() {
               placeholder="Password"
             ></Input>
           </FormGroup>
-          <Button className="btn-lg btn-dark btn-block">Log In</Button>
-          <div className="text-center">
-            <a href="/register">Sign-Up</a>
-            <span className="p-2"></span>
-            <a href="/register">Forgot Password</a>
-          </div>
+          <Button className="btn-lg btn-dark btn-block">Sign Up</Button>
         </Form>
       </CardBody>
     </Card>
+    </>
   );
 }
 
