@@ -21,6 +21,7 @@ function Login() {
     email: "",
     password: "",
   });
+  const [warning, setWarning] = useState();
   const [state, dispatch] = useAppContext();
 
   const validateInput = () => {
@@ -36,10 +37,12 @@ function Login() {
         console.log(data);
         if (data.status === "OK") {
           dispatch({ type: ADD_USER_INFO, payload: data });
+        }else if(data.status === "ERROR" ){
+          setWarning(data.message)
         }
       });
     } else {
-      alert("invalid input!");
+      setWarning("INVALID INPUT!");
     }
   };
 
@@ -62,7 +65,9 @@ function Login() {
             <CardSubtitle className="text-center">
               {state.message || "Welcome!"}
             </CardSubtitle>
-
+            <CardSubtitle className="text-center" style={{color: "red"}}>
+              {warning}
+            </CardSubtitle>
             <FormGroup>
               <Label>Email</Label>
               <Input
