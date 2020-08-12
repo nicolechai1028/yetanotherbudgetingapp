@@ -89,42 +89,64 @@ router.route("/").post((req, res) => {
   (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbResults || dbResults.length == 0) response = { status: "ERROR", message: "Invalid sessionUUID" };
-      else {
-        dbProfile = dbResults[0];
-        ownerRef = dbProfile._id;
-        // make sure budget account is valid
-        dbAccount = await db.BudgetAccount.findById(accountUUID);
-        if (!dbAccount) response = { status: "ERROR", message: "Unable to find Budget Account" };
-        else {
-          query = {
-            $and: [
-              { ownerRef: { $eq: ownerRef } },
-              { accountRef: { $eq: accountUUID } },
-              { date: { $gte: startDate } },
-              { date: { $lte: endDate } },
-            ],
-          };
-          dbResults = await db.Transaction.find(query).populate("categoryRef").limit(limit).sort({ date: sort });
-          if (!dbResults) response = { status: "ERROR", message: "Error retreiving data" };
-          else {
-            let transactions = [];
-            dbResults.every((result) => {
-              perspective = result.categoryRef.perspective;
-              categoryUUID = result.categoryRef._id;
-              xactionJSON = TransactionController.getJSON(result);
-              if (perspective && xactionJSON && categoryUUID) {
-                xactionJSON.perspective = perspective;
-                xactionJSON.categoryUUID = categoryUUID;
-                delete xactionJSON.ownerRef;
-                transactions.push(xactionJSON);
-              }
-              return true;
-            });
-            response = { status: "OK", message: `Found ${dbResults.length} transactions`, transaction: transactions };
+      if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
+      dbProfile = dbResults[0];
+      ownerRef = dbProfile._id;
+      // make sure budget account is valid
+      dbAccount = await db.BudgetAccount.findById(accountUUID);
+      if (!dbAccount) throw "Unable to find Budget Account";
+      query = {
+        $and: [
+          { ownerRef: { $eq: ownerRef } },
+          { accountRef: { $eq: accountUUID } },
+          { date: { $gte: startDate } },
+          { date: { $lte: endDate } },
+        ],
+      };
+      dbResults = await db.Transaction.find(query).populate("categoryRef").limit(limit).sort({ date: sort });
+      if (!dbResults) throw "Error retreiving data";
+      let transactions = [];
+      dbResults.every((result) => {
+        let transactionUUID = result._id;
+        let { payee, memo, amount, date } = result;
+        perspective = result.categoryRef.perspective;
+        categoryUUID = result.categoryRef._id;
+        categoryName = result.categoryRef.categoryName;
+        let subCategoryUUID = result.subCategoryRef;
+        let subCategoryName;
+        for (let index = 0; index < result.categoryRef.subCategory.length; index++) {
+          let dbSubCategory = result.categoryRef.subCategory[index];
+          if (dbSubCategory._id == subCategoryUUID) {
+            subCategoryName = dbSubCategory.subCategoryName;
+            break;
           }
         }
-      }
+        transactions.push({
+          transactionUUID,
+          payee,
+          memo,
+          amount,
+          date,
+          categoryUUID,
+          subCategoryUUID,
+          categoryName,
+          subCategoryName,
+        });
+        // xactionJSON = TransactionController.getJSON(result);
+        // if (perspective && xactionJSON && categoryUUID) {
+        //   xactionJSON.perspective = perspective;
+        //   xactionJSON.categoryUUID = categoryUUID;
+        //   delete xactionJSON.ownerRef;
+        //   transactions.push(xactionJSON);
+        // }
+        return true;
+      });
+      response = {
+        status: "OK",
+        message: `Found ${dbResults.length} transactions`,
+        accountUUID: accountUUID,
+        transaction: transactions,
+      };
     } catch (error) {
       response = { status: "ERROR", message: error.message };
     }

@@ -313,6 +313,9 @@ function findDuplicateInArrayTrimLC(inputArray) {
   let object = {};
   let result = [];
 
+  if (!inputArray || !Array.isArray(inputArray)) return;
+  if (inputArray.length == 0) return;
+
   inputArray.forEach(function (item) {
     item = multipleSpaceRemovedTrimLC(item);
     if (!object[item]) object[item] = 0;
@@ -325,6 +328,29 @@ function findDuplicateInArrayTrimLC(inputArray) {
     }
   }
   if (result.length == 0) return;
+  return result;
+}
+
+/**
+ * takes the input array, trims the elements and checks if there are duplicates. Array with
+ * duplicates removed is returned
+ * @param {array} inputArray
+ */
+function removeDuplicateInArrayTrimLC(inputArray) {
+  if (!Array.isArray(inputArray)) return;
+  let object = {};
+  let result = [];
+  inputArray.forEach(function (item) {
+    let selected;
+    let trimmed = multipleSpaceRemovedTrimLC(item);
+    if (!(selected = object[trimmed])) selected = { item: multipleSpaceRemovedTrim(item), count: 0 };
+    selected.count++;
+    object[trimmed] = selected;
+  });
+
+  for (let trimmed in object) {
+    result.push(object[trimmed].item);
+  }
   return result;
 }
 
@@ -363,6 +389,7 @@ module.exports = {
   makePositive,
   multipleSpaceRemovedTrim,
   multipleSpaceRemovedTrimLC,
+  removeDuplicateInArrayTrimLC,
   roundToOneHundredthFin,
   sendConfirmationEmail,
   startAndInitializeDatabase,

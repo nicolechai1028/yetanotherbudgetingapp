@@ -28,22 +28,25 @@ const db = require("../../../models");
 
 /**
  * Matches with /api/budget/getItem
- * Gets the budget for a specific user. Parameters will determine for which year and month.
- * Budgets can also be retrieved for a Category Group and/or a specific category
+ * Used to get a Budget budget item (by category and subCategory UUID for a given Month and Year. It returns the budget
+ * for the Category and the subCategory. If the subCategory is not passed, then all subcategories will be returned
  *
+ * Success will return the following object:
  *
+ *  - status: OK
+ *  - message : Budget Item for categoryUUID <> subCategoryUUID <>
+ *  - yearMonth : YYYYMM
+ *  - budgetItem { ... subCategory [{ ... }]}
  *
- *  - status: "OK | ERROR"
- *  - message : "Success | <Error text>"
- *  - response {
- *               date{
- *                     year: <yyyy>
- *                     month: <mm>
- *                   },
- *                data[
+ * Error will return:
+ *  - status : ERROR
+ *  - message : <Error message>
  *
- *                    ]
- *             }
+ * Expects:
+ *  - sessionUUID
+ *  - categoryUUID
+ *  - subCategoryUUID // optional
+ *  - yearMonth //  optional. Use current year and month if not set or valid
  *
  * */
 
@@ -53,18 +56,20 @@ router.route("/").post((req, res) => {
   console.log(req.body);
 
   let response,
-  dbProfile,
-  ownerRef,
-  dbResults,
-  dbCategory,
-  dbSubCategory,
-  dbSubCategories,
-  budgetCategory,
-  subgetSubCategories;
+    dbProfile,
+    ownerRef,
+    dbResults,
+    dbCategory,
+    dbSubCategory,
+    dbSubCategories,
+    budgetCategory,
+    subgetSubCategories;
 
-  let { sessionUUID,yearMonth } = req.body;
+  let { sessionUUID, yearMonth, categoryUUID, subCategoryUUID } = req.body;
   if (!sessionUUID || (sessionUUID = sessionUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
+  else if (!categoryUUID || (categoryUUID = categoryUUID.trim()).length == 0)
+    response = { status: "ERROR", message: "Missing or invalid categoryUUID" };
   else if (
     !yearMonth ||
     (yearMonth = yearMonth.trim()).length == 0 ||
@@ -74,18 +79,29 @@ router.route("/").post((req, res) => {
   )
     yearMonth = Utilities.getYearMonth();
 
-    if (response) {
-      console.log("Create Budget getItem API Response:\n", response);
-      res.json(response);
-      return;
-    }
+  if (response) {
+    console.log("Budget getItem API Response:\n", response);
+    res.json(response);
+    return;
+  }
 
-    (async () => {
+  (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
       if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
       dbProfile = dbResults[0];
       ownerRef = dbProfile._id;
+      // make sure such a category/subcategory combination exists
+      query = { ownerRef: ownerRef, _id: categoryUUID };
+      dbCategory = await db.UserCategoryGroup.findOne(query);
+      if (!dbCategory) throw "Invalid categoryUUID";
+      // make sure subCategory exists if set
+      if (subCategoryUUID){
+        let found = false;
+        for (let index = 0; index < dbCategory.dbSubCategory.length; index++){
+          
+        }
+      }
     } catch (error) {
       response = { status: "ERROR", message: error.message };
     }

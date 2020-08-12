@@ -4,7 +4,7 @@ import { UserProvider } from "./utils/globalStates/stateProvider";
 import MainRoutes from "./components/MainRoutes";
 function App() {
   return (
-    <div className="main-container">
+    <div className="main-container a"> 
       <UserProvider>
         <MainRoutes />
       </UserProvider>

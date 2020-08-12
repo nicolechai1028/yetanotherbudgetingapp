@@ -20,26 +20,107 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
 - [Budget Route (/api/budget)](#ubudgetu)
   - [list](#budget-list)
   - [setItem](#budget-set-item)
+  - [getItem](#budget-get-item)
+- [Category Route (/api/category)](#ucategoryu)
+  - [list](#category-list)
+  - [create](#category-create)
+  - [addSubCategory](#category-add-subcategory)
 
-- [User API Examples](#user-register)
-  - [Register](#user-register)
-  - [Email Verification](#user-email-verification)
-  - [Login](#user-login)
-  - [Profile Query](#user-profile-query)
-  - [Currency Query](#user-currency-query)
-  - [Logout](#user-logout)
-
-- [Budget Account API Examples](#budget-account-create)
-  - [Budget Account Create](#budget-account-create)
-  - [Budget Account Modify/Update](#budget-account-modify-update)
-  - [Budget Account List](#budget-account-list)
-  - [Budget Account Close](#budget-account-close)
-
-- [Transaction API Examples](#transaction-create-example)
-  - [Transaction Create](#transaction-create-example)
-  - [Transaction List](#transaction-list-example)
-  - [Transaction Modify](#transaction-modify-example)
-  - [Transaction Delete](#transaction-delete-example)
+- [Yet-Another-Budgetting-App (YABA) API Documentation](#yet-another-budgetting-app-yaba-api-documentation)
+  - [<span style="color:blue">Introduction</span>](#introduction)
+  - [<span style="color:blue">Reference</span>](#reference)
+    - [<u><span style="color:orange">User</span></u>](#uuseru)
+      - [Login](#login)
+      - [Logout](#logout)
+      - [Register](#register)
+      - [Email Verification](#email-verification)
+      - [User Profile](#user-profile)
+      - [Currency](#currency)
+    - [<u><span style="color:orange">Budget Account</span></u>](#ubudget-accountu)
+      - [Close](#close)
+      - [Create](#create)
+      - [List](#list)
+      - [Modify](#modify)
+    - [<u><span style="color:orange">Category</span></u>](#ucategoryu)
+    - [Category Create](#category-create)
+    - [Category List](#category-list)
+    - [Category Add SubCategory](#category-add-subcategory)
+    - [<u><span style="color:orange">Budget</span></u>](#ubudgetu)
+    - [Budget List](#budget-list)
+    - [Budget Set Item](#budget-set-item)
+    - [<u><span style="color:orange">Transaction</span></u>](#utransactionu)
+    - [Transaction Create](#transaction-create)
+    - [Transaction List](#transaction-list)
+    - [Transaction Modify/Update](#transaction-modifyupdate)
+    - [Transaction Delete](#transaction-delete)
+  - [<span style="color:blue">API Examples</span>](#api-examples)
+    - [User Register](#user-register)
+    - [User Email Verification](#user-email-verification)
+    - [User Login](#user-login)
+    - [User Profile Query](#user-profile-query)
+    - [User Currency Query](#user-currency-query)
+    - [User Logout](#user-logout)
+    - [Budget Account Create](#budget-account-create)
+    - [Budget Account Modify (Update)](#budget-account-modify-update)
+    - [Budget Account List](#budget-account-list)
+    - [Budget Account Close](#budget-account-close)
+    - [Category Create Example](#category-create-example)
+    - [Category List Example](#category-list-example)
+    - [Category Add SubCategory Example](#category-add-subcategory-example)
+    - [Transaction Create Example](#transaction-create-example)
+    - [Transaction List Example](#transaction-list-example)
+    - [Transaction Modify Example](#transaction-modify-example)
+        - [Original Transaction](#original-transaction)
+    - [Transaction Delete Example](#transaction-delete-example)
+    - [Budget List Example](#budget-list-example)
+    - [Budget Set Item Example](#budget-set-item-example)
+    
+    - [<u><span style="color:orange">Budget Account</span></u>](#ubudget-accountu)
+      - [Close](#close)
+      - [Create](#create)
+      - [List](#list)
+      - [Modify](#modify)
+  
+    - [<u><span style="color:orange">Category</span></u>](#ucategoryu)
+      - [Category Create](#category-create)
+      - [Category List](#category-list)
+      - [Category Add SubCategory](#category-add-subcategory)
+  
+    - [<u><span style="color:orange">Budget</span></u>](#ubudgetu)
+      - [Budget List](#budget-list)
+      - [Budget Set Item](#budget-set-item)
+  
+    - [<u><span style="color:orange">Transaction</span></u>](#utransactionu)
+      - [Transaction Create](#transaction-create)
+      - [Transaction List](#transaction-list)
+      - [Transaction Modify/Update](#transaction-modifyupdate)
+      - [Transaction Delete](#transaction-delete)
+  
+  - [<span style="color:blue">API Examples</span>](#api-examples)
+    - [User Register](#user-register)
+    - [User Email Verification](#user-email-verification)
+    - [User Login](#user-login)
+    - [User Profile Query](#user-profile-query)
+    - [User Currency Query](#user-currency-query)
+    - [User Logout](#user-logout)
+    
+    - [Budget Account Create](#budget-account-create)
+    - [Budget Account Modify (Update)](#budget-account-modify-update)
+    - [Budget Account List](#budget-account-list)
+    - [Budget Account Close](#budget-account-close)
+    
+    - [Category Create Example](#category-create-example)
+    - [Category List Example](#category-list-example)
+    - [Category Add SubCategory Example](#category-add-subcategory-example)
+    
+    - [Transaction Create Example](#transaction-create-example)
+    - [Transaction List Example](#transaction-list-example)
+    - [Transaction Modify Example](#transaction-modify-example)
+      - [Original Transaction](#original-transaction)
+    - [Transaction Delete Example](#transaction-delete-example)
+    
+    - [Budget List Example](#budget-list-example)
+    - [Budget Set Item Example](#budget-set-item-example)
 
 ### <u><span style="color:orange">User</span></u>
 This is a section of resources related to user access to the application
@@ -267,6 +348,70 @@ Upon account verification, each user is given about eleven categories to work wi
 >  - categoryName // must be unique in the user's realm
 >  - perspective
 >  - subCategory[ ] // array of names. Must be unique for this category
+>
+
+### Category List
+> Matches routes with /api/category/list
+> Category list route. 
+> 
+> 
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Found ${count} Categories
+>  - category:
+>    [
+>     {
+>      categoryName, 
+>      categoryUUID,
+>      perspective, 
+>      subCategory 
+>      [
+>       {
+>        subCategoryUUID, 
+>        subCategoryName
+>       },
+>      ],
+>     },
+>    ]
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+>
+> Expects:
+>  - sessionUUID
+>  - categoryUUID // optional. If present, search for and return category with this UUID
+>  - categoryName // optional. If present, search for and return category with this name
+> If categoryUUID and categoryName are absent, return all categories belonging to this user
+>
+
+### Category Add SubCategory
+> Matches routes with /api/category/addSubCategory
+> Create category route
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : "Added ${count} Sub Categories to \<Category Name\>"
+>  - categoryName:
+>  - categoryUUID
+>  - perspective
+>  - subCategory
+>    [
+>      {
+>        subCategoryName,
+>        subCategoryUUID
+>      }
+>    ]
+> Error will return:
+>  - status : ERROR
+>  - message : \<Error message\>
+>
+> Expects:
+>  - sessionUUID
+>  - categoryUUID // must be unique in the user's realm
+>  - subCategory[] // MUST be array of names. Only those that are unique will be created. Others will be ignored.
 >
 
 ### <u><span style="color:orange">Budget</span></u>
@@ -815,6 +960,43 @@ Path: ``/api/category/list``
             "subCategoryName": "Short Term Goals"
         }
       ]
+    }
+  ]
+}
+```
+
+### Category Add SubCategory Example
+
+- Request
+  
+Path: ``/api/transaction/addSubCategory``
+
+```json
+{
+  "sessionUUID":"e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryUUID":"c8d11f55-8342-4d3a-8319-132388c586b2",
+  "subCategory":["Walking","Running"]
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Added 2 Sub Categories to Hobbies",
+  "categoryName": "Hobbies",
+  "categoryUUID": "c8d11f55-8342-4d3a-8319-132388c586b2",
+  "perspective": "Outflow",
+  "subCategory": 
+  [
+    {
+      "subCategoryName": "Walking",
+      "subCategoryUUID": "62573651-6fbb-440a-8175-746badcfdeea"
+    },
+    {
+      "subCategoryName": "Running",
+      "subCategoryUUID": "4449dd09-0fd7-41f0-bcd8-e6a4806ffbbc"
     }
   ]
 }
