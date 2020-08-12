@@ -74,6 +74,53 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
     - [Transaction Delete Example](#transaction-delete-example)
     - [Budget List Example](#budget-list-example)
     - [Budget Set Item Example](#budget-set-item-example)
+    
+    - [<u><span style="color:orange">Budget Account</span></u>](#ubudget-accountu)
+      - [Close](#close)
+      - [Create](#create)
+      - [List](#list)
+      - [Modify](#modify)
+  
+    - [<u><span style="color:orange">Category</span></u>](#ucategoryu)
+      - [Category Create](#category-create)
+      - [Category List](#category-list)
+      - [Category Add SubCategory](#category-add-subcategory)
+  
+    - [<u><span style="color:orange">Budget</span></u>](#ubudgetu)
+      - [Budget List](#budget-list)
+      - [Budget Set Item](#budget-set-item)
+  
+    - [<u><span style="color:orange">Transaction</span></u>](#utransactionu)
+      - [Transaction Create](#transaction-create)
+      - [Transaction List](#transaction-list)
+      - [Transaction Modify/Update](#transaction-modifyupdate)
+      - [Transaction Delete](#transaction-delete)
+  
+  - [<span style="color:blue">API Examples</span>](#api-examples)
+    - [User Register](#user-register)
+    - [User Email Verification](#user-email-verification)
+    - [User Login](#user-login)
+    - [User Profile Query](#user-profile-query)
+    - [User Currency Query](#user-currency-query)
+    - [User Logout](#user-logout)
+    
+    - [Budget Account Create](#budget-account-create)
+    - [Budget Account Modify (Update)](#budget-account-modify-update)
+    - [Budget Account List](#budget-account-list)
+    - [Budget Account Close](#budget-account-close)
+    
+    - [Category Create Example](#category-create-example)
+    - [Category List Example](#category-list-example)
+    - [Category Add SubCategory Example](#category-add-subcategory-example)
+    
+    - [Transaction Create Example](#transaction-create-example)
+    - [Transaction List Example](#transaction-list-example)
+    - [Transaction Modify Example](#transaction-modify-example)
+      - [Original Transaction](#original-transaction)
+    - [Transaction Delete Example](#transaction-delete-example)
+    
+    - [Budget List Example](#budget-list-example)
+    - [Budget Set Item Example](#budget-set-item-example)
 
 ### <u><span style="color:orange">User</span></u>
 This is a section of resources related to user access to the application
