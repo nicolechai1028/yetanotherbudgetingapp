@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { Row, Col, CardTitle, Card, CardText } from "reactstrap";
-import { GlobalContext } from "../../context/GlobalState";
+import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 export const Balance = () => {
-  const { transactions } = useContext(GlobalContext);
+  const [state] = useAppContext();
 
-  const amounts = transactions.map(transaction => transaction.amount);
+  const amounts = state.transactions.map(transaction => transaction.amount);
 
   const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
 
