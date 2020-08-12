@@ -6,6 +6,7 @@ import {
   REMOVE_USER,
   SET_LOADING,
   ADD_CATEGORY,
+  ADD_TRANSACTION
 } from "./actions";
 import { createCategoryAPI } from "../CategoryAPI";
 
@@ -29,7 +30,12 @@ const reducer = (state, action) => {
     case ADD_CATEGORY:
       return {
         ...state,
-        categories: [...state.categories, action.payload],
+        categories: [...state.categories, action.payload]
+      };
+    case ADD_TRANSACTION:
+      return {
+        ...state,
+        transactions: [action.payload, ...state.transactions]
       };
     default:
       throw new Error("Error in reducer.");
@@ -41,6 +47,7 @@ const UserProvider = ({ value = {}, ...props }) => {
     user: null,
     loading: false,
     categories: [],
+    transactions: []
   });
 
   return <Provider value={[state, dispatch]} {...props} />;
