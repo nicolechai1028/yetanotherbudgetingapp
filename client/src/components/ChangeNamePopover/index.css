@@ -1,0 +1,21 @@
+.clear-button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+
+.clear-button:hover{
+	font-size: 20px;
+  text-decoration: underline;
+}
+
+.clear-button:focus{
+	border: none;
+}
+.category-container {
+	 background-color: var(--var4);
+	 border: none !important;
+}

@@ -1,0 +1,14 @@
+.sub-cat-container{
+	background-color: white;
+	border-radius: 7px;
+	align-items: center;
+	display: grid;
+}
+.sub-name {
+	padding-left: 1rem;
+}
+@media only screen and (min-width: 900px) {
+	.input-subcat {
+		width: 60% !important;
+	}
+}
