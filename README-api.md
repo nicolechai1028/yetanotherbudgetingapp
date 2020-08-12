@@ -19,6 +19,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
   - [modify](#modify)
 - [Budget Route (/api/budget)](#ubudgetu)
   - [list](#budget-list)
+  - [setItem](#budget-set-item)
 
 - [User API Examples](#user-register)
   - [Register](#user-register)
@@ -272,7 +273,7 @@ Upon account verification, each user is given about eleven categories to work wi
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
 | POST      | /api/budget/list              | \{sessionUUID, \[yearMonth\]\}                        | \{status, message, \[yearMonth, budget[ { ... \}\]]               |                                                                               |
-|           |                               |                                                       |                                                                   |                                                                               |
+| POST      | /api/budget/setItem           | \{sessionUUID, categoryUUID, subCategoryUUID, yearMonth, budgetedAmount}  | {status, message, [yearMonth, budgetItem{ ... subCategory{ ... }}]}   |                                                           |
 |           |                               |                                                       |                                                                   |                                                                               |
 
 ### Budget List
@@ -294,6 +295,32 @@ Upon account verification, each user is given about eleven categories to work wi
 > Expects:
 >  - sessionUUID
 >  - yearMonth // optional. If not present or invalid, current year-month will be used
+
+### Budget Set Item
+> Matches with /api/budget/setItem
+> Used to set a Budget budget item (by category and subCategory UUIDfor a given Month and Year. It returns the budget
+> for the Category and all the other subcategories under that category, even ones that have not been set. Those not
+> set are given a value of zero (0.0)
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Budget Item for categoryUUID <> subCategoryUUID <>
+>  - yearMonth : YYYYMM
+>  - budgetItem { ... subCategory { ... }}
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+>
+> Expects:
+>  - sessionUUID
+>  - categoryUUID
+>  - subCategoryUUID
+>  - budgetedAmount
+>  - yearMonth // NOT optional.
+> If a budget for the category/subCategory/yearMonth already exists, but the "activity" is zero(0.0), the existing
+> budget's "budgeted" value will be modified
 >
 
 ### <u><span style="color:orange">Transaction</span></u>
@@ -1121,5 +1148,42 @@ Path: ``/api/budget/list``
     :
     :
   ]
+}
+```
+
+### Budget Set Item Example
+
+- Request
+
+Path: ``/api/budget/setItem``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryUUID": "f4ffbbb7-7f47-41ea-a97a-280d15897b7b",
+  "subCategoryUUID": "1af7e646-b664-4771-8835-09d8282eb969",
+  "yearMonth": "202008",
+  "budgetedAmount": "150.25" 
+}
+```
+
+- Response
+
+```json
+{
+    "status": "OK",
+    "message": "Budget Item for categoryUUID f4ffbbb7-7f47-41ea-a97a-280d15897b7b subCategoryUUID 1af7e646-b664-4771-8835-09d8282eb969",
+    "yearMonth": 202002,
+    "budgetItem": {
+        "categoryUUID": "f4ffbbb7-7f47-41ea-a97a-280d15897b7b",
+        "categoryName": "Giving",
+        "perspective": "Outflow",
+        "subCategory": {
+            "subCategoryName": "Miscellaneous",
+            "subCategoryUUID": "1af7e646-b664-4771-8835-09d8282eb969",
+            "budgeted": 150.25,
+            "activity": 0
+        }
+    }
 }
 ```
