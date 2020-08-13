@@ -24,6 +24,7 @@ const crypto = require("crypto");
 const router = require("express").Router();
 const db = require("../../../models");
 const Utilities = require("../../../utilities");
+const Utils = require("../../../utils");
 const Constants = require("../../../constants");
 const AccountController = require("../../../controllers/budgetAccountController");
 
@@ -57,10 +58,10 @@ router.route("/").post((req, res) => {
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
   else if (!transactionUUID || (transactionUUID = transactionUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid transactionUUID" };
-  if (process.env.YET_DEBUG == true) {
-    debugLog += "\n\n********************* DEBUG LOG ************************";
-    debugLog += "\n**************** Delete Transaction ********************\n";
-  }
+  // if (process.env.YET_DEBUG == true) {
+  //   debugLog += "\n\n********************* DEBUG LOG ************************";
+  //   debugLog += "\n**************** Delete Transaction ********************\n";
+  // }
   (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
@@ -77,23 +78,23 @@ router.route("/").post((req, res) => {
       amount = dbXaction.amount;
       dbCategory = dbXaction.categoryRef;
       subCategoryUUID = dbXaction.subCategoryRef;
-      if (process.env.YET_DEBUG) debugLog += "\n****** Original Transaction:\n" + JSON.stringify(dbAccount, null, 2);
+      // if (process.env.YET_DEBUG) debugLog += "\n****** Original Transaction:\n" + JSON.stringify(dbAccount, null, 2);
 
       let result = await db.Transaction.findByIdAndDelete(transactionUUID);
-      if (process.env.YET_DEBUG) {
-        debugLog += "Transaction Removed:\n" + result + "\n";
-        debugLog += "\n**** Old Account:\n" + AccountController.getJSON(dbAccount);
-      }
+      // if (process.env.YET_DEBUG) {
+      //   debugLog += "Transaction Removed:\n" + result + "\n";
+      //   debugLog += "\n**** Old Account:\n" + AccountController.getJSON(dbAccount);
+      // }
       response = { status: "OK", message: `Transaction (${transactionUUID}) Removed` };
-      if (process.env.YET_DEBUG) debugLog += "\nResponse:\n" + JSON.stringify(response, null, 2);
+      //if (process.env.YET_DEBUG) debugLog += "\nResponse:\n" + JSON.stringify(response, null, 2);
 
       // update account. Since the transaction is being reversed, multiply the amount by -1 and add to the account balance
       let balance = new Number(dbAccount.balance) + Utilities.flipSign(amount);
       dbAccount.balance = Utilities.roundToOneHundredthFin(balance);
       dbAccount = await dbAccount.save();
-      if (process.env.YET_DEBUG) {
-        debugLog += `\n**** Updated Account:\n` + AccountController.getJSON(dbAccount) + "\n\n";
-      }
+      // if (process.env.YET_DEBUG) {
+      //   debugLog += `\n**** Updated Account:\n` + AccountController.getJSON(dbAccount) + "\n\n";
+      // }
       let accountJSON = {
         accountUUID: dbAccount._id,
         name: dbAccount.name,
@@ -108,6 +109,9 @@ router.route("/").post((req, res) => {
         transactionUUID: transactionUUID,
         account: accountJSON,
       };
+      // update Budget
+      let dbBudget = await Utils.updateBudgetWithTransaction(null,dbXaction,dbCategory,subCategoryUUID);
+      console.log(`\n\n************* Adjusted Budget *************:\n${JSON.stringify(dbBudget,null,2)}`);
     } catch (error) {
       response = { status: "ERROR", message: error.message };
     }

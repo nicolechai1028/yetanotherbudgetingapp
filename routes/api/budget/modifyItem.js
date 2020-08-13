@@ -4,7 +4,9 @@
  *                                                                                      *
  * == chikeobi-12 ==                                                                    *
  *   +  Created                                                                         *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-16 ==                                                                    *
+ *   +  Redirect to /api/budget/setItem                                                 *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -25,30 +27,32 @@ const db = require("../../../models");
  *
  */
 router.route("/").post((req, res) => {
+  res.redirect(307, "/api/budget/setItem");
+  
   const body = req.body;
   console.log(Utilities.getFullUrl(req));
   console.log(req.body);
   let response,
-  dbProfile,
-  ownerRef,
-  dbResults,
-  dbCategory,
-  dbSubCategory,
-  dbSubCategories,
-  budgetCategory,
-  subgetSubCategories;
+    dbProfile,
+    ownerRef,
+    dbResults,
+    dbCategory,
+    dbSubCategory,
+    dbSubCategories,
+    budgetCategory,
+    subgetSubCategories;
 
-  let { sessionUUID ,yearMonth} = req.body;
+  let { sessionUUID, yearMonth } = req.body;
   if (!sessionUUID || (sessionUUID = sessionUUID.trim()).length == 0)
-  response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
-else if (
-  !yearMonth ||
-  (yearMonth = yearMonth.trim()).length == 0 ||
-  isNaN(yearMonth) == true ||
-  yearMonth < Constants.MIN_YYYYMM ||
-  yearMonth > Constants.MAX_YYYYMM
-)
-  yearMonth = Utilities.getYearMonth();
+    response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
+  else if (
+    !yearMonth ||
+    (yearMonth = yearMonth.trim()).length == 0 ||
+    isNaN(yearMonth) == true ||
+    yearMonth < Constants.MIN_YYYYMM ||
+    yearMonth > Constants.MAX_YYYYMM
+  )
+    yearMonth = Utilities.getYearMonth();
 
   if (response) {
     console.log("Create Budget modifyItem API Response:\n", response);
@@ -69,7 +73,6 @@ else if (
     console.log("Create Transaction API Response:\n", response);
     res.json(response);
   })();
-  });
-  
-  module.exports = router;
-  
+});
+
+module.exports = router;

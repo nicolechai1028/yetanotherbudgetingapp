@@ -374,6 +374,22 @@ function flipSign(input) {
   return retval;
 }
 
+function getSubCategoryIDNameMap(dbCategory) {
+  let retval;
+  try {
+    retval = {};
+    let subs = dbCategory.subCategory;
+    for (let index = 0; index < subs.len; index++) {
+      let sub = subs[index];
+      retval[subs._id] = subs.subCategoryName;
+    }
+  } catch (error) {
+    return;
+  }
+  return retval;
+}
+
+
 module.exports = {
   createHmacSHA256Hash,
   createSHA256Hash,
@@ -393,4 +409,5 @@ module.exports = {
   roundToOneHundredthFin,
   sendConfirmationEmail,
   startAndInitializeDatabase,
+  getSubCategoryIDNameMap,
 };
