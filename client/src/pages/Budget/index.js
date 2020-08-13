@@ -66,20 +66,6 @@ function Budget() {
     setShowModal(!showModal);
   };
 
-  const addCategoryGroup = (name) => {
-    //do something and make popup
-    setShowModal(false);
-    console.log(name);
-    createCategoryAPI(
-      state.user.sessionUUID,
-      name,
-      "perspective",
-      "subCategory Array"
-    ).then((res) => {
-      console.log(res);
-      //TODO reload or add to the store if success
-    });
-  };
   //used to added from the top not budgeted amount
   const noBudgetedToCategory = (amt, toCatGrp, toCat) => {
     //Transfer from ToBeBudgedted Account to
@@ -90,7 +76,7 @@ function Budget() {
     <div className="page-container ">
       <div className="sub-container">
         <div className="align-items-center mx-5">
-          <Button onClick={toggle} className="btn-color  add-cat-group-btn">
+          <Button onClick={toggle} className="btn-color  ">
             Add Category Group
           </Button>
           <AddCategoryModal
@@ -98,7 +84,6 @@ function Budget() {
             label="New Category Group"
             showModal={showModal}
             toggle={toggle}
-            handleSubmit={addCategoryGroup}
           />
         </div>
         <div className="tobe-budgeted-container py-2 shadow">

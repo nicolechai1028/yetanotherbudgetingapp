@@ -6,7 +6,7 @@ import {
   REMOVE_USER,
   SET_LOADING,
   ADD_CATEGORY,
-  ADD_TRANSACTION
+  ADD_TRANSACTION,
 } from "./actions";
 import { createCategoryAPI } from "../CategoryAPI";
 
@@ -18,6 +18,7 @@ const reducer = (state, action) => {
     case ADD_USER_INFO:
       //store user info in sessionStorage
       sessionStorage.setItem("user", JSON.stringify(action.payload));
+      console.log(action.payload);
       return { ...state, user: { ...action.payload }, loading: false };
     case SET_LOADING:
       return { ...state, loading: action.payload };
@@ -27,16 +28,22 @@ const reducer = (state, action) => {
       return { ...newState, loading: false };
     case CHECK_USER_INFO:
       return { ...state };
-    case ADD_CATEGORY:
-      return {
-        ...state,
-        categories: [...state.categories, action.payload]
-      };
     case ADD_TRANSACTION:
       return {
         ...state,
-        transactions: [action.payload, ...state.transactions]
+        transactions: [action.payload, ...state.transactions],
       };
+    case ADD_CATEGORY:
+      const { perspective, newName, sessionUUID } = action.payload;
+      createCategoryAPI(sessionUUID, newName, perspective, []).then((data) => {
+        if (data.status === "OK") {
+          return {
+            ...state,
+            categories: [...state.categories, action.payload],
+          };
+        }
+      });
+      break;
     default:
       throw new Error("Error in reducer.");
   }
@@ -47,7 +54,7 @@ const UserProvider = ({ value = {}, ...props }) => {
     user: null,
     loading: false,
     categories: [],
-    transactions: []
+    transactions: [],
   });
 
   return <Provider value={[state, dispatch]} {...props} />;
