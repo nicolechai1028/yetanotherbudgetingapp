@@ -3,10 +3,12 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-08 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +  Added this History section                                                      *
  *                                                                                      *
- *                                                                                      *
- *                                                                                      *
+ * == chikeobi-08 ==                                                                    *
+ *   +  Added function to update Budget activity with transaction amount                *
+ *   +                                                                                  *
+ *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -24,6 +26,7 @@ const crypto = require("crypto");
 const router = require("express").Router();
 const db = require("../../../models");
 const Utilities = require("../../../utilities");
+const Utils = require("../../../utils");
 const Constants = require("../../../constants");
 const TransactionController = require("../../../controllers/transactionController");
 const AccountController = require("../../../controllers/budgetAccountController");
@@ -146,6 +149,10 @@ router.route("/").post((req, res) => {
             dbAccount = await dbAccount.save();
             console.log(`\n\nAfter Account save:`);
             console.log(`Account Balance: ${dbAccount.balance}`);
+            // update budget
+            //let dbBudget = await updateBudget(dbXaction, dbCategory, subCategoryUUID);
+             let dbBudget = await Utils.updateBudgetWithTransaction(dbXaction, null, dbCategory, subCategoryUUID);
+
             let transactionJSON = TransactionController.getJSON(dbXaction);
             let accountJSON = AccountController.getJSON(dbAccount);
             // get rid of ownerRef from both JSON objects
@@ -167,5 +174,72 @@ router.route("/").post((req, res) => {
     res.json(response);
   })();
 });
+
+async function updateBudget(dbXaction, dbCategory, subCategoryUUID) {
+  try {
+    let dbSubCategory;
+    if (
+      !dbXaction ||
+      !dbCategory ||
+      !subCategoryUUID ||
+      !(dbSubCategory = dbCategory.getSubCategoryById(subCategoryUUID))
+    )
+      return;
+
+    // check if there is a budget for the transaction yearMonth
+    let yearMonth = parseInt(dbXaction.date / 100);
+    if (yearMonth < Constants.MIN_YYYYMM || yearMonth > Constants.MAX_YYYYMM) return;
+    // get budget, if it exists
+    let ownerRef = dbXaction.ownerRef;
+    let amount = dbXaction.amount;
+    if (Math.abs(amount) < 0.01) return; // rounding error
+    let categoryUUID = dbCategory._id;
+    let query = { yearMonth: yearMonth, categoryRef: categoryUUID, ownerRef: ownerRef };
+    let dbBudget = await db.Budget.findOne(query);
+    if (!dbBudget) {
+      let subModels = [];
+      let idNamesMap = dbCategory.getSubCategoryIdNameMap();
+      for (idKey in idNamesMap) {
+        let model = { subCategoryRef: idKey, budgeted: 0.0, activity: 0.0 };
+        if (idKey == subCategoryUUID) model["activity"] = amount;
+        subModels.push(model);
+      }
+      // create budget
+      let budgetModel = {
+        yearMonth: yearMonth,
+        ownerRef: ownerRef,
+        categoryRef: categoryUUID,
+        subCategory: subModels,
+      };
+      console.log("\n\n******** Creating Budget Item From Transaction *********:");
+      console.log(`\n**** Model Data ****:\n${JSON.stringify(budgetModel, null, 2)}`);
+      dbBudget = await db.Budget.create(budgetModel);
+      console.log(`\n*** Saved Data ****:\n${JSON.stringify(dbBudget, null, 2)}\n\n`);
+    } else {
+      let subBudget = null;
+      console.log("\n\n******** Updating Budget Item From Transaction *********:");
+      console.log(`**** Previous Budget ****:\n${JSON.stringify(dbBudget, null, 2)}`);
+      for (let index = 0; index < dbBudget.subCategory.length; index++) {
+        subBudget = dbBudget.subCategory[index];
+        if (subBudget.subCategoryRef == subCategoryUUID) {
+          subBudget.activity += amount;
+          subBudget = null;
+          break;
+        }
+      }
+      // budget found, but no entry for subCategory
+      if (subBudget == null) {
+        let model = { subCategoryRef: subCategoryUUID, budgeted: 0.0, activity: amount };
+        dbBudget.subCategory.push(model);
+        await dbBudget.save();
+        console.log(`\n*** Updated Data ****:\n${JSON.stringify(dbBudget, null, 2)}\n\n`);
+      }
+    }
+    return dbBudget;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
 
 module.exports = router;

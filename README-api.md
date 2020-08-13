@@ -48,6 +48,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
     - [<u><span style="color:orange">Budget</span></u>](#ubudgetu)
     - [Budget List](#budget-list)
     - [Budget Set Item](#budget-set-item)
+    - [Budget Get Item](#budget-get-item)
     - [<u><span style="color:orange">Transaction</span></u>](#utransactionu)
     - [Transaction Create](#transaction-create)
     - [Transaction List](#transaction-list)
@@ -74,6 +75,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
     - [Transaction Delete Example](#transaction-delete-example)
     - [Budget List Example](#budget-list-example)
     - [Budget Set Item Example](#budget-set-item-example)
+    - [Budget Get Item Example](#budget-get-item-example)
     
     - [<u><span style="color:orange">Budget Account</span></u>](#ubudget-accountu)
       - [Close](#close)
@@ -456,7 +458,7 @@ Upon account verification, each user is given about eleven categories to work wi
 >
 > Error will return:
 >  - status : ERROR
->  - message : <Error message>
+>  - message : \<Error message\>
 >
 > Expects:
 >  - sessionUUID
@@ -467,6 +469,27 @@ Upon account verification, each user is given about eleven categories to work wi
 > If a budget for the category/subCategory/yearMonth already exists, but the "activity" is zero(0.0), the existing
 > budget's "budgeted" value will be modified
 >
+
+### Budget Get Item
+> Matches with /api/budget/getItem
+> Used to get a Budget budget item (by category and subCategory UUID for a given Month and Year. It returns the budget
+> for the Category and the subCategory. If the subCategory is not passed, then all subcategories will be returned
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Budget Item for categoryUUID
+>  - yearMonth : YYYYMM
+>  - budgetItem { ... subCategory [{ ... }]}
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+>
+> Expects:
+>  - sessionUUID
+>  - categoryUUID
+>  - yearMonth //  optional. Use current year and month if not set or valid
 
 ### <u><span style="color:orange">Transaction</span></u>
 
@@ -1367,5 +1390,62 @@ Path: ``/api/budget/setItem``
             "activity": 0
         }
     }
+}
+```
+
+### Budget Get Item Example
+
+- Request
+
+Path: ``/api/budget/getItem``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryUUID": "f4ffbbb7-7f47-41ea-a97a-280d15897b7b",
+  "yearMonth": "202008" 
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Budget with 11 entries",
+  "budgetItem": 
+  {
+    "categoryUUID": "f4ffbbb7-7f47-41ea-a97a-280d15897b7b",
+    "categoryName": "Giving",
+    "perspective": "Outflow",
+    "yearMonth": "202008",
+    "subCategory": 
+    [
+      {
+        "subCategoryUUID": "9c78068d-c573-4372-b77d-cfe8647e4949",
+        "budgeted": 200.15,
+        "activity": 0
+      },
+      {
+        "subCategoryUUID": "1af7e646-b664-4771-8835-09d8282eb969",
+        "budgeted": 150.25,
+        "activity": 0
+      },
+      {
+        "subCategoryName": "Tithes",
+        "subCategoryUUID": "46cdc37c-5d2b-4bb2-9232-e694de44a41c",
+        "budgeted": 0,
+        "activity": 0
+      },
+      {
+        "subCategoryName": "Offerings",
+        "subCategoryUUID": "35f898c5-2d2b-46aa-bd9d-280510ee749c",
+        "budgeted": 0,
+        "activity": 0
+      },
+            :
+            :
+    ]
+  }
 }
 ```
