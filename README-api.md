@@ -45,6 +45,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
     - [Category Create](#category-create)
     - [Category List](#category-list)
     - [Category Add SubCategory](#category-add-subcategory)
+    - [Category Modify](#category-modify)
     - [<u><span style="color:orange">Budget</span></u>](#ubudgetu)
     - [Budget List](#budget-list)
     - [Budget Set Item](#budget-set-item)
@@ -68,6 +69,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
     - [Category Create Example](#category-create-example)
     - [Category List Example](#category-list-example)
     - [Category Add SubCategory Example](#category-add-subcategory-example)
+    - [Category Modify Example](#category-modify-example)
     - [Transaction Create Example](#transaction-create-example)
     - [Transaction List Example](#transaction-list-example)
     - [Transaction Modify Example](#transaction-modify-example)
@@ -318,9 +320,11 @@ A user can create an unlimited number of these accounts Money flows into and out
 Upon account verification, each user is given about eleven categories to work with. These categories may be edited or deleted (as long as there are no transactions or budgets that use them). Additionally there are two <b>System</b> categories that the user cannot edit or delete.
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
 |--------   |---------------------------    |-----------------------------------------------------  |-----------------------------------------------------------------  |---------------------------------------------------------------------------    |
-| POST      | /api/category/create          | {sessionUUID, categoryName, perspective,subCategory[array[subCategoryName]]}| {status, message,[categoryName,categoryUUID, perspective,subCategory[{subCategoryName,subCategoryUUID}]]  |                                                                               |
-| POST      | /api/category/list            | {sessionUUID, [categoryName, categoryUUID]            | {status, message, [category[category[ ] ]}                                   |                                                                               |
-|           |                               |                                                       |                                                                   |                                                                               |
+| POST      | /api/category/create          | {sessionUUID, categoryName, perspective,subCategory[array[subCategoryName]]}| {status, message,[categoryName,categoryUUID, perspective,subCategory[{subCategoryName,subCategoryUUID}]]  |                 |
+| POST      | /api/category/list            | {sessionUUID, [categoryName, categoryUUID]            | {status, message, [category[category[ ] ]}                                   |                                                                    |
+| POST      | /api/category/addSubCategory  | {sessionUUID, categoryUUID, subCategory[ ... ]        | {status, message, [categoryName, categoryUUID, perpective,subCategory[ { ... }]  | Success will return the entire Category, including the new one(s)   |
+| POST      | /api/category/modify/:mode    | {sessionUUID, categoryUUID|subCategoryUUID, [newName] | {status,message}                                                                 |                                                                |
+|           |                               |                                                        |                                                                                 |                                                                |
 
 ### Category Create
 > Matches routes with /api/category/create
@@ -415,6 +419,23 @@ Upon account verification, each user is given about eleven categories to work wi
 >  - categoryUUID // must be unique in the user's realm
 >  - subCategory[] // MUST be array of names. Only those that are unique will be created. Others will be ignored.
 >
+
+### Category Modify
+> Matches routes with /api/category/modify
+> Category modify route. 
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : World Currencies
+>
+> Error will return:
+>  - status : ERROR
+>  - message : <Error message>
+> Expects:
+>  - sessionUUID
+>  - categoryUUID/subCategoryUUID
+>  - newName
 
 ### <u><span style="color:orange">Budget</span></u>
 | <center>**Method**</center>    | <center>**Path**</center> | <center>**Keys**</center>            | <center>**Return**</center>                                       | <center>**Comment**</center>                                                  |
@@ -992,7 +1013,7 @@ Path: ``/api/category/list``
 
 - Request
   
-Path: ``/api/transaction/addSubCategory``
+Path: ``/api/category/addSubCategory``
 
 ```json
 {
@@ -1022,6 +1043,59 @@ Path: ``/api/transaction/addSubCategory``
       "subCategoryUUID": "4449dd09-0fd7-41f0-bcd8-e6a4806ffbbc"
     }
   ]
+}
+```
+
+### Category Modify Example
+
+- Request
+  
+Path: ``/api/category/modify/edit``
+  - Edit SubCategory Name
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "subCategoryUUID": "81d83149-d434-4338-8288-7b01425a4d0c",
+  "newName": "New SubCategory Name" 
+}
+```
+
+  - Edit Category Name
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryUUID": "c2e24ab2-9f2e-43b1-a471-e11bffa973f9",
+  "newName": "New Category Name" 
+}
+```
+
+Path: ``/api/category/modify/delete``
+  - Delete SubCategory
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "subCategoryUUID": "81d83149-d434-4338-8288-7b01425a4d0c",
+}
+```
+
+  - Delete Category
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "categoryUUID": "c2e24ab2-9f2e-43b1-a471-e11bffa973f9",
+}
+```
+
+- Response:
+
+```json
+{
+    "status": "OK",
+    "message": "CategorySubCategory Successfully removed/edited"
 }
 ```
 
