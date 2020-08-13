@@ -22,7 +22,6 @@
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const crypto = require("crypto");
 const router = require("express").Router();
 const Utilities = require("../../../utilities");
 const db = require("../../../models");
@@ -74,7 +73,6 @@ router.route("/").post((req, res) => {
     res.json(response);
     return;
   }
-
   (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
@@ -91,8 +89,9 @@ router.route("/").post((req, res) => {
       };
     } catch (error) {
       response = { status: "ERROR", message: error.message };
+      console.log(error);
     }
-    console.log("Create Transaction API Response:\n", JSON.stringify(response,null,2));
+    console.log("Create Transaction API Response:\n", JSON.stringify(response, null, 2));
     res.json(response);
   })();
 });

@@ -40,6 +40,17 @@ const BudgetSchema = new Schema({
   subCategory: [SubCategorySchema],
 });
 
+BudgetSchema.methods.getSubCategoryDocumentById = function (subCategoryUUID) {
+  let retval;
+  for (let index = 0; index < this.subCategory.length; index++) {
+    if (this.subCategory[index].subCategoryRef == subCategoryUUID) {
+      retval = this.subCategory[index];
+      break;
+    }
+  }
+  return retval;
+};
+
 const Budget = mongoose.model("Budget", BudgetSchema);
 
 module.exports = Budget;

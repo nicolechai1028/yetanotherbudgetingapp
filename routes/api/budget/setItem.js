@@ -23,7 +23,6 @@
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const crypto = require("crypto");
 const router = require("express").Router();
 const Utilities = require("../../../utilities");
 const db = require("../../../models");
