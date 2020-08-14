@@ -23,11 +23,14 @@ function MonthSelector(props) {
   }, [month, props, props.yearMonth, year]);
 
   return (
-    <div className="d-flex justify-content-center">
+    <div
+      className="d-flex justify-content-center align-items-center py-3 rounded"
+      style={{ backgroundColor: "var(--var1)" }}
+    >
       <div style={{ width: "40px" }} onClick={() => update(-1)}>
         <ArrowLeft />
       </div>
-      <div>
+      <div className="mx-4">
         {monthToString(month)} {year}
       </div>
       <div style={{ width: "40px" }} onClick={() => update(1)}>

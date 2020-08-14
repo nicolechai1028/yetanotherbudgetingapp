@@ -11,19 +11,20 @@ import CategoriesContext from "../../utils/CategoriesContext";
 function Category(props) {
   const [budgetedTotal, setBudgetedTotal] = useState(0);
   const [activityTotal, setActivityTotal] = useState(0);
-  const [availableTotal, setAvailableTotal] = useState(0);
   const [open, setOpen] = useState(false);
   const [arrowTranslation, setArrowTranslation] = useState(90);
   const [showModal, setShowModal] = useState(false);
   const categoriesContext = useContext(CategoriesContext);
 
+  let tempbudgeted = 0;
+  let tempActivity = 0;
+
   console.log("subCategory", props.subCategory);
   const subcategories = props.subCategory.map(
     ({ subCategoryName, budgeted, activity, subCategoryUUID }) => {
       const available = budgeted - activity;
-      //  setBudgetedTotal(budgetedTotal + budgeted);
-      //  setActivityTotal(activityTotal + activity);
-      //  setAvailableTotal(availableTotal + available);
+      tempbudgeted += budgeted;
+      tempActivity += activity;
       return (
         <Subcategory
           key={subCategoryUUID}
@@ -37,6 +38,13 @@ function Category(props) {
       );
     }
   );
+
+  useEffect(() => {
+    setBudgetedTotal(tempbudgeted);
+  }, [tempbudgeted]);
+  useEffect(() => {
+    setActivityTotal(tempActivity);
+  }, [tempActivity]);
 
   //handle un/collapse of subcategories div and rotating arrow
   const toExpand = () => {
@@ -97,7 +105,9 @@ function Category(props) {
         {/*Display total amounts in the category group*/}
         <div className="justify-self-center"> $ {budgetedTotal} </div>
         <div className="justify-self-center"> $ {activityTotal} </div>
-        <div className="justify-self-center"> $ {availableTotal} </div>
+        <div className="justify-self-center">
+          $ {budgetedTotal - activityTotal}{" "}
+        </div>
       </div>
 
       <Collapse isOpen={open}>

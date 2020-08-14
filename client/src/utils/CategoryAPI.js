@@ -30,7 +30,7 @@ export const setSubCatBudgetAPI = (
   yearMonth,
   budgetedAmount
 ) => {
-  return axios.post("/api/budget/setItem", {
+  return axios.post("/api/budget/modifyItem", {
     sessionUUID,
     categoryUUID,
     subCategoryUUID,

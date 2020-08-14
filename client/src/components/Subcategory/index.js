@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import CurrencyInput from "../CurrentcyInput";
 import Transferpopover from "../../components/TrasnferPopover";
 import Categorycontext from "../../utils/CategoriesContext";
@@ -11,9 +11,10 @@ function Subcategory(props) {
 
   const handleChange = () => {
     categoriesContext.updateBudgeted(props.catUUID, props.subCatUUID, budgeted);
-    setBudgeted(props.budgeted);
   };
-
+  useEffect(() => {
+    setBudgeted(props.budgeted);
+  }, [props.budgeted]);
   // const transfer = (amount, transferToAcct) => {
   //   categoriesContext.transfer(amount, props.name, transferToAcct);
   // };
