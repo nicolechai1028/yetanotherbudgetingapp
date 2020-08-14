@@ -1,9 +1,7 @@
 import React from "react";
 
 const CategoriesContext = React.createContext({
-  categoriesName: [],
-  categories: {},
-  transfer: () => {},
+  addSubCategory: () => {},
 });
 
 export default CategoriesContext;

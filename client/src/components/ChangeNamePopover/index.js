@@ -33,7 +33,7 @@ function ChangeNamePopover(props) {
     <div>
       <button
         className="clear-button "
-        id={props.currentName}
+        id={`A${props.catUUID}`}
         type="button"
         onClick={(event) => {
           event.stopPropagation();
@@ -45,7 +45,7 @@ function ChangeNamePopover(props) {
       <Popover
         placement="bottom"
         isOpen={popoverOpen}
-        target={props.currentName}
+        target={`A${props.catUUID}`}
         toggle={toggle}
       >
         <PopoverHeader>Rename</PopoverHeader>
