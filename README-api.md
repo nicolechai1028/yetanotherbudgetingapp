@@ -41,6 +41,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
       - [Create](#create)
       - [List](#list)
       - [Modify](#modify)
+      - [Transfer](#transfer)
     - [<u><span style="color:orange">Category</span></u>](#ucategoryu)
     - [Category Create](#category-create)
     - [Category List](#category-list)
@@ -66,6 +67,7 @@ YABA API is based on JSON principles. The follwoing documentation covers core re
     - [Budget Account Modify (Update)](#budget-account-modify-update)
     - [Budget Account List](#budget-account-list)
     - [Budget Account Close](#budget-account-close)
+    - [Budget Account Transfer](#budget-account-transfer)
     - [Category Create Example](#category-create-example)
     - [Category List Example](#category-list-example)
     - [Category Add SubCategory Example](#category-add-subcategory-example)
@@ -254,6 +256,8 @@ A user can create an unlimited number of these accounts Money flows into and out
 | POST      | /api/budgetAccount/modify     | {sessionUUID, accountUUID, [[name], [balance], [notes]]}  | {status, message, [name, balance, notes, [transaction]]}                         |                                                                               |
 | POST      | /api/budgetAccount/close      | {sessionUUID, accountUUID}                                | {status, message}                                                 | If successfully close, status is "OK". The account is not deleted. Merely tagged as "closed"                                         |
 | POST      | /api/budgetAccount/list       | {sessionUUID,[accountUUID]}                               | {status, message, [accounts(array{accountUUID, name, type, balance, isClosed})]}   | Success status is "OK". Return includes optional array of account objects     |
+| POST      | /api/budgetAccount/transfer   | {sessionUUID,sourceAccountUUID,destAccountUUID,amount}    | {status,message, [                                                                 |                                                                               |
+|           |                               |                                                           |                                                                                    |                                                                               |
 
 #### Close
 > Matches with /api/budgetAccount/close
@@ -315,6 +319,32 @@ A user can create an unlimited number of these accounts Money flows into and out
 >  - accountUUID
 >  - name
 > Name will be checked to make sure it does not conflict with another account name (case insensitive, trimmed, multi-spaces removed)
+
+#### Transfer
+> 
+> Matches routes with /api/budgetAccount/transfer
+> Budget Account transfer route.
+>
+> Success will return the following object:
+>
+>  - status: OK
+>  - message : Successfully Transfered {amount} from "sourceName" to "destName"
+>  - transfer: { 
+>                source{ ... }, destination{ ... } 
+>              },
+>  - transaction: [ { ... }, { ... } ]
+>                   
+>
+> Error will return:
+>  - status : ERROR
+>  - message : \<Error message\>
+>
+> Expects:
+>  - sessionUUID
+>  - sourceAccountUUID
+>  - destAccountUUID
+>  - amount
+> 
 
 ### <u><span style="color:orange">Category</span></u>
 Upon account verification, each user is given about eleven categories to work with. These categories may be edited or deleted (as long as there are no transactions or budgets that use them). Additionally there are two <b>System</b> categories that the user cannot edit or delete.
@@ -905,9 +935,65 @@ The <b><i>option</i></b> query parameter is optional. It can be one of "<i>close
 }
 ```
 
-### Category Create Example
+### Budget Account Transfer
 
 - Request
+
+Path: ``/api/budgetAccount/transfer``
+
+```json
+{
+  "sessionUUID": "e147b53c-7230-ba83-2e90-2a37dc25db36",
+  "sourceAccountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+  "destAccountUUID": "88090449-f3aa-4386-8500-a218d1849ae4",
+  "amount": "200" 
+}
+```
+
+- Response
+
+```json
+{
+  "status": "OK",
+  "message": "Successfully Transfered 200 from \"Citi Visa\" to \"Wife's CitiBank Visa",
+  "transfer": {
+    "source": {
+      "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+      "balance": -2329.16
+    },
+    "destination": {
+      "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae4",
+      "balance": -654.36
+    }
+  },
+  "transaction": [
+    {
+      "transactionUUID": "4c6166c5-1190-4c1b-90fb-af6f6ef90db9",
+      "payee": "Transfer:Outflow to 'Wife's CitiBank Visa'",
+      "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae5",
+      "categoryUUID": "c684ca3c-fcfc-4163-a5f4-2f03238b39a3",
+      "subCategoryUUID": "d3daca94-b12c-43e6-a16a-612f6179a15c",
+      "perspective": "Outflow",
+      "memo": "Transfer:Outflow to 'Wife's CitiBank Visa'",
+      "amount": "200",
+      "date": 20200814
+    },
+    {
+      "transactionUUID": "e3b81b26-811a-4dd4-89c1-f6d16c2f9a35",
+      "payee": "Transfer:Inflow from 'Citi Visa'",
+      "accountUUID": "88090449-f3aa-4386-8500-a218d1849ae4",
+      "categoryUUID": "a5f6f157-95a2-4139-922a-60ad6f8753f6",
+      "subCategoryUUID": "9483fbd7-2e31-4786-a7c2-161b06721130",
+      "perspective": "Inflow",
+      "memo": "Transfer:Inflow from 'Citi Visa'",
+      "amount": -200,
+      "date": 20200814
+    }
+  ]
+}
+```
+
+### Category Create Example
 
 Path: ``/api/category/create``
 
