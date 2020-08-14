@@ -11,7 +11,7 @@ function Subcategory(props) {
 
   const handleChange = () => {
     categoriesContext.updateBudgeted(props.catUUID, props.subCatUUID, budgeted);
-    setBudgeted(budgeted);
+    setBudgeted(props.budgeted);
   };
 
   // const transfer = (amount, transferToAcct) => {
