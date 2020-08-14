@@ -78,21 +78,23 @@ function Budget() {
       subCategoryUUID,
       yearMonth,
       budgeted
-    ).then((response) => {
-      const data = {};
-      console.log("retruned from sertITem", response);
+    ).then(({ data }) => {
+      console.log("retruned from sertITem", data);
+      console.log("current categories", categories);
       if (data.status === "OK") {
         const updatedCategories = categories.map((category) => {
-          if (category.categoryUUID === data.budgetedItem.categoryUUID) {
-            category.subCategory = category.subCategory.map((subcategory) => {
+          console.log("category", category);
+          console.log("budgetedItem", data.budgetItem);
+          if (category.categoryUUID === data.budgetItem.categoryUUID) {
+            category.subCategory = category.subCategory.map((subCategory) => {
               //if item matches the updated budget return the subCategory item from response data
               if (
-                subcategory.subCategoryUUID ===
-                data.budgetedItem.subcategory.subCategoryUUID
+                subCategory.subCategoryUUID ===
+                data.budgetItem.subCategory.subCategoryUUID
               ) {
-                return data.budgetedItem.subcategory;
+                return data.budgetItem.subCategory;
               }
-              return subcategory;
+              return subCategory;
             });
           }
           return category;
@@ -106,7 +108,7 @@ function Budget() {
     <div className="page-container ">
       <div className="sub-container">
         <div className="align-items-center mx-5">
-          <Button onClick={toggle} className="btn-color  ">
+          <Button onClick={toggle} className="btn-color shadow">
             Add Category Group
           </Button>
           <AddCategoryModal
