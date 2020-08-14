@@ -31,7 +31,8 @@ export default function TransactionList(props) {
 
   const renderBody = () => {
     console.log("trans", transactions);
-    return transactions.map(
+
+    return transactions?.map(
       ({ date, payee, categoryName, subCategoryName, amount }) => {
         return (
           <tr>
