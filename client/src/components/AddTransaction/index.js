@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Row,
   Button,
@@ -7,40 +7,73 @@ import {
   InputGroupAddon,
   Card,
   CardTitle,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  FormGroup
 } from "reactstrap";
 import { ADD_TRANSACTION } from "../../utils/globalStates/actions";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
+import { getBudgetListAPI } from "../../utils/CategoryAPI";
+import CategoriesContext from "../../utils/CategoriesContext";
+import { createTransAPI } from "../../utils/TransactionAPI";
 
-export const AddTransaction = () => {
+export const AddTransaction = props => {
+  const [{ user }] = useAppContext();
   const [state, dispatch] = useAppContext();
   const [payee, setPayee] = useState("");
   const [amount, setAmount] = useState(0);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [subCatID, setSubCatID] = useState("");
+  const [MainCatID, setMainCatID] = useState("");
+  const accountUUID = "63a9b997-d793-429e-bb93-eb57ae5ade9c";
+  const [yearMonth] = useState(getMonthFormat());
 
-  const toggle = () => setDropdownOpen(prevState => !prevState);
+  useEffect(() => {
+    getBudgetListAPI(user.sessionUUID, yearMonth).then(response => {
+      console.log(response.data);
+      const tempCat = response.data.budget.map(category => {
+        const tempSubCat = category.subCategory.map(subCategory => {
+          return {
+            subCategoryName: subCategory.subCategoryName,
+            subCategoryUUID: subCategory.subCategoryUUID
+          };
+        });
+        return {
+          categoryName: category.categoryName,
+          categoryUUID: category.categoryUUID,
+          subCategory: tempSubCat
+        };
+      });
+      setCategories(tempCat);
+    });
+  }, [user.sessionUUID, yearMonth]);
+  console.log(categories);
+
   const onSubmit = e => {
     e.preventDefault();
+    console.log(e.target);
 
-    const newTransaction = {
-      id: Math.floor(Math.random() * 100000000),
+    createTransAPI(
+      user.sessionUUID,
+      accountUUID,
       payee,
-      amount: +amount,
-      name: e.target.value
-    };
-
-    dispatch({
-      type: ADD_TRANSACTION,
-      payload: {
-        sessionUUID: state.user.sessionUUID,
-        payee,
-        amount,
-        newTransaction
-      }
+      MainCatID,
+      subCatID,
+      amount,
+      []
+    ).then(response => {
+      dispatch({
+        type: ADD_TRANSACTION,
+        payload: response.data.transaction
+      });
+      console.log(response);
+      props.setChange();
     });
+  };
+
+  const handleCategorySelect = event => {
+    const value = JSON.parse(event.target.value);
+    console.log(value);
+    setSubCatID(value.subCategoryUUID);
+    setMainCatID(value.categoryUUID);
   };
 
   return (
@@ -50,29 +83,67 @@ export const AddTransaction = () => {
       </CardTitle>
       <form onSubmit={onSubmit}>
         <Row>
-          <InputGroup style={{ margin: "5px 15px 5px 15px" }}>
+          <InputGroup style={{ margin: "5px 10px 5px 10px" }}>
             <Input
               type="text"
               value={payee}
               onChange={e => setPayee(e.target.value)}
               placeholder="Enter Payee Name"
             />
-            <Dropdown
-              style={{ marginLeft: "5px" }}
-              isOpen={dropdownOpen}
-              toggle={toggle}
-            >
-              <DropdownToggle caret>Dropdown</DropdownToggle>
-              <DropdownMenu>
-                {state.categories.map(a => (
-                  <DropdownItem>{a.newName}</DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
+            <FormGroup>
+              <CategoriesContext.Provider>
+                <Input
+                  type="select"
+                  name="select"
+                  id="exampleSelect"
+                  onChange={handleCategorySelect}
+                >
+                  <option value="" disabled selected hidden>
+                    Select a Category
+                  </option>
+
+                  {categories.map(category => {
+                    return category.subCategory.map(subCategory => {
+                      return (
+                        <option
+                          value={JSON.stringify({
+                            subCategoryUUID: subCategory.subCategoryUUID,
+                            categoryUUID: category.categoryUUID
+                          })}
+                        >
+                          {subCategory.subCategoryName}
+                        </option>
+                      );
+                    });
+                  })}
+                </Input>
+                {/* {categories.map(category => {
+                    return (
+                      <React.Fragment>
+                        <DropdownItem disabled>
+                          {category.categoryName}{" "}
+                        </DropdownItem>
+                        {category.subCategory.map(subCategory => {
+                          return (
+                            <DropdownItem
+                              onClick={() =>
+                                setDdId(subCategory.subCategoryUUID)
+                              }
+                            >
+                              {"\t"}
+                              {subCategory.subCategoryName}{" "}
+                            </DropdownItem>
+                          );
+                        })}
+                      </React.Fragment>
+                    );
+                  })} */}
+              </CategoriesContext.Provider>
+            </FormGroup>
           </InputGroup>
         </Row>
         <Row>
-          <InputGroup style={{ margin: "5px 15px 5px 15px" }}>
+          <InputGroup style={{ margin: "5px 10px 5px 10px" }}>
             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
             <Input
               type="number"
@@ -90,4 +161,12 @@ export const AddTransaction = () => {
       </form>
     </Card>
   );
+};
+
+const getMonthFormat = () => {
+  const date = new Date();
+  let month = date.getMonth() + 1;
+  return month < 10
+    ? `${date.getFullYear()}0${month}`
+    : `${date.getFullYear()}${month}`;
 };

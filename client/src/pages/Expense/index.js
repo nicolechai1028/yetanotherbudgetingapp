@@ -1,10 +1,11 @@
-import React from "react";
-import { Container, Row, Col, Table } from "reactstrap";
+import React, { useState } from "react";
+import { Container, Row, Col } from "reactstrap";
 import { Balance } from "../../components/Balance";
 import TransactionList from "../../components/TList";
 import { AddTransaction } from "../../components/AddTransaction";
 
 function Expense() {
+  const [change, setChange] = useState(false);
   return (
     <Container className="themed-container" fluid={true}>
       <Container>
@@ -13,11 +14,11 @@ function Expense() {
             <Balance />
           </Col>
           <Col sm="6" md={{ offset: 2 }}>
-            <AddTransaction />
+            <AddTransaction setChange={() => setChange(!change)} />
           </Col>
         </Row>
       </Container>
-      <TransactionList />
+      <TransactionList change={change} />
     </Container>
   );
 }

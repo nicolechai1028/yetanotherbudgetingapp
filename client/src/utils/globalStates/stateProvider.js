@@ -6,15 +6,11 @@ import {
   REMOVE_USER,
   SET_LOADING,
   ADD_CATEGORY,
-  ADD_TRANSACTION
+  ADD_TRANSACTION,
+  GET_BALANCE
 } from "./actions";
-<<<<<<< Updated upstream
-import { createCategoryAPI, getBudgetListAPI } from "../CategoryAPI";
-=======
-import { createCategoryAPI } from "../CategoryAPI";
-import { createTransAPI, getTransAPI } from "../TransactionAPI";
->>>>>>> Stashed changes
 
+const accountUUID = "63a9b997-d793-429e-bb93-eb57ae5ade9c";
 const AppContext = createContext({});
 const { Provider } = AppContext;
 
@@ -36,46 +32,16 @@ const reducer = (state, action) => {
     case CHECK_USER_INFO:
       return { ...state };
 
-    case ADD_TRANSACTION:
-      const {
-        accountUUID,
-        payee,
-        categoryUUID,
-        subCategoryUUID,
-        amount
-      } = action.payload;
-      createTransAPI(
-        accountUUID,
-        payee,
-        categoryUUID,
-        subCategoryUUID,
-        amount,
-        []
-      ).then(data => {
-        if (data.status === "OK") {
-          return {
-            ...state,
-            transactions: [action.payload, ...state.transactions]
-          };
-        }
-      });
+    case GET_BALANCE:
+      return { ...state };
 
-    case ADD_CATEGORY:
-<<<<<<< Updated upstream
-      let { perspective, newName, sessionUUID } = action.payload;
-      createCategoryAPI(sessionUUID, newName, perspective).then((data) => {
-=======
-      const { perspective, newName, sessionUUID } = action.payload;
-      createCategoryAPI(sessionUUID, newName, perspective, []).then(data => {
->>>>>>> Stashed changes
-        if (data.status === "OK") {
-          return {
-            ...state,
-            categories: [...state.categories, action.payload]
-          };
-        }
-      });
-      break;
+    case ADD_TRANSACTION:
+      console.log("action payload", action.payload);
+      return {
+        ...state,
+        transactions: [action.payload, ...state.transactions]
+      };
+
     default:
       throw new Error("Error in reducer.");
   }
