@@ -26,9 +26,9 @@ const listRoute = require("./list");
 const modifyItemRoute = require("./modifyItem");
 const setItemRoute = require("./setItem");
 
-router.use("/getItem", getItemRoute);
-router.use("/list", listRoute);
-router.use("/modifyItem", modifyItemRoute);
-router.use("/setItem", setItemRoute);
+router.use("/getItem", getItemRoute); // done
+router.use("/list", listRoute);         // done
+router.use("/modifyItem", modifyItemRoute);     //
+router.use("/setItem", setItemRoute);       // done
 
 module.exports = router;

@@ -9,10 +9,6 @@ import {
   ModalBody,
   Label,
 } from "reactstrap";
-
-import { ADD_CATEGORY } from "../../utils/globalStates/actions";
-
-import { GlobalContext } from "../../context/GlobalState";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 const flowKeys = {
@@ -28,9 +24,9 @@ function AddCategoryModal(props) {
   const handleSelect = (e) => setPerspective(flowKeys[e.target.value]);
   const handleSubmit = (event) => {
     event.preventDefault();
-    props.handleSubmit(newName);
     props.toggle();
-    dispatch({ type: ADD_CATEGORY, payload: { newName, perspective } });
+    props.addCategory(newName, perspective);
+    cleanUp();
   };
   const cleanUp = () => {
     setNewName("");
@@ -60,8 +56,8 @@ function AddCategoryModal(props) {
                 name="select"
                 id="exampleSelectMulti"
               >
-                <option>Income</option>
-                <option>Expense</option>
+                <option>Inflow</option>
+                <option>Outflow</option>
               </Input>
             </FormGroup>
           </FormGroup>

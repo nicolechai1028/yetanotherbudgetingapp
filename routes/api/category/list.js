@@ -42,7 +42,7 @@ const Constants = require("../../../constants");
  * Error will return:
  *  - status : ERROR
  *  - message : <Error message>
-
+ *
  * Expects:
  *  - sessionUUID
  *  - categoryUUID // optional. If present, search for and return category with this UUID
@@ -114,7 +114,7 @@ router.route("/").post((req, res) => {
       console.log(error);
       response = { status: "ERROR", message: error.message };
     }
-    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);
+    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, JSON.stringify(response,null,2));
     res.json(response);
   })();
 });

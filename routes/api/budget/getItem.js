@@ -4,7 +4,9 @@
  *                                                                                      *
  * == chikeobi-12 ==                                                                    *
  *   +  Created                                                                         *
- *   +                                                                                  *
+ *                                                                                      *
+ * == chikeobi-16 ==                                                                    *
+ *   +  Complete route                                                                  *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -21,29 +23,32 @@
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const crypto = require("crypto");
 const router = require("express").Router();
 const Utilities = require("../../../utilities");
+const Constants = require("../../../constants");
 const db = require("../../../models");
+const BudgetController = require("../../../controllers/budgetController");
 
 /**
  * Matches with /api/budget/getItem
- * Gets the budget for a specific user. Parameters will determine for which year and month.
- * Budgets can also be retrieved for a Category Group and/or a specific category
+ * Used to get a Budget budget item (by category and subCategory UUID for a given Month and Year. It returns the budget
+ * for the Category and the subCategory. If the subCategory is not passed, then all subcategories will be returned
  *
+ * Success will return the following object:
  *
+ *  - status: OK
+ *  - message : Budget Item for categoryUUID
+ *  - yearMonth : YYYYMM
+ *  - budgetItem { ... subCategory [{ ... }]}
  *
- *  - status: "OK | ERROR"
- *  - message : "Success | <Error text>"
- *  - response {
- *               date{
- *                     year: <yyyy>
- *                     month: <mm>
- *                   },
- *                data[
+ * Error will return:
+ *  - status : ERROR
+ *  - message : <Error message>
  *
- *                    ]
- *             }
+ * Expects:
+ *  - sessionUUID
+ *  - categoryUUID
+ *  - yearMonth //  optional. Use current year and month if not set or valid
  *
  * */
 
@@ -52,19 +57,13 @@ router.route("/").post((req, res) => {
   console.log(Utilities.getFullUrl(req));
   console.log(req.body);
 
-  let response,
-  dbProfile,
-  ownerRef,
-  dbResults,
-  dbCategory,
-  dbSubCategory,
-  dbSubCategories,
-  budgetCategory,
-  subgetSubCategories;
+  let dbBudget, dbCategory, dbProfile, ownerRef, query, response;
 
-  let { sessionUUID,yearMonth } = req.body;
+  let { sessionUUID, yearMonth, categoryUUID } = req.body;
   if (!sessionUUID || (sessionUUID = sessionUUID.trim()).length == 0)
     response = { status: "ERROR", message: "Missing or invalid sessionUUID" };
+  else if (!categoryUUID || (categoryUUID = categoryUUID.trim()).length == 0)
+    response = { status: "ERROR", message: "Missing or invalid categoryUUID" };
   else if (
     !yearMonth ||
     (yearMonth = yearMonth.trim()).length == 0 ||
@@ -74,22 +73,34 @@ router.route("/").post((req, res) => {
   )
     yearMonth = Utilities.getYearMonth();
 
-    if (response) {
-      console.log("Create Budget getItem API Response:\n", response);
-      res.json(response);
-      return;
-    }
+  // // check if subCategoryUUID is passed
+  // if (subCategoryUUID && (subCategoryUUID = subCategoryUUID.trim()).length == 0)
+  //   response = { status: "ERROR", message: "Invalid subCategoryUUID" };
 
-    (async () => {
+  if (response) {
+    console.log("Budget getItem API Response:\n", response);
+    res.json(response);
+    return;
+  }
+
+  (async () => {
     try {
-      dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
-      dbProfile = dbResults[0];
+      dbProfile = await db.UserProfile.findOne({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
+      if (!dbProfile) throw "Invalid sessionUUID";
       ownerRef = dbProfile._id;
+      // make sure such a category/subcategory combination exists
+      query = { ownerRef: ownerRef, _id: categoryUUID };
+      dbCategory = await db.UserCategoryGroup.findOne(query);
+      if (!dbCategory) throw "Invalid categoryUUID";
+      // search for the budget item. If not found, send an empty one back
+      query = { yearMonth: yearMonth, categoryRef: categoryUUID, ownerRef: ownerRef };
+      dbBudget = await db.Budget.findOne(query);
+
+      response = await BudgetController.getAPIResponseJSON(dbBudget, dbCategory);
     } catch (error) {
       response = { status: "ERROR", message: error.message };
     }
-    console.log("Create Transaction API Response:\n", response);
+    console.log("Create Transaction API Response:\n", JSON.stringify(response, null, 2));
     res.json(response);
   })();
 });

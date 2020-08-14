@@ -1,30 +1,29 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Transaction } from "../../components/Transaction";
 import { Table, Card, Container } from "reactstrap";
-import { GlobalContext } from "../../context/GlobalState";
 import { transactions } from "../../utils/API";
+import { useAppContext } from "../../utils/globalStates/stateProvider";
 
-export const TransactionList = () => {
-  const [employees, setEmployees] = useState([]);
+export default function TransactionList() {
+  const [transactions, setTransactions] = useState([]);
+  const [state, dispatch] = useAppContext();
 
   useEffect(() => {
-    getData();
+    fetch("/api/transaction/list")
+      .then(response => response.json())
+      .then(data => {
+        setTransactions(data);
+      });
   }, []);
 
-  const getData = async () => {
-    const response = await transactions();
-    setEmployees(response.data);
-  };
-
-  // const removeData = id => {
-  //   axios.delete(`${URL}/${id}`).then(res => {
-  //     const del = employees.filter(employee => id !== employee.id);
-  //     setEmployees(del);
-  //   });
-  // };
-
   const renderHeader = () => {
-    let headerElement = ["date", "payee", "category", "transaction flow"];
+    let headerElement = [
+      "date",
+      "payee",
+      "category",
+      "transaction flow",
+      "amount"
+    ];
 
     return headerElement.map((key, index) => {
       return <th key={index}>{key.toUpperCase()}</th>;
@@ -33,14 +32,15 @@ export const TransactionList = () => {
 
   const renderBody = () => {
     return (
-      employees &&
-      employees.map(({ id, name, email, phone }) => {
+      transactions &&
+      transactions.map(({ date, payee, category, perspective, amount }) => {
         return (
-          <tr key={id}>
-            <td>{id}</td>
-            <td>{name}</td>
-            <td>{email}</td>
-            <td>{phone}</td>
+          <tr>
+            <td>{date}</td>
+            <td>{payee}</td>
+            <td>{category}</td>
+            <td>{perspective}</td>
+            <td>{amount}</td>
           </tr>
         );
       })
@@ -59,10 +59,4 @@ export const TransactionList = () => {
       </Card>
     </Container-fluid>
   );
-};
-
-// {transactions.map(transaction => (
-//   <Transaction key={transaction.id} transaction={transaction} />
-// ))}
-
-export default TransactionList;
+}

@@ -5,6 +5,8 @@
  * == chikeobi-08 ==                                                                    *
  *   +  Added function to return JSON format of database returned object                *
  *                                                                                      *
+ * == chikeobi-16 ==                                                                    *
+ *   +  Removed JSON.stringify from the return of "getJSON"                             *
  *                                                                                      *
  *                                                                                      *
  *                                                                                      *
@@ -73,7 +75,7 @@ module.exports = {
         isClosed: dbAccount.isClosed,
         notes: dbAccount.notes,
       };
-    } else return;
-    return JSON.stringify(retval,null,2);
+    }
+    return retval;
   },
 };

@@ -3,7 +3,13 @@
  ****************************************************************************************
  *                                                                                      *
  * == chikeobi-03 ==                                                                    *
- *   +    Added this History section                                                    *
+ *   +  Added this History section                                                      *
+ *                                                                                      *
+ * == chikeobi-16 ==                                                                    *
+ *   +  Added instance methods:                                                         *
+ *     - "subCategoryCount" // returns number of subCategory subDocuments               *
+ *     - "subCategoryIdNameMap" // returns key/value pair object of subCategory ID/Name *
+ *     - "getSubCategoryById"   // returns subCategory subDocument by ID                *
  *   +                                                                                  *
  *                                                                                      *
  *                                                                                      *
@@ -54,6 +60,35 @@ const UserCategoryGroupSchema = new Schema({
     default: Constants.ACCOUNT_ACCESS_DEFAULT,
   },
 });
+/**
+ * returns number of subCategory subDocuments
+ */
+UserCategoryGroupSchema.methods.getSubCategoryCount = function () {
+  return this.subCategory.length;
+};
+
+/**
+ * returns key/value pair object of subCategory ID/Name
+ */
+UserCategoryGroupSchema.methods.getSubCategoryIdNameMap = function () {
+  let retval = {};
+  for (let index = 0; index < this.subCategory.length; index++) {
+    retval[this.subCategory[index]._id] = this.subCategory[index].subCategoryName;
+  }
+  return retval;
+};
+
+/**
+ * returns subCategory subDocument by ID
+ */
+UserCategoryGroupSchema.methods.getSubCategoryById = function (subId) {
+  if (subId) {
+    for (let index = 0; index < this.subCategory.length; index++) {
+      if ([this.subCategory[index]._id] == subId) return this.subCategory[index];
+    }
+  }
+  return;
+};
 
 const UserCategoryGroup = mongoose.model("UserCategoryGroup", UserCategoryGroupSchema);
 
