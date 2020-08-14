@@ -9,8 +9,8 @@ import ChangeNamePopover from "../ChangeNamePopover";
 import CategoriesContext from "../../utils/CategoriesContext";
 
 function Category(props) {
-  const [totalBudgeted, setTotalBudgeted] = useState(0);
-  const [spentTotal, setSpentTotal] = useState(0);
+  const [budgetedTotal, setBudgetedTotal] = useState(0);
+  const [activityTotal, setActivityTotal] = useState(0);
   const [availableTotal, setAvailableTotal] = useState(0);
   const [open, setOpen] = useState(false);
   const [arrowTranslation, setArrowTranslation] = useState(90);
@@ -21,6 +21,9 @@ function Category(props) {
   const subcategories = props.subCategory.map(
     ({ subCategoryName, budgeted, activity, subCategoryUUID }) => {
       const available = budgeted - activity;
+      //  setBudgetedTotal(budgetedTotal + budgeted);
+      //  setActivityTotal(activityTotal + activity);
+      //  setAvailableTotal(availableTotal + available);
       return (
         <Subcategory
           key={subCategoryUUID}
@@ -47,13 +50,10 @@ function Category(props) {
   const toggle = () => {
     setShowModal(!showModal);
   };
-  console.log(categoriesContext);
   /*handle add category */
   const addCategory = (name, perspective) => {
     //hide modal
     setShowModal(false);
-    console.log("Subcategory addCategory");
-    //Call another function or API to add category name
     categoriesContext.addSubCategory(name, props.catUUID);
   };
   return (
@@ -95,8 +95,8 @@ function Category(props) {
           />
         </div>
         {/*Display total amounts in the category group*/}
-        <div className="justify-self-center"> $ {totalBudgeted} </div>
-        <div className="justify-self-center"> $ {spentTotal} </div>
+        <div className="justify-self-center"> $ {budgetedTotal} </div>
+        <div className="justify-self-center"> $ {activityTotal} </div>
         <div className="justify-self-center"> $ {availableTotal} </div>
       </div>
 
