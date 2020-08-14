@@ -55,7 +55,7 @@ function Login() {
       <Card
         color=""
         body={true}
-        style={{ width: "80%", margin: "auto", align: "center" }}
+        style={{ width: "60%", margin: "auto", align: "center" }}
       >
         <CardBody>
           <Form className="login-form" onSubmit={handleSubmit}>
@@ -86,7 +86,7 @@ function Login() {
                 onChange={handleInputChange}
               ></Input>
             </FormGroup>
-            <Button className="btn-lg btn-dark btn-block">Log In </Button>
+            <Button className="btn-color btn-lg btn-dark btn-block">Log In </Button>
             <div className="text-center">
               <a href="/register">Register</a>
               <span className="p-2"></span>

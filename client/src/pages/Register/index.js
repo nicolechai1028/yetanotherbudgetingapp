@@ -61,7 +61,7 @@ function Register() {
           <CardTitle className="text-center">
             <h1>Y.A.B.A</h1>
           </CardTitle>
-          <CardSubtitle className="text-center">Welcome</CardSubtitle>
+          <CardSubtitle className="text-center">Welcome!</CardSubtitle>
           <FormGroup>
             <Label>First Name</Label>
             <Input
@@ -92,7 +92,7 @@ function Register() {
               placeholder="Password"
             ></Input>
           </FormGroup>
-          <Button className="btn-lg btn-dark btn-block">Sign Up</Button>
+          <Button className="btn-color btn-lg btn-dark btn-block">Sign Up</Button>
         </Form>
       </CardBody>
     </Card>
