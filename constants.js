@@ -27,6 +27,11 @@
 
 module.exports = Object.freeze({
   DEV_MONGODB_URI: "mongodb://localhost/yetanotherbudgetingapp",
+  CHECKING_TYPE: 0,
+  SAVINGS_TYPE: 1,
+  CASH_TYPE: 2,
+  CREDIT_CARD_TYPE: 3,
+  LOC_TYPE: 4,
   ACCOUNT_TYPES: ["Checking", "Saving", "Cash", "Credit Card", "Line of Credit"],
   ACCOUNT_PERSPECTIVES: ["Outflow", "Inflow"],
   DEFAULT_PERSPECTIVE: "Outflow",
