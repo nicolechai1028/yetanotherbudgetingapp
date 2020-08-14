@@ -8,7 +8,7 @@ import {
   ADD_CATEGORY,
   ADD_TRANSACTION,
 } from "./actions";
-import { createCategoryAPI } from "../CategoryAPI";
+import { createCategoryAPI, getBudgetListAPI } from "../CategoryAPI";
 
 const AppContext = createContext({});
 const { Provider } = AppContext;
@@ -34,8 +34,8 @@ const reducer = (state, action) => {
         transactions: [action.payload, ...state.transactions],
       };
     case ADD_CATEGORY:
-      const { perspective, newName, sessionUUID } = action.payload;
-      createCategoryAPI(sessionUUID, newName, perspective, []).then((data) => {
+      let { perspective, newName, sessionUUID } = action.payload;
+      createCategoryAPI(sessionUUID, newName, perspective).then((data) => {
         if (data.status === "OK") {
           return {
             ...state,
