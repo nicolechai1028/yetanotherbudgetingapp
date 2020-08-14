@@ -35,8 +35,10 @@ function Budget() {
       setCategories([
         ...categories,
         {
-          categoriesName: data.categoriesName,
+          categoryName: data.categoryName,
           categoryUUID: data.categoryUUID,
+          subCategory: [],
+          perspective: data.perspective,
         },
       ]);
     });
