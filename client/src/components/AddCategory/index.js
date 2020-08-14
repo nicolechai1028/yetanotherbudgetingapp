@@ -25,8 +25,15 @@ function AddCategoryModal(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     props.toggle();
+<<<<<<< Updated upstream
     props.addCategory(newName, perspective);
     cleanUp();
+=======
+    dispatch({
+      type: ADD_CATEGORY,
+      payload: { sessionUUID: state.user.sessionUUID, newName, perspective }
+    });
+>>>>>>> Stashed changes
   };
   const cleanUp = () => {
     setNewName("");

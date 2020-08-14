@@ -16,26 +16,31 @@ import { ADD_TRANSACTION } from "../../utils/globalStates/actions";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 export const AddTransaction = () => {
-  const [text, setText] = useState("");
-  const [amount, setAmount] = useState(0);
-
   const [state, dispatch] = useAppContext();
-
+  const [payee, setPayee] = useState("");
+  const [amount, setAmount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen(prevState => !prevState);
-
   const onSubmit = e => {
     e.preventDefault();
 
     const newTransaction = {
       id: Math.floor(Math.random() * 100000000),
-      text,
+      payee,
       amount: +amount,
       name: e.target.value
     };
 
-    dispatch({ type: ADD_TRANSACTION, payload: newTransaction });
+    dispatch({
+      type: ADD_TRANSACTION,
+      payload: {
+        sessionUUID: state.user.sessionUUID,
+        payee,
+        amount,
+        newTransaction
+      }
+    });
   };
 
   return (
@@ -48,8 +53,8 @@ export const AddTransaction = () => {
           <InputGroup style={{ margin: "5px 15px 5px 15px" }}>
             <Input
               type="text"
-              value={text}
-              onChange={e => setText(e.target.value)}
+              value={payee}
+              onChange={e => setPayee(e.target.value)}
               placeholder="Enter Payee Name"
             />
             <Dropdown

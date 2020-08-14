@@ -1,26 +1,31 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Transaction } from "../../components/Transaction";
 import { Table, Card, Container } from "reactstrap";
-import { transactions } from "../../utils/API";
-import { useAppContext } from "../../utils/globalStates/stateProvider";
+import { getTransAPI } from "../../utils/TransactionAPI";
 
 export default function TransactionList() {
-  const [transactions, setTransactions] = useState([]);
-  const [state, dispatch] = useAppContext();
+  const [transactions, setTransactions] = useState();
 
-  useEffect(() => {
-    fetch("/api/transaction/list")
-      .then(response => response.json())
-      .then(data => {
-        setTransactions(data);
+  const fetchData = e => {
+    e.preventDefault();
+
+    getTransAPI
+      .getData()
+      .then(response => {
+        setTransactions(response.data);
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
       });
-  }, []);
+  };
 
   const renderHeader = () => {
     let headerElement = [
       "date",
       "payee",
       "category",
+      "subcategory",
       "transaction flow",
       "amount"
     ];
@@ -33,17 +38,27 @@ export default function TransactionList() {
   const renderBody = () => {
     return (
       transactions &&
-      transactions.map(({ date, payee, category, perspective, amount }) => {
-        return (
-          <tr>
-            <td>{date}</td>
-            <td>{payee}</td>
-            <td>{category}</td>
-            <td>{perspective}</td>
-            <td>{amount}</td>
-          </tr>
-        );
-      })
+      transactions.map(
+        ({
+          date,
+          payee,
+          categoryName,
+          subCategoryName,
+          perspective,
+          amount
+        }) => {
+          return (
+            <tr>
+              <td>{date}</td>
+              <td>{payee}</td>
+              <td>{categoryName}</td>
+              <td>{subCategoryName}</td>
+              <td>{perspective}</td>
+              <td>{amount}</td>
+            </tr>
+          );
+        }
+      )
     );
   };
 

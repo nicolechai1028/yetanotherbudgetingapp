@@ -1,13 +1,7 @@
 import React, { useContext } from "react";
 import { Button } from "reactstrap";
-import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 export const Transaction = ({ transaction }) => {
-<<<<<<< Updated upstream
-=======
-  const { deleteTransaction } = useAppContext();
-
->>>>>>> Stashed changes
   const sign = transaction.amount < 0 ? "-" : "+";
 
   return (
