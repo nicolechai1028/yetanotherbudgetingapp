@@ -19,10 +19,10 @@ const reducer = (state, action) => {
     case ADD_USER_INFO:
       sessionStorage.setItem("user", JSON.stringify(action.payload));
       console.log(action.payload);
-      return { ...state, user: { ...action.payload }, loading: false };
+      return { ...state, user: action.payload, loading: false };
 
     case SET_LOADING:
-      return { ...state, loading: action.payload };
+      return { ...state, loading: true };
 
     case REMOVE_USER:
       const newState = { ...state };
@@ -50,7 +50,7 @@ const reducer = (state, action) => {
 const UserProvider = ({ value = {}, ...props }) => {
   const [state, dispatch] = useReducer(reducer, {
     user: null,
-    loading: false,
+    loading: true,
     categories: [],
     transactions: []
   });

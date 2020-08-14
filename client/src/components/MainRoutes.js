@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 
 import { useAppContext } from "../utils/globalStates/stateProvider";
-import Overview from "../pages/Overview";
 import Budget from "../pages/Budget/";
 import Login from "../pages/Login/";
 import Expenses from "../pages/Expense/";
@@ -17,8 +16,13 @@ function MainRoutes() {
   useEffect(() => {
     //Check if there is a user in sessionStorage
     const user = sessionStorage.getItem("user");
-    if (user && !(user === "undefined") && user !== null) {
-      dispatch({ type: ADD_USER_INFO, user: JSON.parse(user), loading: false });
+    if (user === "undefined") {
+      console.log("undefined");
+    } else if (user && user !== null) {
+      dispatch({
+        type: ADD_USER_INFO,
+        payload: JSON.parse(user)
+      });
     }
   }, [dispatch]);
 
@@ -43,7 +47,6 @@ function MainRoutes() {
         {state.user && !state.loading ? (
           <div>
             <Route exact path="/expense" component={Expenses} />
-            <Route exact path="/overview" component={Overview} />
             <Route exact path="/budget" component={Budget} />
           </div>
         ) : (

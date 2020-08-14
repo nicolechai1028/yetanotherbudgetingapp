@@ -9,7 +9,7 @@ import {
   Card,
   CardBody,
   CardTitle,
-  CardSubtitle,
+  CardSubtitle
 } from "reactstrap";
 import { login } from "../../utils/API";
 import { Redirect } from "react-router-dom";
@@ -19,7 +19,7 @@ import { ADD_USER_INFO, SET_LOADING } from "../../utils/globalStates/actions";
 function Login() {
   const [input, setInput] = useState({
     email: "",
-    password: "",
+    password: ""
   });
   const [warning, setWarning] = useState();
   const [state, dispatch] = useAppContext();
@@ -29,16 +29,15 @@ function Login() {
     return emailRegex.test(input.email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (validateInput()) {
-      dispatch({ type: SET_LOADING, payload: true });
       login(input).then(({ data }) => {
         console.log(data);
         if (data.status === "OK") {
           dispatch({ type: ADD_USER_INFO, payload: data });
-        }else if(data.status === "ERROR" ){
-          setWarning(data.message)
+        } else if (data.status === "ERROR") {
+          setWarning(data.message);
         }
       });
     } else {
@@ -51,7 +50,7 @@ function Login() {
 
   return (
     <>
-      {state.user ? <Redirect to="/overview" /> : ""}
+      {state.user ? <Redirect to="/budget" /> : ""}
       <Card
         color=""
         body={true}
@@ -65,7 +64,7 @@ function Login() {
             <CardSubtitle className="text-center">
               {state.message || "Welcome!"}
             </CardSubtitle>
-            <CardSubtitle className="text-center" style={{color: "red"}}>
+            <CardSubtitle className="text-center" style={{ color: "red" }}>
               {warning}
             </CardSubtitle>
             <FormGroup>
@@ -86,7 +85,9 @@ function Login() {
                 onChange={handleInputChange}
               ></Input>
             </FormGroup>
-            <Button className="btn-color btn-lg btn-dark btn-block">Log In </Button>
+            <Button className="btn-color btn-lg btn-dark btn-block">
+              Log In{" "}
+            </Button>
             <div className="text-center">
               <a href="/register">Register</a>
               <span className="p-2"></span>

@@ -106,7 +106,7 @@ function Category(props) {
         <div className="justify-self-center"> $ {budgetedTotal} </div>
         <div className="justify-self-center"> $ {activityTotal} </div>
         <div className="justify-self-center">
-          $ {budgetedTotal - activityTotal}{" "}
+          $ {budgetedTotal + activityTotal}{" "}
         </div>
       </div>
 

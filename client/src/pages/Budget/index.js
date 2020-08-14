@@ -10,25 +10,30 @@ import {
   getBudgetListAPI,
   createCategoryAPI,
   createSubCategoryAPI,
-  setSubCatBudgetAPI,
+  setSubCatBudgetAPI
 } from "../../utils/CategoryAPI";
 
 import "./index.css";
 function Budget() {
   const [showModal, setShowModal] = useState(false);
-  const [{ user }] = useAppContext();
+  const [state] = useAppContext();
   const [categories, setCategories] = useState([]);
+  const user = state.user;
+  console.log("budget state", state);
+  console.log("budget user", user);
 
   const [yearMonth, setYearMonth] = useState(getMonthFormat());
   //when first load check budget list has been loaded if not load budget list
   //potential issue
   useEffect(() => {
     //Call API and set categoriesState as value
-    getBudgetListAPI(user.sessionUUID, yearMonth).then((response) => {
-      console.log("budgetlist ", response.data);
-      setCategories(response.data.budget);
-    });
-  }, [setCategories, user.sessionUUID, yearMonth]);
+    if (!state.loading) {
+      getBudgetListAPI(user.sessionUUID, yearMonth).then(response => {
+        console.log("budgetlist ", response.data);
+        setCategories(response.data.budget);
+      });
+    }
+  }, [setCategories, user.sessionUUID, yearMonth, state.loading]);
 
   const addCategoryGroup = (name, perspective) => {
     createCategoryAPI(user.sessionUUID, name, perspective).then(({ data }) => {
@@ -38,8 +43,8 @@ function Budget() {
           categoryName: data.categoryName,
           categoryUUID: data.categoryUUID,
           subCategory: [],
-          perspective: data.perspective,
-        },
+          perspective: data.perspective
+        }
       ]);
     });
   };
@@ -49,15 +54,15 @@ function Budget() {
       ({ data }) => {
         //Will have to update to use useMemo so the entire page does not re-render
         console.log(data);
-        const newCategories = categories.map((category) => {
+        const newCategories = categories.map(category => {
           if (category.categoryUUID === data.categoryUUID) {
             category.subCategory = [
               ...category.subCategory,
               {
                 ...data.subCategory[data.subCategory.length - 1],
                 budgeted: 0,
-                activity: 0,
-              },
+                activity: 0
+              }
             ];
           }
           return category;
@@ -82,11 +87,11 @@ function Budget() {
       console.log("retruned from sertITem", data);
       console.log("current categories", categories);
       if (data.status === "OK") {
-        const updatedCategories = categories.map((category) => {
+        const updatedCategories = categories.map(category => {
           console.log("category", category);
           console.log("budgetedItem", data.budgetItem);
           if (category.categoryUUID === data.budgetItem.categoryUUID) {
-            category.subCategory = category.subCategory.map((subCategory) => {
+            category.subCategory = category.subCategory.map(subCategory => {
               //if item matches the updated budget return the subCategory item from response data
               if (
                 subCategory.subCategoryUUID ===
@@ -144,7 +149,7 @@ function Budget() {
         <div className="column-name"> Available </div>
       </div>
       <CategoriesContext.Provider value={{ addSubCategory, updateBudgeted }}>
-        {categories.map((category) => {
+        {categories.map(category => {
           return (
             <Category
               key={category.categoryUUID}
