@@ -7,13 +7,17 @@ function MonthSelector(props) {
   const [year, setYear] = useState(parseInt(props.yearMonth.substring(0, 4)));
   const [month, setMonth] = useState(parseInt(props.yearMonth.substring(4, 6)));
   const update = (number) => {
-    if (month === 12 && number > 0) {
+    if (month === 12 && number === 1) {
       setYear(year + 1);
-    }
-    if (month === 1 && number < 0) {
+    } else if (month === 1 && number === -1) {
       setYear(year - 1);
     }
-    setMonth(month + number);
+    let newMonth = (month + number) % 13;
+    console.log("newMont:", newMonth);
+    if (newMonth === 0) {
+      newMonth = 1;
+    }
+    setMonth(newMonth);
   };
   useEffect(() => {
     const yearMonth = toString(year, month);
@@ -24,16 +28,24 @@ function MonthSelector(props) {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-center py-3 rounded"
+      className="d-flex justify-content-center align-items-center py-4 rounded shadow"
       style={{ backgroundColor: "var(--var1)" }}
     >
-      <div style={{ width: "40px" }} onClick={() => update(-1)}>
+      <div
+        style={{ width: "40px" }}
+        onClick={() => update(-1)}
+        className="cursor"
+      >
         <ArrowLeft />
       </div>
       <div className="mx-4">
         {monthToString(month)} {year}
       </div>
-      <div style={{ width: "40px" }} onClick={() => update(1)}>
+      <div
+        style={{ width: "40px" }}
+        onClick={() => update(1)}
+        className="cursor"
+      >
         <ArrowRight />
       </div>
     </div>
