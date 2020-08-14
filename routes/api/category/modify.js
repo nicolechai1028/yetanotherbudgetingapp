@@ -33,7 +33,7 @@ const e = require("express");
 
 /**
  * Matches routes with /api/category/modify
- * Category modify route. 
+ * Category modify route.
  *
  * Success will return the following object:
  *
@@ -91,12 +91,12 @@ router.route("/:mode?").post((req, res) => {
   (async () => {
     try {
       let dbProfile = await db.UserProfile.findOne({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbProfile) throw "Invalid sessionUUID";
+      if (!dbProfile) throw new Error("Invalid sessionUUID");
       let ownerRef = dbProfile._id;
       let dbCategory, dbSubCategory, dbSubCategoryParent, dbResult;
       // set Category if that is what is needed
       if (categoryUUID && !(dbCategory = await db.UserCategoryGroup.findOne({ ownerRef: ownerRef, _id: categoryUUID })))
-        throw "Unable to find Category";
+        throw new Error("Unable to find Category");
       else if (
         subCategoryUUID &&
         !(dbSubCategoryParent = await db.UserCategoryGroup.findOne({
@@ -104,7 +104,7 @@ router.route("/:mode?").post((req, res) => {
           "subCategory._id": subCategoryUUID,
         }))
       )
-        throw "Unable to find subCategoryUUID";
+        throw new Error("Unable to find subCategoryUUID");
       // one or the other has been found
       if (dbCategory)
         console.log(
@@ -131,7 +131,7 @@ router.route("/:mode?").post((req, res) => {
           if (dbResult) {
             console.log(`\n\n******* Cannot Delete Category "${categoryName}" becase of attached Transaction:\n`);
             console.log(JSON.stringify(dbResult, null, 2));
-            throw "Cannot delete Category because of attached Transaction";
+            throw new Error("Cannot delete Category because of attached Transaction");
           }
           // Budget
           query = { ownerRef: ownerRef, categoryRef: categoryUUID };
@@ -139,7 +139,7 @@ router.route("/:mode?").post((req, res) => {
           if (dbResult) {
             console.log(`\n\n******* Cannot Delete Category "${categoryName}" becase of attached Budget:\n`);
             console.log(JSON.stringify(dbResult, null, 2));
-            throw "Cannot delete Category because of attached Budget";
+            throw new Error("Cannot delete Category because of attached Budget");
           }
           // no error, so delete Category
           await dbCategory.remove();
@@ -152,7 +152,7 @@ router.route("/:mode?").post((req, res) => {
           if (dbResult) {
             console.log(`\n\n******* Cannot Delete SubCategory "${subCategoryName}" becase of attached Transaction:\n`);
             console.log(JSON.stringify(dbResult, null, 2));
-            throw "Cannot delete SubCategory because of attached Transaction";
+            throw new Error("Cannot delete SubCategory because of attached Transaction");
           }
           // Budget
           query = { ownerRef: ownerRef, "subCategory._id": subCategoryUUID };
@@ -160,7 +160,7 @@ router.route("/:mode?").post((req, res) => {
           if (dbResult) {
             console.log(`\n\n******* Cannot Delete SubCategory "${subCategoryName}" becase of attached Budget:\n`);
             console.log(JSON.stringify(dbResult, null, 2));
-            throw "Cannot delete SubCategory because of attached Budget";
+            throw new Error("Cannot delete SubCategory because of attached Budget");
           }
           // no error, so delete SubCategory
           await dbSubCategoryParent.subCategory.id(subCategoryUUID).remove();

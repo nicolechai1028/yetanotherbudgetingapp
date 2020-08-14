@@ -87,7 +87,7 @@ router.route("/").post((req, res) => {
 
   (async () => {
     try {
-      if (!(dbProfile = await db.UserProfile.findOne({ sessionUUID: sessionUUID }))) throw "Invalid SessionUUID";
+      if (!(dbProfile = await db.UserProfile.findOne({ sessionUUID: sessionUUID }))) throw new Error("Invalid SessionUUID");
 
       let ownerRef = dbProfile._id;
       // check to see if there is a Category beloing to the user that has the "same" name

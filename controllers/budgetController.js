@@ -25,8 +25,8 @@ module.exports = {
     let response = [],
       query;
     try {
-      if (!ownerRef || !yearMonth) throw "Missing parameter(s)";
-      if (isNaN(yearMonth) || yearMonth < 200001 || yearMonth > 205012) throw "Invalid year-month parameter";
+      if (!ownerRef || !yearMonth) throw new Error("Missing parameter(s)");
+      if (isNaN(yearMonth) || yearMonth < 200001 || yearMonth > 205012) throw new Error("Invalid year-month parameter");
       let dbProfile = await db.UserProfile.findById(ownerRef);
       if (!dbProfile) throw `Unable to find User Profile for ${ownerRef}`;
       // get all the budgets for this user and key by categoryUUID. There should be only one document per
@@ -102,11 +102,11 @@ module.exports = {
   buildBudgetModel: (dbcategory, yearMonth) => {
     let response, dbSubCategory, dbSubCategories, categoryUUID, subCategoryUUID, subCategoryName;
     try {
-      if (!dbcategory) throw "Missing parameter";
+      if (!dbcategory) throw new Error("Missing parameter");
       if (!yearMonth) yearMonth = Utilities.getYearMonth();
       let { ownerRef, categoryName, perspective } = dbcategory;
       if (!ownerRef || !categoryName || !perspective || !(dbSubCategories = dbcategory.subCategory))
-        throw "Parameter is not the righ type";
+        throw new Error("Parameter is not the righ type");
       categoryUUID = dbcategory._id;
       let subCatogory = [];
       for (let index = 0; index < dbSubCategories.length; index++) {
@@ -143,7 +143,7 @@ module.exports = {
   toJSON: async (dbBudget, dbcategory) => {
     let response;
     try {
-      if (!dbBudget || !dbBudget._id) throw "Invalid dbBudget object";
+      if (!dbBudget || !dbBudget._id) throw new Error("Invalid dbBudget object");
       // make copy of budget object
       let budgetJSON = JSON.parse(JSON.stringify(dbBudget));
       delete budgetJSON._id;
@@ -159,7 +159,7 @@ module.exports = {
   getAPIResponseJSON: async (dbBudget, dbCategory) => {
     let response, yearMonth;
     try {
-      if (!dbCategory) throw "Category Object is missing dbBudget object";
+      if (!dbCategory) throw new Error("Category Object is missing dbBudget object");
       if (!dbBudget) yearMonth = Utilities.getYearMonth();
       else yearMonth = dbBudget.yearMonth;
       let budgetItem = {
