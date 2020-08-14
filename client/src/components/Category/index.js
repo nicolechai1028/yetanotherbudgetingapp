@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Subcategory from "../Subcategory/";
 import { Collapse } from "reactstrap";
 import "./index.css";
@@ -6,6 +6,7 @@ import AddCategoryModal from "../AddCategory";
 import Arrow from "../../icons/Arrow";
 import Add from "../../icons/Add";
 import ChangeNamePopover from "../ChangeNamePopover";
+import CategoriesContext from "../../utils/CategoriesContext";
 
 function Category(props) {
   const [totalBudgeted, setTotalBudgeted] = useState(0);
@@ -13,26 +14,22 @@ function Category(props) {
   const [availableTotal, setAvailableTotal] = useState(0);
   const [open, setOpen] = useState(false);
   const [arrowTranslation, setArrowTranslation] = useState(90);
-
   const [showModal, setShowModal] = useState(false);
-  const updateBudgeted = (subcategoryName, value) => {
-    //change budgeted amount of the subcategory, recalculate value in teh category group
+  const categoriesContext = useContext(CategoriesContext);
 
-    console.log("Category updating ", subcategoryName + " " + value);
-  };
-
-  const subcategories = props.categoryGroup.categories.map(
-    ({ name, budgeted, spent, uuid }) => {
-      const available = budgeted - spent;
+  console.log("subCategory", props.subCategory);
+  const subcategories = props.subCategory.map(
+    ({ subCategoryName, budgeted, activity, subCategoryUUID }) => {
+      const available = budgeted - activity;
       return (
         <Subcategory
-          key={uuid}
-          uuid={uuid}
-          name={name}
+          key={subCategoryUUID}
+          catUUID={props.catUUID}
+          subCatUUID={subCategoryUUID}
+          name={subCategoryName}
           budgeted={budgeted}
-          spent={spent}
+          activity={activity}
           available={available}
-          updateBudgeted={updateBudgeted}
         />
       );
     }
@@ -50,11 +47,14 @@ function Category(props) {
   const toggle = () => {
     setShowModal(!showModal);
   };
+  console.log(categoriesContext);
   /*handle add category */
-  const addCategory = (name) => {
+  const addCategory = (name, perspective) => {
     //hide modal
     setShowModal(false);
+    console.log("Subcategory addCategory");
     //Call another function or API to add category name
+    categoriesContext.addSubCategory(name, props.catUUID);
   };
   return (
     <div>
@@ -76,7 +76,10 @@ function Category(props) {
             <Arrow />
           </div>
           <div className="mx-2 s">
-            <ChangeNamePopover currentName={props.categoryGroup.name} />
+            <ChangeNamePopover
+              currentName={props.categoryName}
+              catUUID={props.catUUID}
+            />
           </div>
           {/*Toggle modal to add subcategories*/}
           <div onClick={toggle} style={{ width: "20px" }} className="pointer">
@@ -84,11 +87,11 @@ function Category(props) {
             <Add />
           </div>
           <AddCategoryModal
-            handleSubmit={addCategory}
             label="New Category"
             text="Add Category Name"
             showModal={showModal}
             toggle={toggle}
+            addCategory={addCategory}
           />
         </div>
         {/*Display total amounts in the category group*/}

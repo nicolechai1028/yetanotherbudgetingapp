@@ -6,3 +6,4 @@ export const SET_LOADING = "SET_LOADING";
 export const REMOVE_USER = "REMOVE_USER";
 export const ADD_CATEGORY = "ADD_CATEGORY";
 export const ADD_TRANSACTION = "ADD_TRANSACTION";
+export const LOAD_CATEGORIES = "LOAD_CATEGORIES";
