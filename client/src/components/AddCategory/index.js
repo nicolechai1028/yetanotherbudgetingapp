@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Form,
@@ -7,13 +7,13 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  Label,
+  Label
 } from "reactstrap";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 const flowKeys = {
   Income: "Inflow",
-  Expense: "Outflow",
+  Expense: "Outflow"
 };
 
 function AddCategoryModal(props) {
@@ -21,8 +21,8 @@ function AddCategoryModal(props) {
   const [newName, setNewName] = useState("");
   const [perspective, setPerspective] = useState("Inflow");
 
-  const handleSelect = (e) => setPerspective(flowKeys[e.target.value]);
-  const handleSubmit = (event) => {
+  const handleSelect = e => setPerspective(flowKeys[e.target.value]);
+  const handleSubmit = event => {
     event.preventDefault();
     props.toggle();
     props.addCategory(newName, perspective);
@@ -32,6 +32,7 @@ function AddCategoryModal(props) {
     setNewName("");
     props.toggle();
   };
+
   return (
     <Modal isOpen={props.showModal}>
       <ModalHeader>Add {props.label}</ModalHeader>
@@ -42,7 +43,7 @@ function AddCategoryModal(props) {
             <Input
               type="text"
               placeholder={props.text}
-              onChange={(event) => {
+              onChange={event => {
                 setNewName(event.target.value);
               }}
               value={newName}

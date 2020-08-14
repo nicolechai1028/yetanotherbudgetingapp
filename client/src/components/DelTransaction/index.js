@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Button } from "reactstrap";
-import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 export const Transaction = ({ transaction }) => {
   const sign = transaction.amount < 0 ? "-" : "+";

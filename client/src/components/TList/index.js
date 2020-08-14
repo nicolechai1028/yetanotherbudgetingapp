@@ -1,29 +1,28 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Transaction } from "../../components/Transaction";
-import { Table, Card, Container } from "reactstrap";
-import { transactions } from "../../utils/API";
+import React, { useState, useEffect } from "react";
+import { Table, Card } from "reactstrap";
+import { getTransAPI } from "../../utils/TransactionAPI";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
 
-export default function TransactionList() {
+export default function TransactionList(props) {
   const [transactions, setTransactions] = useState([]);
-  const [state, dispatch] = useAppContext();
+  const accountUUID = "63a9b997-d793-429e-bb93-eb57ae5ade9c";
+  const [{ user }] = useAppContext();
 
-  useEffect(() => {
-    fetch("/api/transaction/list")
-      .then(response => response.json())
-      .then(data => {
-        setTransactions(data);
+  const fetchData = () => {
+    getTransAPI(user.sessionUUID, accountUUID)
+      .then(response => {
+        setTransactions(response.data.transaction);
+        console.log("response", response.data);
+      })
+      .catch(error => {
+        console.log(error);
       });
-  }, []);
-
+  };
+  useEffect(() => {
+    fetchData();
+  }, [props.change]);
   const renderHeader = () => {
-    let headerElement = [
-      "date",
-      "payee",
-      "category",
-      "transaction flow",
-      "amount"
-    ];
+    let headerElement = ["date", "payee", "category", "subcategory", "amount"];
 
     return headerElement.map((key, index) => {
       return <th key={index}>{key.toUpperCase()}</th>;
@@ -31,22 +30,21 @@ export default function TransactionList() {
   };
 
   const renderBody = () => {
-    return (
-      transactions &&
-      transactions.map(({ date, payee, category, perspective, amount }) => {
+    console.log("trans", transactions);
+    return transactions.map(
+      ({ date, payee, categoryName, subCategoryName, amount }) => {
         return (
           <tr>
             <td>{date}</td>
             <td>{payee}</td>
-            <td>{category}</td>
-            <td>{perspective}</td>
-            <td>{amount}</td>
+            <td>{categoryName}</td>
+            <td>{subCategoryName}</td>
+            <td> ${amount}</td>
           </tr>
         );
-      })
+      }
     );
   };
-
   return (
     <Container-fluid>
       <Card style={{ marginTop: "1rem" }}>
