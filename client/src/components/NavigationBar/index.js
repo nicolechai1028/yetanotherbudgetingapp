@@ -62,14 +62,6 @@ function button(
 }
 
 const notLoggedIn = {
-  home: {
-    id: 1,
-    pages: { "/register": true, "/login": true },
-    path: "/",
-    color: "info",
-    display: "Home",
-    classes: "mr-5 btn-color",
-  },
   login: {
     id: 2,
     pages: { "/register": true, "/": true },
