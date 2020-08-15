@@ -1,6 +1,10 @@
 import axios from "axios";
 
 export const createCategoryAPI = (sessionUUID, categoryName, perspective) => {
+  console.log("***createCategoryAPI****");
+  console.log("session ", sessionUUID);
+  console.log("categoryName", categoryName);
+  console.log("perspective", perspective);
   return axios.post("/api/category/create", {
     sessionUUID,
     categoryName,

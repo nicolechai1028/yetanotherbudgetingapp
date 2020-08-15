@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Button, Navbar, NavbarBrand, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
+import Coin from "../../icons/Coin";
 import "./index.css";
 
 const Navigation = (props) => {
@@ -10,8 +11,13 @@ const Navigation = (props) => {
   const [state] = useAppContext();
 
   return (
-    <Navbar color="light" expand="md" style={{ margin: "1rem" }}>
-      <NavbarBrand tag={Link} to={"/"}>
+    <Navbar
+      color="light"
+      expand="md"
+      style={{ margin: "1rem" }}
+      className="nav-bar shadow"
+    >
+      <NavbarBrand tag={Link} to={"/"} className="font-family ml-3">
         Y.A.B.A
       </NavbarBrand>
       {/*Check if there is user info in state*/}
@@ -56,14 +62,6 @@ function button(
 }
 
 const notLoggedIn = {
-  home: {
-    id: 1,
-    pages: { "/register": true, "/login": true },
-    path: "/",
-    color: "info",
-    display: "Home",
-    classes: "mr-5 btn-color",
-  },
   login: {
     id: 2,
     pages: { "/register": true, "/": true },
