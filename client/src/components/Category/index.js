@@ -22,7 +22,7 @@ function Category(props) {
   console.log("subCategory", props.subCategory);
   const subcategories = props.subCategory.map(
     ({ subCategoryName, budgeted, activity, subCategoryUUID }) => {
-      const available = budgeted + activity;
+      const available = budgeted - activity;
       tempbudgeted += budgeted;
       tempActivity += activity;
       return (
@@ -106,7 +106,7 @@ function Category(props) {
         <div className="justify-self-center d"> $ {budgetedTotal} </div>
         <div className="justify-self-center"> $ {activityTotal} </div>
         <div className="justify-self-center">
-          $ {budgetedTotal + activityTotal}{" "}
+          $ {budgetedTotal - activityTotal}
         </div>
       </div>
 
