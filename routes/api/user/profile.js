@@ -53,7 +53,7 @@ router.route("/").post((req, res) => {
 
   let response;
   let sessionUUID = req.body.sessionUUID;
-  if (sessionUUID == null) {
+  if (!sessionUUID) {
     response = { status: "ERROR", message: "Invalid sessionUUID" };
     res.json(response);
     console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, response);

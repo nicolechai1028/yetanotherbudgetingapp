@@ -101,21 +101,21 @@ router.route("/").post((req, res) => {
   (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
+      if (!dbResults || dbResults.length == 0) throw new Error("Invalid sessionUUID");
       dbProfile = dbResults[0];
       ownerRef = dbProfile._id;
       // make sure such a category/subcategory combination exists
       query = { ownerRef: ownerRef, _id: categoryUUID };
       dbCategory = await db.UserCategoryGroup.findOne(query);
       if (!dbCategory || !(dbSubCategories = dbCategory.subCategory))
-        throw "Invalid categoryUUID and/or subCategoryUUID";
+        throw new Error("Invalid categoryUUID and/or subCategoryUUID");
       for (let index = 0; index < dbSubCategories.length; index++) {
         if (dbSubCategories[index]._id == subCategoryUUID) {
           dbSubCategory = dbSubCategories[index];
           break;
         }
       }
-      if (!dbSubCategory) throw "Invalid subCategoryUUID";
+      if (!dbSubCategory) throw new Error("Invalid subCategoryUUID");
       // check if a budget already exists
       query = { yearMonth: yearMonth, ownerRef: ownerRef, categoryRef: categoryUUID };
       dbBudgetCategory = await db.Budget.findOne(query);
@@ -180,6 +180,7 @@ router.route("/").post((req, res) => {
         };
       }
     } catch (error) {
+		console.log(error);
       response = { status: "ERROR", message: error.message };
     }
     console.log("Buget setItem API Response:\n", response);

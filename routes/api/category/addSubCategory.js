@@ -80,7 +80,7 @@ router.route("/").post((req, res) => {
 
   (async () => {
     try {
-      if (!(dbProfile = await db.UserProfile.findOne({ sessionUUID: sessionUUID }))) throw "Invalid SessionUUID";
+      if (!(dbProfile = await db.UserProfile.findOne({ sessionUUID: sessionUUID }))) throw new Error("Invalid SessionUUID");
       let ownerRef = dbProfile._id;
 
       let subCategoryNames = Utilities.removeDuplicateInArrayTrimLC(subCategory);
@@ -88,7 +88,7 @@ router.route("/").post((req, res) => {
       // get Category
       dbCategory = await db.UserCategoryGroup.findById(categoryUUID);
       let uniqueSubCategoryNames = [];
-      if (!dbCategory) throw "Invalid categoryUUID";
+      if (!dbCategory) throw new Error("Invalid categoryUUID");
       for (let index = 0; index < subCategoryNames.length; index++) {
         let subCategoryName = subCategoryNames[index];
         name4compare = Utilities.multipleSpaceRemovedTrimLC(subCategoryName);
@@ -108,7 +108,7 @@ router.route("/").post((req, res) => {
         }
         if (found == false) uniqueSubCategoryNames.push(subCategoryName);
       }
-      if (uniqueSubCategoryNames.length == 0) throw "No Sub Category added";
+      if (uniqueSubCategoryNames.length == 0) throw new Error("No Sub Category added");
 
       console.log("\n\nUnique Names:\n", uniqueSubCategoryNames);
 

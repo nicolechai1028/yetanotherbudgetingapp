@@ -89,12 +89,12 @@ router.route("/").post((req, res) => {
   (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
+      if (!dbResults || dbResults.length == 0) throw new Error("Invalid sessionUUID");
       dbProfile = dbResults[0];
       ownerRef = dbProfile._id;
       // make sure budget account is valid
       dbAccount = await db.BudgetAccount.findById(accountUUID);
-      if (!dbAccount) throw "Unable to find Budget Account";
+      if (!dbAccount) throw new Error("Unable to find Budget Account");
       query = {
         $and: [
           { ownerRef: { $eq: ownerRef } },
@@ -104,7 +104,7 @@ router.route("/").post((req, res) => {
         ],
       };
       dbResults = await db.Transaction.find(query).populate("categoryRef").limit(limit).sort({ date: sort });
-      if (!dbResults) throw "Error retreiving data";
+      if (!dbResults) throw new Error("Error retreiving data");
       let transactions = [];
       dbResults.every((result) => {
         let transactionUUID = result._id;
@@ -132,13 +132,6 @@ router.route("/").post((req, res) => {
           categoryName,
           subCategoryName,
         });
-        // xactionJSON = TransactionController.getJSON(result);
-        // if (perspective && xactionJSON && categoryUUID) {
-        //   xactionJSON.perspective = perspective;
-        //   xactionJSON.categoryUUID = categoryUUID;
-        //   delete xactionJSON.ownerRef;
-        //   transactions.push(xactionJSON);
-        // }
         return true;
       });
       response = {
@@ -148,6 +141,7 @@ router.route("/").post((req, res) => {
         transaction: transactions,
       };
     } catch (error) {
+      console.log(error);
       response = { status: "ERROR", message: error.message };
     }
     console.log("List Transaction API Response:\n", response);

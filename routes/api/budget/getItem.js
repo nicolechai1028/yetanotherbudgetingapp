@@ -86,12 +86,12 @@ router.route("/").post((req, res) => {
   (async () => {
     try {
       dbProfile = await db.UserProfile.findOne({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbProfile) throw "Invalid sessionUUID";
+      if (!dbProfile) throw new Error("Invalid sessionUUID");
       ownerRef = dbProfile._id;
       // make sure such a category/subcategory combination exists
       query = { ownerRef: ownerRef, _id: categoryUUID };
       dbCategory = await db.UserCategoryGroup.findOne(query);
-      if (!dbCategory) throw "Invalid categoryUUID";
+      if (!dbCategory) throw new Error("Invalid categoryUUID");
       // search for the budget item. If not found, send an empty one back
       query = { yearMonth: yearMonth, categoryRef: categoryUUID, ownerRef: ownerRef };
       dbBudget = await db.Budget.findOne(query);
@@ -99,6 +99,7 @@ router.route("/").post((req, res) => {
       response = await BudgetController.getAPIResponseJSON(dbBudget, dbCategory);
     } catch (error) {
       response = { status: "ERROR", message: error.message };
+      console.log(error);
     }
     console.log("Create Transaction API Response:\n", JSON.stringify(response, null, 2));
     res.json(response);
