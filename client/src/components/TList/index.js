@@ -30,13 +30,13 @@ export default function TransactionList(props) {
   };
 
   const renderBody = () => {
-    console.log("trans", transactions);
+
 
     return transactions?.map(
       ({ date, payee, categoryName, subCategoryName, amount }) => {
         return (
           <tr>
-            <td>{date}</td>
+            <td>{Intl.DateTimeFormat('en-US').format(props.date)}</td>
             <td>{payee}</td>
             <td>{categoryName}</td>
             <td>{subCategoryName}</td>
