@@ -76,7 +76,7 @@ router.route("/").post((req, res) => {
   (async () => {
     try {
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
+      if (!dbResults || dbResults.length == 0) throw new Error("Invalid sessionUUID");
       dbProfile = dbResults[0];
       ownerRef = dbProfile._id;
 

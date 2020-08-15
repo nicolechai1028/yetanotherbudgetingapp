@@ -53,25 +53,25 @@ router.route("/").post((req, res) => {
   console.log(Utilities.getFullUrl(req));
   console.log(req.body);
 
+  let response;
+
   let { firstName, lastName, email, password, currencyCode } = req.body;
-  if (firstName == null || (firstName = firstName.trim()).length == 0) {
-    res.json({ status: "ERROR", message: "First Name field is required" });
+  if (!firstName || (firstName = firstName.trim()).length == 0)
+    response = { status: "ERROR", message: "First Name field is required" };
+  else if (!lastName || (lastName = lastName.trim()).length == 0)
+    response = { status: "ERROR", message: "Last Name field is required" };
+  else if (!password || (password = password.trim()).length == 0)
+    response = { status: "ERROR", message: "Password field is required" };
+  else if (!email || (email = email.trim().toLowerCase()).length == 0)
+    response = { status: "ERROR", message: "Email field is required" };
+  else if (!currencyCode) currencyCode = "USD";
+  else currencyCode = currencyCode.toUpperCase();
+
+  if (response) {
+    console.log("Update/Modify Transaction API Response:\n", response);
+    res.json(response);
     return;
   }
-  if (lastName == null || (lastName = lastName.trim()).length == 0) {
-    res.json({ status: "ERROR", message: "Last Name field is required" });
-    return;
-  }
-  if (password == null || (password = password.trim()).length == 0) {
-    res.json({ status: "ERROR", message: "Password field is required" });
-    return;
-  }
-  if (email == null || (email = email.trim().toLowerCase()).length == 0) {
-    res.json({ status: "ERROR", message: "Email field is required" });
-    return;
-  }
-  if (!currencyCode) currencyCode = "USD";
-  currencyCode = currencyCode.toUpperCase();
 
   // check if email is in the database. If so,
   (async () => {

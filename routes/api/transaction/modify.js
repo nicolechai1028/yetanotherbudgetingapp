@@ -119,21 +119,21 @@ router.route("/").post((req, res) => {
         transactionLog = "\n\n*************** TRANSACTION LOGGER START *********************\n\n";
       }
       dbResults = await db.UserProfile.find({ sessionUUID }).lean(); // use "lean" because we just want "_id"; no virtuals, etc
-      if (!dbResults || dbResults.length == 0) throw "Invalid sessionUUID";
+      if (!dbResults || dbResults.length == 0) throw new Error("Invalid sessionUUID");
 
       dbProfile = dbResults[0];
       ownerRef = dbProfile._id;
       dbXaction = await db.Transaction.findById({ _id: transactionUUID })
         .populate("categoryRef")
         .populate("accountRef");
-      if (!dbXaction) throw "Invalid transactionUUID";
+      if (!dbXaction) throw new Error("Invalid transactionUUID");
       if (!dbXaction.categoryRef._id || !dbXaction.subCategoryRef) {
         if (process.env.YET_DEBUG) {
           /* ********************** DEBUG **************************** */
           console.log("\n\nTansaction from Database:\n", JSON.stringify(dbXaction, null, 2));
           /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
         }
-        throw "Unable to resolve Transaction Category/SubCategory";
+        throw new Error("Unable to resolve Transaction Category/SubCategory");
       }
 
       previousSubCategoryUUID = dbXaction.subCategoryRef;
