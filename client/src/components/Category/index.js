@@ -22,7 +22,7 @@ function Category(props) {
   console.log("subCategory", props.subCategory);
   const subcategories = props.subCategory.map(
     ({ subCategoryName, budgeted, activity, subCategoryUUID }) => {
-      const available = budgeted - activity;
+      const available = budgeted + activity;
       tempbudgeted += budgeted;
       tempActivity += activity;
       return (
