@@ -77,7 +77,7 @@ export const AddTransaction = props => {
   };
 
   return (
-    <Card body style={{ height: "25vh" }}>
+    <Card body className="compcard">
       <CardTitle className="text-center">
         <h3>Add New Transactions</h3>
       </CardTitle>
