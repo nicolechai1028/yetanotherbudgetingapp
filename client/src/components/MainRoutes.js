@@ -21,7 +21,7 @@ function MainRoutes() {
     } else if (user && user !== null) {
       dispatch({
         type: ADD_USER_INFO,
-        payload: JSON.parse(user)
+        payload: JSON.parse(user),
       });
     }
   }, [dispatch]);
@@ -39,8 +39,7 @@ function MainRoutes() {
     <BrowserRouter>
       <NavigationBar />
       <Switch>
-        <Route exact path={["", "/"]} component={Home} />
-        <Route exact path="/login" component={Login} />
+        <Route exact path={["", "/", "/login"]} component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/logout" component={logout} />
 
