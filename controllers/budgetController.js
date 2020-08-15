@@ -39,11 +39,7 @@ module.exports = {
           let dbBudget = dbBudgets[index];
           dbBudgetKeyValues[dbBudget.categoryRef] = dbBudget;
         }
-        // dbBudgets.every((dbBudget) => {
-        //   dbBudgetKeyValues[dbBudget.categoryRef] = dbBudget;
-        // });
       }
-      console.log (`\n\nFound budgets and corresponding categories:\n${JSON.stringify(dbBudgetKeyValues,null,2)}`);
       // get all the UserCategoryGroup for this user
       query = { ownerRef: ownerRef, access: "User" };
       let dbUserCategories = await db.UserCategoryGroup.find(query);
