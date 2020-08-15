@@ -27,7 +27,6 @@ function Budget() {
     //Call API and set categoriesState as value
     if (!state.loading) {
       getBudgetListAPI(user.sessionUUID, yearMonth).then((response) => {
-        console.log("budgetlist ", response.data);
         setCategories(response.data.budget);
       });
     }
@@ -35,21 +34,14 @@ function Budget() {
 
   const getList = () => {
     getBudgetListAPI(user.sessionUUID, yearMonth).then((response) => {
-      console.log("budgetlist ", response.data);
       setCategories(response.data.budget);
     });
   };
   const addCategoryGroup = (name, perspective) => {
     createCategoryAPI(user.sessionUUID, name, perspective).then(({ data }) => {
-      setCategories([
-        ...categories,
-        {
-          categoryName: data.categoryName,
-          categoryUUID: data.categoryUUID,
-          subCategory: [],
-          perspective: data.perspective,
-        },
-      ]);
+      if (data.status === "OK") {
+        getList();
+      }
     });
   };
 
@@ -57,7 +49,7 @@ function Budget() {
     createSubCategoryAPI(user.sessionUUID, categoryUUID, newSubName).then(
       ({ data }) => {
         //Will have to update to use useMemo so the entire page does not re-render
-        if (data.response === "Ok") {
+        if (data.status === "OK") {
           getList();
         }
       }
