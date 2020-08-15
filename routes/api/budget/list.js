@@ -69,7 +69,7 @@ router.route("/").post((req, res) => {
     yearMonth = Utilities.getYearMonth();
 
   if (response) {
-    console.log("Create Transaction API Response:\n", response);
+    console.log("List Budget API Response:\n", response);
     res.json(response);
     return;
   }
@@ -91,7 +91,7 @@ router.route("/").post((req, res) => {
       response = { status: "ERROR", message: error.message };
       console.log(error);
     }
-    console.log("Create Transaction API Response:\n", JSON.stringify(response, null, 2));
+    console.log("List Budget API Response:\n", JSON.stringify(response, null, 2));
     res.json(response);
   })();
 });
