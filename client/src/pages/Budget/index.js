@@ -78,26 +78,7 @@ function Budget() {
     ).then(({ data }) => {
       console.log("retruned from sertITem", data);
       console.log("current categories", categories);
-      if (data.status === "OK") {
-        const updatedCategories = categories.map((category) => {
-          console.log("category", category);
-          console.log("budgetedItem", data.budgetItem);
-          if (category.categoryUUID === data.budgetItem.categoryUUID) {
-            category.subCategory = category.subCategory.map((subCategory) => {
-              //if item matches the updated budget return the subCategory item from response data
-              if (
-                subCategory.subCategoryUUID ===
-                data.budgetItem.subCategory.subCategoryUUID
-              ) {
-                return data.budgetItem.subCategory;
-              }
-              return subCategory;
-            });
-          }
-          return category;
-        });
-        setCategories(updatedCategories);
-      }
+      getList();
     });
   };
 
