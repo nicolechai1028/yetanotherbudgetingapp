@@ -9,7 +9,7 @@ import {
   Card,
   CardBody,
   CardTitle,
-  CardSubtitle
+  CardSubtitle,
 } from "reactstrap";
 import { login } from "../../utils/API";
 import { Redirect } from "react-router-dom";
@@ -19,7 +19,7 @@ import { ADD_USER_INFO, SET_LOADING } from "../../utils/globalStates/actions";
 function Login() {
   const [input, setInput] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [warning, setWarning] = useState();
   const [state, dispatch] = useAppContext();
@@ -29,12 +29,15 @@ function Login() {
     return emailRegex.test(input.email);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (validateInput()) {
-      login(input).then(({ data }) => {
+      console.log("here");
+      login(input).then((response) => {
+        const { data } = response;
         console.log(data);
         if (data.status === "OK") {
+          console.log("login screen");
           dispatch({ type: ADD_USER_INFO, payload: data });
         } else if (data.status === "ERROR") {
           setWarning(data.message);

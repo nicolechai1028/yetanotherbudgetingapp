@@ -5,9 +5,8 @@ import {
   CHECK_USER_INFO,
   REMOVE_USER,
   SET_LOADING,
-  ADD_CATEGORY,
   ADD_TRANSACTION,
-  GET_BALANCE
+  GET_BALANCE,
 } from "./actions";
 
 const accountUUID = "63a9b997-d793-429e-bb93-eb57ae5ade9c";
@@ -39,7 +38,7 @@ const reducer = (state, action) => {
       console.log("action payload", action.payload);
       return {
         ...state,
-        transactions: [action.payload, ...state.transactions]
+        transactions: [...action.payload],
       };
 
     default:
@@ -52,7 +51,7 @@ const UserProvider = ({ value = {}, ...props }) => {
     user: null,
     loading: true,
     categories: [],
-    transactions: []
+    transactions: [],
   });
 
   return <Provider value={[state, dispatch]} {...props} />;

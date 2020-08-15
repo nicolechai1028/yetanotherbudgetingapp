@@ -2,25 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Table, Card } from "reactstrap";
 import { getTransAPI } from "../../utils/TransactionAPI";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
-
+import { ADD_TRANSACTION } from "../../utils/globalStates/actions";
 export default function TransactionList(props) {
   const [transactions, setTransactions] = useState([]);
   const accountUUID = "63a9b997-d793-429e-bb93-eb57ae5ade9c";
-  const [{ user }] = useAppContext();
+  const [{ user }, dispatch] = useAppContext();
 
-  const fetchData = () => {
+  useEffect(() => {
     getTransAPI(user.sessionUUID, accountUUID)
       .then((response) => {
+        console.log(response);
         setTransactions(response.data.transaction);
-        console.log("response", response.data);
+        dispatch({ type: ADD_TRANSACTION, payload: response.data.transaction });
       })
       .catch((error) => {
         console.log(error);
       });
-  };
-  useEffect(() => {
-    fetchData();
-  }, [props.change]);
+  }, [dispatch, props.change, user.sessionUUID]);
   const renderHeader = () => {
     let headerElement = ["date", "payee", "category", "subcategory", "amount"];
 
@@ -31,7 +29,7 @@ export default function TransactionList(props) {
 
   const renderBody = () => {
     return transactions?.map(
-      ({ date, payee, categoryName, subCategoryName, amount }) => {
+      ({ payee, categoryName, subCategoryName, amount }) => {
         return (
           <tr>
             <td>{Intl.DateTimeFormat("en-US").format(props.date)}</td>
