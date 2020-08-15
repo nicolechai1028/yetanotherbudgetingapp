@@ -56,7 +56,7 @@ router.route("/").post((req, res) => {
   if (!email || (email = email.trim()).length == 0) response = { status: "ERROR", message: "Invalid or missing email" };
   else if (password == null || password.length == 0)
     response = { status: "ERROR", message: "Invalid or missing password" };
-    
+
   if (response) {
     console.log("Update/Modify Transaction API Response:\n", response);
     res.json(response);
@@ -104,10 +104,9 @@ router.route("/").post((req, res) => {
       await dbResult.save();
       console.log("Saved User Profile:\n", dbResult);
 
-      return response;
     } catch (err) {
       console.log(err);
-      return { status: "ERROR", message: err.message };
+      response = { status: "ERROR", message: err.message };
     }
     console.log("Modify Transaction API Response:\n", response);
     res.json(response);
