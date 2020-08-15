@@ -83,13 +83,6 @@ const notLoggedIn = {
 };
 
 const loggedIn = {
-  overview: {
-    id: 1,
-    pages: { "/expense": true, "/budget": true },
-    path: "/overview",
-    display: "Overview",
-    classes: "ml-5 btn-color text-white",
-  },
   expense: {
     id: 2,
     pages: { "/overview": true, "/budget": true },

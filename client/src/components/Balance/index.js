@@ -4,12 +4,10 @@ import { useAppContext } from "../../utils/globalStates/stateProvider";
 
 export const Balance = () => {
   const [state] = useAppContext();
-
   const amounts = state.transactions.map(transaction => transaction.amount);
-
   const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
-
   const income = amounts
+
     .filter(item => item > 0)
     .reduce((acc, item) => (acc += item), 0)
     .toFixed(2);
@@ -22,7 +20,7 @@ export const Balance = () => {
   return (
     <Card body className="text-center" style={{ height: "25vh" }}>
       <CardTitle>
-        <h4>Your Balance</h4>
+        <h4>Your Total Balance</h4>
         <h1>${total}</h1>
       </CardTitle>
       <Row>
