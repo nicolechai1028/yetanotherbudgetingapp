@@ -18,7 +18,7 @@ export const Balance = () => {
   ).toFixed(2);
 
   return (
-    <Card body className="text-center" style={{ height: "25vh" }}>
+    <Card body className="text-center" >
       <CardTitle>
         <h4>Your Total Balance</h4>
         <h1>${total}</h1>

@@ -17,8 +17,13 @@ function Expense() {
             <AddTransaction setChange={() => setChange(!change)} />
           </Col>
         </Row>
+        <Row>
+          <Col>
+        <TransactionList change={change} />
+        </Col>
+        </Row>
       </Container>
-      <TransactionList change={change} />
+  
     </Container>
   );
 }
