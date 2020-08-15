@@ -14,6 +14,7 @@ body {
   --var3: #0c879c;
   --var4: #c7f9cc;
   --var5: #f7c1bb;
+	overflow: scroll important!;	
 }
 
 code {
