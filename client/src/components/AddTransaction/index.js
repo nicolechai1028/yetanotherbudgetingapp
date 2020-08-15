@@ -7,7 +7,7 @@ import {
   InputGroupAddon,
   Card,
   CardTitle,
-  FormGroup
+  FormGroup,
 } from "reactstrap";
 import { ADD_TRANSACTION } from "../../utils/globalStates/actions";
 import { useAppContext } from "../../utils/globalStates/stateProvider";
@@ -15,7 +15,7 @@ import { getBudgetListAPI } from "../../utils/CategoryAPI";
 import CategoriesContext from "../../utils/CategoriesContext";
 import { createTransAPI } from "../../utils/TransactionAPI";
 
-export const AddTransaction = props => {
+export const AddTransaction = (props) => {
   const [{ user }] = useAppContext();
   const [state, dispatch] = useAppContext();
   const [payee, setPayee] = useState("");
@@ -27,19 +27,19 @@ export const AddTransaction = props => {
   const [yearMonth] = useState(getMonthFormat());
 
   useEffect(() => {
-    getBudgetListAPI(user.sessionUUID, yearMonth).then(response => {
+    getBudgetListAPI(user.sessionUUID, yearMonth).then((response) => {
       console.log(response.data);
-      const tempCat = response.data.budget.map(category => {
-        const tempSubCat = category.subCategory.map(subCategory => {
+      const tempCat = response.data.budget.map((category) => {
+        const tempSubCat = category.subCategory.map((subCategory) => {
           return {
             subCategoryName: subCategory.subCategoryName,
-            subCategoryUUID: subCategory.subCategoryUUID
+            subCategoryUUID: subCategory.subCategoryUUID,
           };
         });
         return {
           categoryName: category.categoryName,
           categoryUUID: category.categoryUUID,
-          subCategory: tempSubCat
+          subCategory: tempSubCat,
         };
       });
       setCategories(tempCat);
@@ -47,7 +47,7 @@ export const AddTransaction = props => {
   }, [user.sessionUUID, yearMonth]);
   console.log(categories);
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
     console.log(e.target);
 
@@ -59,17 +59,18 @@ export const AddTransaction = props => {
       subCatID,
       amount,
       []
-    ).then(response => {
-      dispatch({
-        type: ADD_TRANSACTION,
-        payload: response.data.transaction
-      });
+    ).then((response) => {
       console.log(response);
+      //  dispatch({
+      //    type: ADD_TRANSACTION,
+      //    payload: response.data.transaction
+      //  });
+      //  console.log(response);
       props.setChange();
     });
   };
 
-  const handleCategorySelect = event => {
+  const handleCategorySelect = (event) => {
     const value = JSON.parse(event.target.value);
     console.log(value);
     setSubCatID(value.subCategoryUUID);
@@ -87,7 +88,7 @@ export const AddTransaction = props => {
             <Input
               type="text"
               value={payee}
-              onChange={e => setPayee(e.target.value)}
+              onChange={(e) => setPayee(e.target.value)}
               placeholder="Enter Payee Name"
             />
             <FormGroup>
@@ -102,13 +103,13 @@ export const AddTransaction = props => {
                     Select a Category
                   </option>
 
-                  {categories.map(category => {
-                    return category.subCategory.map(subCategory => {
+                  {categories.map((category) => {
+                    return category.subCategory.map((subCategory) => {
                       return (
                         <option
                           value={JSON.stringify({
                             subCategoryUUID: subCategory.subCategoryUUID,
-                            categoryUUID: category.categoryUUID
+                            categoryUUID: category.categoryUUID,
                           })}
                         >
                           {subCategory.subCategoryName}
@@ -148,7 +149,7 @@ export const AddTransaction = props => {
             <Input
               type="number"
               value={amount}
-              onChange={e => setAmount(e.target.value)}
+              onChange={(e) => setAmount(e.target.value)}
               placeholder="Enter amount..."
             />
           </InputGroup>
