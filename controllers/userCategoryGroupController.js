@@ -109,4 +109,48 @@ module.exports = {
       console.log(error.message);
     }
   },
+  getAPIJSON: function (dbCategory) {
+    if (!dbCategory) return;
+    // if it is not an array, but the categoryName field is missing, not right object
+    if (Array.isArray(dbCategory) == false && !dbCategory.categoryName) return;
+    else if (dbCategory.length == 0 || !dbCategory[0].categoryName) return;
+
+    let retval;
+    if (Array.isArray(dbCategory) == false) {
+      retval = getAPIJSONCategoryHeader(dbCategory);
+      let subs = [];
+      for (let index = 0; index < dbCategory.subCategory.length; index++){
+        subs.push(getSubCategoryAPIJSON(dbCategory.subCategory[index]));
+      }
+      retval.subCategory = subs;
+    }
+    else {
+      retval = [];
+      for (let index = 0; index < dbCategory.length; index++){
+        
+      }
+    }
+  },
 };
+
+function getAPIJSONCategoryHeader(dbCategory) {
+  let retval = {};
+  if (dbCategory && dbCategory.categoryName) {
+    retval = {
+      categoryUUID: dbCategory._id,
+      categoryName: dbCategory.categoryName,
+      perspective: dbCategory.perspective,
+      access: dbCategory.access,
+    };
+  }
+  return retval;
+}
+
+function getSubCategoryAPIJSON(dbSubCategory) {
+  let retval = {},
+    name;
+  if (dbSubCategory && dbSubCategory.subCategoryName) {
+    retval = { subCategoryUUID: dbSubCategory._id, subCategoryName: dbSubCategory.subCategoryName };
+  }
+  return retval;
+}

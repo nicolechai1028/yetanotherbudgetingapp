@@ -20,11 +20,9 @@
  * @see https://codeforgeek.com/expressjs-router-tutorial/
  */
 
-const crypto = require("crypto");
 const router = require("express").Router();
 const db = require("../../../models");
 const Utilities = require("../../../utilities");
-const Constants = require("../../../constants");
 
 /**
  * Matches routes with /api/user/currency/:code?
@@ -60,28 +58,33 @@ router.route("/:codes?").post((req, res) => {
   if ((codes = req.params.codes) != null) codes = codes.trim().toUpperCase().split(",");
 
   (async () => {
-    let dbProfile, currency;
-    let dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID });
-    if (dbResults == null || dbResults.length != 1) {
-      response = { status: "ERROR", message: "Invalid sessionUUID" };
-    } else {
-      dbProfile = dbResults[0];
-      let query = {};
-      if (codes != null) {
-        if (codes.length == 1) query = { _id: codes[0] };
-        else query = { _id: { $in: codes } };
-      }
-      console.log("\nCurrency Query:\n", query);
-      dbResults = await db.Currency.find(query);
-      if (dbResults != null && dbResults.length != 0) {
-        currency = [];
-        for (let index = 0; index < dbResults.length; index++) {
-          let dbResult = dbResults[index];
-          currency.unshift({ code: dbResult._id, name: dbResult.name, uniDec: dbResult.uniDec });
+    try {
+      let dbProfile, currency;
+      let dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID });
+      if (dbResults == null || dbResults.length != 1) {
+        response = { status: "ERROR", message: "Invalid sessionUUID" };
+      } else {
+        dbProfile = dbResults[0];
+        let query = {};
+        if (codes != null) {
+          if (codes.length == 1) query = { _id: codes[0] };
+          else query = { _id: { $in: codes } };
         }
+        console.log("\nCurrency Query:\n", query);
+        dbResults = await db.Currency.find(query);
+        if (dbResults != null && dbResults.length != 0) {
+          currency = [];
+          for (let index = 0; index < dbResults.length; index++) {
+            let dbResult = dbResults[index];
+            currency.unshift({ code: dbResult._id, name: dbResult.name, uniDec: dbResult.uniDec });
+          }
+        }
+        response = { status: "OK", message: `World Currencies` };
+        if (currency != null) response = { status: "OK", message: `World Currencies`, currency: currency };
       }
-      response = { status: "OK", message: `World Currencies` };
-      if (currency != null) response = { status: "OK", message: `World Currencies`, currency: currency };
+    } catch (error) {
+      console.log(error);
+      response = { status: "ERROR", message: error.message };
     }
     console.log("User Profile API Response:\n", response);
     res.json(response);

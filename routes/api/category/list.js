@@ -28,9 +28,9 @@ const Constants = require("../../../constants");
 
 /**
  * Matches routes with /api/category/list
- * Category list route. 
- * 
- * 
+ * Category list route.
+ *
+ *
  * Success will return the following object:
  *
  *  - status: OK
@@ -70,51 +70,46 @@ router.route("/").post((req, res) => {
 
   (async () => {
     try {
-      dbResults = await db.UserProfile.find({ sessionUUID: sessionUUID });
-      if (dbResults != null && dbResults.length != 0) dbProfile = dbResults[0];
-      if (dbProfile && dbProfile.isVerified == true) {
-        let ownerRef = dbProfile._id;
-        let query = { ownerRef: ownerRef };
-        if (categoryUUID) query["_id"] = categoryUUID;
-        if (categoryName4Compare) query["categoryName4Compare"] = categoryName4Compare;
-        console.log(query);
-        dbResults = await db.UserCategoryGroup.find(query);
-        if (!dbResults) response = { status: "ERROR", message: "No Category found" };
-        else {
-          response = { status: "OK", message: `Found ${dbResults.length} Categories` };
-          let categories = [];
-          dbResults.every((dbCategory) => {
-            categoryName = dbCategory.categoryName;
-            categoryUUID = dbCategory._id;
-            perspective = dbCategory.perspective;
-            let subCategories = [];
-            if (dbCategory.subCategory) {
-              dbCategory.subCategory.every((dbSubCategory) => {
-                subCategories.push({
-                  subCategoryUUID: dbSubCategory._id,
-                  subCategoryName: dbSubCategory.subCategoryName,
-                });
-                return true;
-              });
-            }
-            categories.push({
-              categoryName: categoryName,
-              categoryUUID: categoryUUID,
-              perspective: perspective,
-              subCategory: subCategories,
+      dbProfile = await db.UserProfile.findOne({ sessionUUID: sessionUUID });
+      if (!dbProfile) throw new Error("Invalid sessionUUID");
+      if (dbProfile.isVerified != true) throw new Error("Account is not verified");
+      let ownerRef = dbProfile._id;
+      let query = { ownerRef: ownerRef };
+      if (categoryUUID) query["_id"] = categoryUUID;
+      if (categoryName4Compare) query["categoryName4Compare"] = categoryName4Compare;
+      console.log(query);
+      dbResults = await db.UserCategoryGroup.find(query);
+      if (!dbResults) throw new Error("No Category found");
+      response = { status: "OK", message: `Found ${dbResults.length} Categories` };
+      let categories = [];
+      dbResults.every((dbCategory) => {
+        categoryName = dbCategory.categoryName;
+        categoryUUID = dbCategory._id;
+        perspective = dbCategory.perspective;
+        let subCategories = [];
+        if (dbCategory.subCategory) {
+          dbCategory.subCategory.every((dbSubCategory) => {
+            subCategories.push({
+              subCategoryUUID: dbSubCategory._id,
+              subCategoryName: dbSubCategory.subCategoryName,
             });
             return true;
           });
-          response["category"] = categories;
         }
-      } else {
-        response = { status: "ERROR", message: "Invalid sessionUUID. Unable to find profile" };
-      }
+        categories.push({
+          categoryName: categoryName,
+          categoryUUID: categoryUUID,
+          perspective: perspective,
+          subCategory: subCategories,
+        });
+        return true;
+      });
+      response["category"] = categories;
     } catch (error) {
       console.log(error);
       response = { status: "ERROR", message: error.message };
     }
-    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, JSON.stringify(response,null,2));
+    console.log(`\nResponse for ${Utilities.getFullUrl(req)}:\n`, JSON.stringify(response, null, 2));
     res.json(response);
   })();
 });
