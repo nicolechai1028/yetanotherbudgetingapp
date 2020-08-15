@@ -10,4 +10,8 @@
 	margin-right: 10em;
 }
 
+.font-family {
+	font-family: "yeseva";
+	src: url(../../font/YesevaOne-Regular.ttf)
 
+}

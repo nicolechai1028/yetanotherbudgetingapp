@@ -1,3 +1,13 @@
 .btn-color {
   background-color: var(--var3) !important;
 }
+
+.nav-bar {
+	border-radius: 8px;
+}
+.font-family {
+	font-family: "yeseva";
+	src: url(../../font/YesevaOne-Regular.ttf);
+	font-size: 25px !important;
+}
+
